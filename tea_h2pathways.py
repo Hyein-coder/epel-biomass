@@ -11,11 +11,11 @@ tea = TEA()
 file_name = {
     'Stream': 'Process_Data\\Pyrolysis_551_Scale0010_Streams.xlsx',
     'APEA': 'Process_Data\\Pyrolysis_551_Scale0010_APEA.xlsm',
-}
+}       # Journal Paper
 # file_name = {
 #     'Stream': os.path.join(os.getcwd(), 'Process_Data\\Pyrolysis_Jones_572_2MC_0010_Streams.xlsx'),
 #     'APEA': os.path.join(os.getcwd(), 'Process_Data\\Pyrolysis_Jones_572_2MC_0010_APEAresults.xlsm')
-# }
+# }     # Thesis
 h2_source = ['Base', 'SMR', 'Ammonia', 'PEM']
 name_for_h2_source = ['Base', 'BH', 'Ammonia', 'PEM']
 
