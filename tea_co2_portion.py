@@ -28,7 +28,7 @@ lca_woCCS = get_WTWa_pyrolysis('Base', file_lca_woCCS, file_wtwa)
 ghg_woCCS = lca_woCCS['WTWa']['GHG-100']
 
 file_lca_withCCS = f'Process_Data\\Pyrolysis_551_LCA_Allocation.xlsx'   # TODO: 이거 데이터가 없음
-lca_withCCS = get_WTWa_pyrolysis('Base', file_lca_withCCS, file_wtwa)
+lca_withCCS = get_WTWa_pyrolysis('CCS100', file_lca_withCCS, file_wtwa)
 ghg_withCCS = lca_withCCS['WTWa']['GHG-100']
 
 mjsp_data = []
