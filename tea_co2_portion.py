@@ -15,8 +15,8 @@ save_heading = 'CO2_ver551'
 #%%
 portion = [0.1 * i for i in range(10)]
 tea = TEA()
-file_stream = f'Process_Data\\Pyrolysis_551_Scale{int(10):04d}_Streams.xlsx'
-file_apea = f'Process_Data\\Pyrolysis_551_Scale{int(10):04d}_APEA.xlsm'  # Fixed Biomass Price
+file_stream = f'Process_Data\\Pyrolysis_551_Scale{int(300):04d}_Streams.xlsx'
+file_apea = f'Process_Data\\Pyrolysis_551_Scale{int(300):04d}_APEA.xlsm'  # Fixed Biomass Price
 h2_sources = ['Base']
 
 file_wtwa = 'Process_Data\\WTWa_LCA.xlsx'

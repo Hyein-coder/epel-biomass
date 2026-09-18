@@ -10,11 +10,16 @@ from plotting import plot_stack_bar, plot_pie_chart
 
 tea = TEA()
 file_name = {
-    'Stream': 'Process_Data\\Pyrolysis_Jones_572_2MC_0010_Streams.xlsx',
-    'APEA': 'Process_Data\\Pyrolysis_Jones_572_2MC_0010_APEAresults.xlsm'
+    'Stream': 'Process_Data\\Pyrolysis_551_Scale0010_Streams.xlsx',
+    'APEA': 'Process_Data\\Pyrolysis_551_Scale0010_APEA.xlsm'
 }
-ccs_experiment = [0, .158, .1585, .159]
-# ccs_experiment = [0, 0.25, 0.5, 0.75, 1.]
+# file_name = {
+#     'Stream': 'Process_Data\\Pyrolysis_Jones_572_2MC_0010_Streams.xlsx',
+#     'APEA': 'Process_Data\\Pyrolysis_Jones_572_2MC_0010_APEAresults.xlsm'
+# }
+
+# ccs_experiment = [0, .158, .1585, .159]
+ccs_experiment = [0, 0.25, 0.5, 0.75, 1.]
 ccs_name = [f'{c*100:.0f}%' for c in ccs_experiment]
 name_for_h2_source = ['Base']
 

@@ -11,9 +11,14 @@ operation_hr = 8000
 case_scale = [1, 2.5, 5, 7.5, 10, 20, 30]
 case_price_model_and_folder = [
     ('FR Price', 'Process_Data'),
-    ('FR-Log Linear', 'Process_Data\\Pyrolysis_572_galik_naive'),
-    ('Fixed Elasticity', 'Process_Data\\Pyrolysis_572_galik_elasticity_fixed')
+    ('FR-Log Linear', 'Process_Data\\galik_naive'),
+    ('Fixed Elasticity', 'Process_Data\\galik_elasticity_fixed_0.3')
 ]
+# case_price_model_and_folder = [
+#     ('FR Price', 'Process_Data'),
+#     ('FR-Log Linear', 'Process_Data\\Pyrolysis_572_galik_naive'),
+#     ('Fixed Elasticity', 'Process_Data\\Pyrolysis_572_galik_elasticity_fixed')
+# ]
 name_h2_source = ['Base', 'Ammonia']
 
 fig_folder = os.path.join(os.getcwd(), 'Figure')
@@ -26,8 +31,10 @@ case_data = {'Case Scale': [], 'Base': [], 'Ammonia': [], 'SAF Production': [],
 for model, folder in case_price_model_and_folder:
     for n in case_scale:
         print(model, str(n))
-        file_stream = f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_Streams.xlsx'
-        file_apea = folder + f'\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_APEAresults.xlsm'
+        file_stream = f'Process_Data\\Pyrolysis_551_Scale{int(n * 10):04d}_Streams.xlsx'
+        file_apea = folder + f'\\Pyrolysis_551_Scale{int(n * 10):04d}_APEA.xlsm'
+        # file_stream = f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_Streams.xlsx'
+        # file_apea = folder + f'\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_APEAresults.xlsm'
 
         df_mjsp, energy_production, annual_prod_saf, main_h2_demand, opex_names, data_all, name_h2_source_new = \
             tea.economic_analysis(file_stream, file_apea, name_h2_source, ammonia_portion=.655)
