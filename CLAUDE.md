@@ -48,5 +48,38 @@ deferred, skipped, blocked, or proposed but not applied, plus anything that need
 each, with the file or script it touches. Write `None.` when nothing is outstanding — never omit the  
 section.
 
-## Ignore 
+## Report logging (mandatory)
+
+Accumulate work results in an analysis-report markdown. A report is made of  
+topic sections (numbered + English title, e.g. `## 1. Pathway Economics`) and a `## Log history`
+at the very end of the document.
+
+### Check at session start (mandatory)
+
+Every time a session opens, before starting the first task, ask the user *which markdown this
+session's log goes into*. Never pick one arbitrarily — there are multiple reports and the target
+differs per session.
+
+Do not write any log before the user picks a target. If they defer, proceed with the work but add
+"log target undecided" to `## Left-over action points`.
+
+### What to log
+
+Record only what actually happened in the session. Under a date (`### YYYY-MM-DD`), split into three:
+
+- **Discussion** — decisions the user made and why. Options proposed but dropped stay too, with why
+they were dropped. Purpose: stop the same option being raised again later.
+- **Code** — what was built or fixed. Filename and behavior in one line. For fixed bugs, include the cause.
+- **Open** — what couldn't be confirmed or decided. May overlap with `## Left-over action points`
+(that is per-session; this is history kept in the document).
+
+### How to write
+
+- Newest entry on top.
+- Never edit earlier-dated entries. If something turns out wrong, don't delete it — write a correction
+under a new date.
+- Report body (sections) holds the current state; the log holds the process. Don't copy the same content
+at length into both. Conclusions in the section, how the conclusion was reached in the log.
+
+## Ignore
 
