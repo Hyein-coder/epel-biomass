@@ -3,7 +3,7 @@ import numpy as np
 import re
 import os
 
-
+lb2kg = 0.453592
 class TEA(object):
     def __init__(self):
         self.ammonia_file_name = lambda c: f'NH3_Cracking_130_scale{round(c * 10):04d}_APEAresult.xlsm'
@@ -141,7 +141,7 @@ class TEA(object):
         with open(file_stream, 'rb') as f:
             df_material = pd.read_excel(f, sheet_name='Material', header=3)
         idx_material = self.get_idx_material(df_material)
-        saf_density = df_material['326SAF'][idx_material['density [lb/cuft]']] / 28.3168 * 0.453592  # kg/L
+        saf_density = df_material['326SAF'][idx_material['density [lb/cuft]']] / 28.3168 * lb2kg  # kg/L
         return saf_density
 
     def get_biomass_info(self, file_apea):
@@ -608,7 +608,7 @@ class TEA(object):
         pem_maintenance_per_capex = 0.11  # replacement cost
         pem_g_and_a_per_opex = 0.08
 
-        pem_elec_demand = main_h2_demand / pem_efficiency * 0.453592 * electrolysis_energy  # kW
+        pem_elec_demand = main_h2_demand / pem_efficiency * lb2kg * electrolysis_energy  # kW
         pem_capex = pem_elec_demand / pem_cap_factor * pem_electrolyzer_cost  # 2022$
         pem_opex = pem_elec_demand * pem_elec_price_kwh * self.operation_hr
 
