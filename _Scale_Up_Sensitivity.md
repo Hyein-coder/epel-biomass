@@ -379,36 +379,97 @@ off). `tea_scale_up_co2ts.py` sweeps it across all study scales.
 - Price range **$4–45/tCO2** (reported onshore-to-offshore T&S span; low = onshore
   pipeline + saline aquifer, high = offshore/long-distance). Linear in price — cost is a
   flat $/t on a fixed tonnage.
-- Current post-fix six-tenths cost model (§4); T&S folded into the CCS unit `utilities`
-  line so it flows into MJSP.
+- Feedstock basis: **551 files** (`Pyrolysis_551_Scale####`), matching §1–§5 and the
+  manuscript. Post-fix six-tenths cost model (§4); the no-T&S column reproduces §3c/§4.
+- T&S folded into the CCS unit `utilities` line so it flows into MJSP.
 
-**Results — MJSP [$/L SAF] and T&S adder:**
+**Results — MJSP [$/L SAF] and T&S adder (551 basis):**
 
 | Scale × | MJSP no T&S | +$4/t | +$45/t | adder $4 | adder $45 | CO2 seq [Mt/yr] |
 |--:|--:|--:|--:|--:|--:|--:|
-| 1   | 1.942 | 1.961 | 2.149 | 0.018 | 0.206 | 0.26 |
-| 2.5 | 1.479 | 1.497 | 1.685 | 0.018 | 0.206 | 0.65 |
-| 5   | 1.317 | 1.335 | 1.523 | 0.018 | 0.206 | 1.30 |
-| 7.5 | 1.248 | 1.267 | 1.454 | 0.018 | 0.206 | 1.95 |
-| 10  | 1.168 | 1.186 | 1.374 | 0.018 | 0.206 | 2.61 |
-| 20  | 1.032 | 1.050 | 1.238 | 0.018 | 0.206 | 5.21 |
-| 30  | 0.936 | 0.954 | 1.142 | 0.018 | 0.206 | 7.82 |
+| 1   | 1.845 | 1.863 | 2.051 | 0.018 | 0.206 | 0.26 |
+| 2.5 | 1.437 | 1.455 | 1.642 | 0.018 | 0.206 | 0.65 |
+| 5   | 1.178 | 1.196 | 1.384 | 0.018 | 0.206 | 1.30 |
+| 7.5 | 1.040 | 1.059 | 1.246 | 0.018 | 0.206 | 1.95 |
+| 10  | 0.931 | 0.950 | 1.137 | 0.018 | 0.206 | 2.60 |
+| 20  | 0.844 | 0.862 | 1.049 | 0.018 | 0.206 | 5.19 |
+| 30  | 0.803 | 0.821 | 1.008 | 0.018 | 0.206 | 7.79 |
 
 - **The T&S adder is flat per litre** (~$0.0046/L per $1/tCO2 → +0.018 $/L at $4,
   +0.206 $/L at $45) and **scale-independent**: sequestered CO2 and SAF both scale
   ~linearly, so $/L T&S does not change with plant size.
 - Because MJSP itself falls with scale while the adder stays fixed, the **relative** T&S
-  penalty *grows* with scale: +$45/t is +11 % of MJSP at 1× but +22 % at 30×.
+  penalty *grows* with scale: +$45/t is +11 % of MJSP at 1× but +26 % at 30×.
 - At the study's 60 % design point, even the high end ($45/t) keeps MJSP below the
   full-ammonia case at every scale; T&S is a second-order lever vs. the H2-source choice.
 
-> **Data-consistency flag.** The "no T&S" CCS-60 % column here is the **current-code**
-> (HEAD) output and differs from the CCS-60 % values in §3c/§4 (e.g. 1× 1.942 vs 1.845;
-> Base 1× 1.479 vs 1.638). The `co2_ts` edits are zero-effect at price 0, so this is a
-> pre-existing drift: §3c/§4 tables appear to predate the committed `bd5a017` six-tenths
-> fix values. §3c/§4 retained as-is (append-only); re-sync is a separate task (see Open).
+## 7. Outdated Inventory After the Six-Tenths Fix
+
+Everything that reports absolute MJSP, CAPEX, or $/t abatement at any scale is generated
+through `unit_cost_interpolation` (CCS, PSA, R-510, OGR, SMR sub-units) and moved when the
+six-tenths rule was fixed (`bd5a017`). Verified on the **551** files (the report basis):
+current code gives Base 1× = 1.638, CCS-60 % 1× = 1.845 — i.e. it **exactly reproduces §3c/§4**,
+so §3c/§4/§5 are already post-fix and current; only the earlier pre-fix tables are stale. (The
+1.479 / 1.942 figures reported earlier this session were on the `Jones_572_2MC` files, not 551
+— a wrong-file comparison, since corrected; there is no unexplained code drift.)
+
+**What is NOT affected:** §3c/§4/§5 (already post-fix on 551, verified current);
+`_H2_Price_Dynamics.md` (unit prices, scale-independent); `_Base_Revision.md` §4.11 (§4.11 was
+computed on the 551 base-scale file, on HEAD). Ammonia cracker CAPEX is read per scale from
+`NH3_Cracking_130_scale####_APEAresult.xlsm` (not interpolated), so ammonia moves only via the
+shared PSA/R-510 units. §6 was regenerated on the 551 basis (2026-09-27) and now reproduces
+§3c/§4's no-T&S CCS-60 % baseline.
+
+**This report (`_Scale_Up_Sensitivity.md`):**
+
+| Section / table | What is stale | Status |
+|---|---|---|
+| §1 table (Base/Ammonia/CCS MJSP, Base & CCS-unit CAPEX, all 7 scales) + Findings 1–4 + Answer | Pre-fix linear (CCS-unit CAPEX "24.69 M$ × n"); the "+0.161 $/L flat CCS premium, no economy of scale" conclusion is a bug artifact | Outdated (kept as pre-fix record) |
+| §2 cross-check table + Fig 7/Fig 8 premium figures + "reproduces manuscript" verdict | Base-scale MJSP/CAPEX 1.582/428.7/1.743 are pre-fix = manuscript = no longer HEAD | Outdated |
+| §3b CCS abatement table (136/136/275/369 alloc; 43/117 disp) + "4–11× cheaper" | Pre-fix CCS CAPEX | Outdated |
+| §3c MJSP table + abatement-vs-scale table (incl. projected NH3) | — verified: current code on 551 reproduces 1.638/1.845 | **Current** (post-fix, keep) |
+| §4 all three post-fix tables (MJSP/scale, base-scale abatement 204/192/325/414, abatement/scale) | — verified against current code on 551 | **Current** (post-fix, keep) |
+| §5 / §5b green-ammonia absolute MJSP (4.65 / 3.48 / 2.31) + "+0.057 $/L six-tenth delta" | Post-fix on 551; spot-check absolutes if regenerating | Current (spot-check) |
+| §6 CO2 T&S table | Regenerated on 551 (2026-09-27); no-T&S column reproduces §3c/§4 | Current |
+
+**Manuscript (`Downloads/Biomass_LCA_ACS (2).pdf`), all generated under the linear bug:**
+
+| Item | Stale content |
+|---|---|
+| Table 9 (TEA) | Base/Ammonia/CCS MJSP + CAPEX |
+| Fig 7 | MJSP vs capture portion; premiums 0.05/0.10/0.29/0.51 $/L |
+| Fig 8 | Scalability lines (65.5 % Mix + 60 % CCS) |
+| Abstract | Base 1.58, CCS 1.74–1.75 $/L |
+| Conclusion | MJSP headline figures |
+| Any in-text $/t abatement | If present |
+
+Re-sync order: (1) regenerate the pre-fix §1 / §2 / §3b tables to the post-fix model on 551
+(§3c/§4/§5 already done); (2) fix §6 to the settled feedstock basis; (3) re-sync manuscript
+Table 9 / Fig 7 / Fig 8 to the post-fix numbers.
 
 ## Log history
+
+### 2026-09-27
+
+**Discussion**
+- **Correction to the 2026-09-26 "§3c/§4 drift" claim — it was wrong.** The 1.479/1.942 figures
+  were computed on the `Pyrolysis_Jones_572_2MC_####` files; §1–§5 use the **551** files. Under
+  current code on 551, Base 1× = 1.6384 and CCS-60 % 1× = 1.8451 — exactly §3c/§4. So there is
+  **no code drift**: §3c/§4/§5 are already the current post-fix numbers. Only §1/§2/§3b (pre-fix
+  linear) are outdated by the six-tenths fix.
+- **Root cause of the confusion:** the current `tea_scale_up.py` reads `Jones_572_2MC`, but the
+  report tables were built on 551. My §6 / `tea_scale_up_co2ts.py` inherited the Jones basis, so
+  §6 is on a different feedstock than §1–§5. §6 needs regenerating once the basis is chosen.
+- Rewrote §7 (removed the false-drift framing) and corrected the §6 basis flag + Open items.
+- **User chose the 551 basis.** Repointed `tea_scale_up_co2ts.py` to `Pyrolysis_551_Scale####`
+  and regenerated §6: CCS-60 % no-T&S 1.845/0.931/0.803 at 1×/10×/30× (matches §3c/§4). T&S
+  adder unchanged (~$0.0046/L per $1/tCO2, flat across scale).
+
+**Code**
+- `tea_scale_up_co2ts.py`: switched feedstock files from Jones_572_2MC to 551.
+
+**Open**
+- `tea_scale_up.py` itself still reads Jones_572_2MC — repoint to 551 if it should match the report.
 
 ### 2026-09-26
 
@@ -474,6 +535,11 @@ off). `tea_scale_up_co2ts.py` sweeps it across all study scales.
   2499 / 1528 / 558 $/t (alloc). Reasonable only at projected price; still above grey
   and CCS. Ammonia's niche = deep decarb (near-zero via displacement), not low cost.
 
+- **Committed the session's work** (user approval): `61baf21` CO2 T&S feature + §6,
+  `86f1a8d` base-revision report. `.pyc` left out (gitignored). Then built §7 — an inventory
+  of every table/section outdated by the six-tenths fix (`bd5a017`) *and* by the further HEAD
+  drift (Base 1× 1.479 < pre-fix 1.582, unexplained by the fix alone).
+
 **Code**
 - `funs.py`: added `TEA.co2_ts_usd_per_ton` knob (default 0); `calc_cost_CCS` charges
   `co2_seq/2204.62 · operation_hr · co2_ts_usd_per_ton` into the CCS `annual OPEX`/`utilities`.
@@ -481,9 +547,10 @@ off). `tea_scale_up_co2ts.py` sweeps it across all study scales.
   `Figure/scale_up_co2ts.xlsx`, asserts linear-in-price. Feeds §6.
 
 **Open**
-- **§3c/§4 tables drift from current code** (HEAD CCS-60 % 1× = 1.942 vs §4 1.845; Base
-  1.479 vs 1.638). Decide whether to regenerate §3c/§4 from HEAD or pin the code to the
-  state that produced them. Blocks trusting the §3c/§4 abatement $/t numbers.
+- **Feedstock basis for the scale-up study must be settled** (551 vs Jones_572_2MC). §1–§5 +
+  manuscript use 551; the current `tea_scale_up.py` + my §6 read Jones_572_2MC. §6 must be
+  regenerated on whichever is chosen. (The 2026-09-26 "§3c/§4 drift" claim was wrong — a
+  wrong-file comparison; corrected 2026-09-27, see §7.)
 - KR-allocation CCS $/t not tabulated (only US alloc + disp); needed to state the
   KR binding number precisely rather than by inference.
 - Manuscript CCS/PSA/R-510 numbers now inconsistent with the fixed six-tenths model

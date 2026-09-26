@@ -1,7 +1,8 @@
 """CO2 T&S cost across all study scales, CCS scenario (60% capture).
 
 Sweeps co2_ts_usd_per_ton over the literature range and records MJSP per scale.
-Same scale list / file naming / CCS portion as tea_scale_up.py.
+Same scale list / CCS portion as tea_scale_up.py, but on the 551 feedstock files
+(the report/manuscript basis), not the Jones_572_2MC set tea_scale_up.py currently reads.
 """
 import os
 import pandas as pd
@@ -18,8 +19,9 @@ os.makedirs(fig_folder, exist_ok=True)
 def mjsp_and_saf(n: float, ts: float) -> tuple[float, float]:
     tea = TEA()
     tea.co2_ts_usd_per_ton = ts
-    file_stream = f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_Streams.xlsx'
-    file_apea = f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_APEAresults.xlsm'
+    # 551 feedstock set = the report/manuscript basis (§1-§5); not the Jones_572_2MC set
+    file_stream = f'Process_Data\\Pyrolysis_551_Scale{int(n * 10):04d}_Streams.xlsx'
+    file_apea = f'Process_Data\\Pyrolysis_551_Scale{int(n * 10):04d}_APEA.xlsm'
     _, _, annual_prod_saf, _, _, data_all, _ = \
         tea.economic_analysis(file_stream, file_apea, ['Base'], ccs_portion=ccs_portion, ammonia_portion=0.)
     return data_all['cost'][0]['MJSP'], annual_prod_saf
