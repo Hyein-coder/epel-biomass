@@ -229,7 +229,62 @@ scale from `ScaleUp_Sensitivity_table.xlsx` (full ammonia, CCS 60 %). ΔGHG: NH3
 > base scale (~24.7→~68 M$) and −31 % at scale 30 (~741→~512 M$): the base-scale CCS
 > MJSP would exceed the manuscript's 1.74, and the premium would *shrink* with scale.
 > §1/§3c CCS scale conclusions hold only under the (buggy) linear model the
-> manuscript used. Fix pending user decision — it rewrites all CCS results.
+> manuscript used. **FIXED 2026-09-26 — see §4 for post-fix results.** §1/§3b/§3c
+> above are retained as the pre-fix (linear, manuscript-matching) record.
+
+## 4. Post-Fix Results (six-tenths CAPEX scaling applied)
+
+`unit_cost_interpolation` corrected to branch on the key (`'CAPEX' in k` → 0.6,
+`'OPEX' in k` → 0.7, else linear). CCS/PSA/R-510 CAPEX now follow the six-tenth
+rule. Base scale rises (six-tenths interpolates *up* from the large Rao base case to
+a smaller plant unit); large scale falls (real economies of scale).
+
+**MJSP [$/L SAF] per scale, post-fix:**
+
+| Scale × | Base | Ammonia (full) | CCS 60 % | CCS−Base premium |
+|--:|--:|--:|--:|--:|
+| 1 | 1.638 | 3.483 | 1.845 | 0.207 |
+| 2.5 | 1.258 | 3.049 | 1.437 | 0.179 |
+| 5 | 1.015 | 2.789 | 1.178 | 0.163 |
+| 7.5 | 0.884 | 2.649 | 1.040 | 0.156 |
+| 10 | 0.780 | 2.531 | 0.931 | 0.152 |
+| 20 | 0.701 | 2.431 | 0.844 | 0.143 |
+| 30 | 0.664 | 2.389 | 0.803 | 0.139 |
+
+The CCS premium **shrinks with scale** (0.207 → 0.139, −33 %) — it is no longer flat
+(§1 corrected). This is genuine economy of scale on the capture unit.
+
+**Base-scale CCS abatement [$/t CO2], post-fix:**
+
+| Capture | $/t alloc | $/t disp |
+|--:|--:|--:|
+| 25 % | 204 | 64 |
+| 50 % | 192 | 61 |
+| 75 % | 325 | 102 |
+| 100 % | 414 | 131 |
+
+(pre-fix §3b was 136/136/275/369 alloc.) Ammonia abatement essentially unchanged
+(~1455 alloc / ~459 disp — NH3-feed dominated, not sub-unit CAPEX).
+
+**Abatement cost vs scale [$/t CO2], post-fix:**
+
+| Scale × | NH3 alloc | NH3 disp | CCS alloc | CCS disp |
+|--:|--:|--:|--:|--:|
+| 1 | 1528 | 482 | 251 | 79 |
+| 5 | 1470 | 464 | 198 | 62 |
+| 10 | 1451 | 458 | 184 | 58 |
+| 30 | 1429 | 451 | 168 | 53 |
+
+- **CCS abatement now falls with scale** (251 → 168 alloc, −33 %) — scaling
+  preferentially improves the CCS lever (vindicates the original a-priori intuition;
+  the earlier "flat" was the bug).
+- **Ammonia stays weak** (−6.5 %).
+- **Ranking unchanged:** CCS still ~6–9× cheaper per ton than ammonia at every scale.
+
+**Manuscript note.** Post-fix base scale (Base 1.638, CCS 60 % 1.845) no longer
+matches the manuscript (1.58, 1.74) — the manuscript was generated under the linear
+bug. Re-syncing the manuscript's CCS/PSA/R-510 numbers to the six-tenths model is a
+separate downstream task.
 
 ## Log history
 
@@ -267,9 +322,16 @@ scale from `ScaleUp_Sensitivity_table.xlsx` (full ammonia, CCS 60 %). ΔGHG: NH3
   `economic_analysis(ccs_portion=p)` (base scale) and GHG via
   `get_WTWa_pyrolysis('CCS0pp', ...)`; abatement = ΔMJSP·1e6/(ΔGHG·E).
 
+- **Applied the fix** (branch on key) and re-ran (§4). CCS premium now shrinks with
+  scale (0.207→0.139); CCS abatement falls with scale (251→168 alloc); ammonia
+  unchanged. CCS still ≪ ammonia. Base scale de-syncs from manuscript (Base 1.638 vs
+  1.58, CCS 1.845 vs 1.74) — manuscript used the linear bug.
+
 **Open**
 - KR-allocation CCS $/t not tabulated (only US alloc + disp); needed to state the
   KR binding number precisely rather than by inference.
+- Manuscript CCS/PSA/R-510 numbers now inconsistent with the fixed six-tenths model
+  — decide whether to re-sync the manuscript or keep the linear model documented.
 - `tea_co2_portion.py` still reads `ghg_withCCS` from a hardcoded sheet with a
   stale TODO and interpolates linearly instead of reading `CCS025/050/075` directly
   — the script's in-memory GHG path is unreliable even though the sheet data exists.

@@ -157,12 +157,12 @@ class TEA(object):
     def unit_cost_interpolation(self, base_stream, base_case):
         r_scale = base_stream / base_case['base stream']
         now_case = {}
+        # Branch on the key name (not the numeric value). CAPEX follows the
+        # six-tenth rule; OPEX the 0.7 rule; streams/utility rates stay linear.
         for k, v in base_case.items():
-            if not isinstance(v, str):
-                now_case[k] = base_case[k] * r_scale
-            elif 'CAPEX' in v:  # six-tenth rule
+            if 'CAPEX' in k:  # six-tenth rule
                 now_case[k] = base_case[k] * (r_scale ** 0.6)
-            elif 'OPEX' in v:
+            elif 'OPEX' in k:
                 now_case[k] = base_case[k] * (r_scale ** 0.7)
             else:
                 now_case[k] = base_case[k] * r_scale
