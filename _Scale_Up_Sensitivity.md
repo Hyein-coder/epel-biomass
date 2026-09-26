@@ -364,11 +364,65 @@ PSA/R-510 costing more at r_scale < 1) and shrinks/reverses at larger scale.
 **Abatement cost is unchanged** — the shared sub-units cancel in the premium. The
 six-tenths fix is material for the CCS case (§4), not for green ammonia.
 
+## 6. CO2 Transport & Storage Cost Sensitivity (all scales)
+
+The CCS unit previously charged only capture (CAPEX + reboiler fuel/electricity); CO2
+transport & storage (T&S) was not costed. Added an optional T&S charge on the
+**sequestered CO2** stream, controlled by `TEA.co2_ts_usd_per_ton` ($/tCO2, default 0 =
+off). `tea_scale_up_co2ts.py` sweeps it across all study scales.
+
+**Assumptions**
+- Scenario: **CCS 60 % capture** (the KR-allocation binding design point, §3b), Base H2
+  source, all study scales `[1, 2.5, 5, 7.5, 10, 20, 30]×`.
+- T&S applied to sequestered CO2 `co2_seq = co2_left·0.60 + co2_EGR` (lb/hr → t/yr via
+  `/2204.62 × 8000 h/yr`), the same tonnage the CCS unit cost is based on.
+- Price range **$4–45/tCO2** (reported onshore-to-offshore T&S span; low = onshore
+  pipeline + saline aquifer, high = offshore/long-distance). Linear in price — cost is a
+  flat $/t on a fixed tonnage.
+- Current post-fix six-tenths cost model (§4); T&S folded into the CCS unit `utilities`
+  line so it flows into MJSP.
+
+**Results — MJSP [$/L SAF] and T&S adder:**
+
+| Scale × | MJSP no T&S | +$4/t | +$45/t | adder $4 | adder $45 | CO2 seq [Mt/yr] |
+|--:|--:|--:|--:|--:|--:|--:|
+| 1   | 1.942 | 1.961 | 2.149 | 0.018 | 0.206 | 0.26 |
+| 2.5 | 1.479 | 1.497 | 1.685 | 0.018 | 0.206 | 0.65 |
+| 5   | 1.317 | 1.335 | 1.523 | 0.018 | 0.206 | 1.30 |
+| 7.5 | 1.248 | 1.267 | 1.454 | 0.018 | 0.206 | 1.95 |
+| 10  | 1.168 | 1.186 | 1.374 | 0.018 | 0.206 | 2.61 |
+| 20  | 1.032 | 1.050 | 1.238 | 0.018 | 0.206 | 5.21 |
+| 30  | 0.936 | 0.954 | 1.142 | 0.018 | 0.206 | 7.82 |
+
+- **The T&S adder is flat per litre** (~$0.0046/L per $1/tCO2 → +0.018 $/L at $4,
+  +0.206 $/L at $45) and **scale-independent**: sequestered CO2 and SAF both scale
+  ~linearly, so $/L T&S does not change with plant size.
+- Because MJSP itself falls with scale while the adder stays fixed, the **relative** T&S
+  penalty *grows* with scale: +$45/t is +11 % of MJSP at 1× but +22 % at 30×.
+- At the study's 60 % design point, even the high end ($45/t) keeps MJSP below the
+  full-ammonia case at every scale; T&S is a second-order lever vs. the H2-source choice.
+
+> **Data-consistency flag.** The "no T&S" CCS-60 % column here is the **current-code**
+> (HEAD) output and differs from the CCS-60 % values in §3c/§4 (e.g. 1× 1.942 vs 1.845;
+> Base 1× 1.479 vs 1.638). The `co2_ts` edits are zero-effect at price 0, so this is a
+> pre-existing drift: §3c/§4 tables appear to predate the committed `bd5a017` six-tenths
+> fix values. §3c/§4 retained as-is (append-only); re-sync is a separate task (see Open).
+
 ## Log history
 
 ### 2026-09-26
 
 **Discussion**
+- **CO2 T&S sweep added as §6.** User asked to assess CO2 transport & storage cost across
+  all study scales. Applied to the CCS-60 % scenario (KR binding design point) at $4–45/tCO2.
+  Finding: T&S adder is flat per litre (~$0.0046/L per $1/t) and scale-independent — CO2 and
+  SAF both scale ~linearly — so relative penalty grows as MJSP falls with scale.
+- **Report-vs-code drift found.** Current HEAD `funs.py` yields CCS-60 %/Base MJSP that
+  differ from §3c/§4 (1× CCS 1.942 vs 1.845; 1× Base 1.479 vs 1.638). Verified via a direct
+  replication of `tea_scale_up.py`'s Base and CCS calls, and confirmed the six-tenths branch
+  (`funs.py:159`) is active. The `co2_ts` knob is zero-effect at price 0, so it is not the
+  cause — §3c/§4 tables predate the actual `bd5a017` fix values. Left §3c/§4 unchanged;
+  flagged in §6 and Open. (Stale memory `ccs-cost-linear-bug` also contradicts current code.)
 - New project rule (user): never `git commit` before approval — added to CLAUDE.md
   Rule section. (I had committed the fix + report earlier this session without asking;
   commits `bd5a017`/`fbdfe0e`/`fbdfe0e` left in place, offered to reset.)
@@ -420,7 +474,16 @@ six-tenths fix is material for the CCS case (§4), not for green ammonia.
   2499 / 1528 / 558 $/t (alloc). Reasonable only at projected price; still above grey
   and CCS. Ammonia's niche = deep decarb (near-zero via displacement), not low cost.
 
+**Code**
+- `funs.py`: added `TEA.co2_ts_usd_per_ton` knob (default 0); `calc_cost_CCS` charges
+  `co2_seq/2204.62 · operation_hr · co2_ts_usd_per_ton` into the CCS `annual OPEX`/`utilities`.
+- `tea_scale_up_co2ts.py`: sweeps all scales × T&S {0,4,45}/tCO2 at 60 % capture, writes
+  `Figure/scale_up_co2ts.xlsx`, asserts linear-in-price. Feeds §6.
+
 **Open**
+- **§3c/§4 tables drift from current code** (HEAD CCS-60 % 1× = 1.942 vs §4 1.845; Base
+  1.479 vs 1.638). Decide whether to regenerate §3c/§4 from HEAD or pin the code to the
+  state that produced them. Blocks trusting the §3c/§4 abatement $/t numbers.
 - KR-allocation CCS $/t not tabulated (only US alloc + disp); needed to state the
   KR binding number precisely rather than by inference.
 - Manuscript CCS/PSA/R-510 numbers now inconsistent with the fixed six-tenths model

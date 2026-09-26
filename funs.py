@@ -20,6 +20,8 @@ class TEA(object):
         # Cost parameters
         self.elec_price_usd_per_mmbtu = 19.05
         self.fuel_price_usd_per_mmbtu = 14.38
+        # CO2 transport & storage cost on captured CO2 ($/tCO2); 0 = off (base case). Test range 4-45.
+        self.co2_ts_usd_per_ton = 0.
         self.product_price_stream = {
             '316GAS': 0.75757,  # $/LB
             '326SAF': 0,
@@ -507,7 +509,12 @@ class TEA(object):
         ccs_now['Electricity'] = ccs_now['electricity [mmBTU/hr]'] * self.elec_price_usd_per_mmbtu * self.operation_hr
         ccs_now['annual OPEX'] = ccs_now['Fuel'] + ccs_now['Electricity']   # $/yr
 
-        utilities_list = ['Fuel', 'Electricity']
+        # CO2 transport & storage: $/tCO2 on sequestered CO2 (co2_seq lb/hr -> tonne/yr)
+        ccs_now['CO2 T&S'] = co2_seq / 2204.62 * self.operation_hr * self.co2_ts_usd_per_ton  # $/yr
+        ccs_now['annual OPEX'] += ccs_now['CO2 T&S']
+
+        # ponytail: T&S lumped into 'utilities' so it flows into MJSP via existing opex_names; break out as its own line if the stack-bar needs it separated
+        utilities_list = ['Fuel', 'Electricity', 'CO2 T&S']
         ccs_now['utilities'] = sum([ccs_now[k] for k in utilities_list])
         ccs_now['utilities description'] = utilities_list
         ccs_now['Category'] = 'Carbon Capture'
