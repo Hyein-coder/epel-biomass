@@ -286,6 +286,41 @@ matches the manuscript (1.58, 1.74) — the manuscript was generated under the l
 bug. Re-syncing the manuscript's CCS/PSA/R-510 numbers to the six-tenths model is a
 separate downstream task.
 
+## 5. Green Ammonia Economics (price sensitivity)
+
+The ammonia in this study *is* green ammonia (green-H2 carrier). Its base price
+0.288 $/lb (Table 7) is the average of **current 0.4535** and **projected (≈15 yr)
+0.1225 $/lb**. Ammonia feed contributes **2.038 $/L** to the full-ammonia MJSP
+(59 %), so the whole case is price-driven. Base scale, post-fix cost model; MJSP
+rescaled as MJSP + (ammonia $/L)·(price/0.288 − 1); grey base MJSP = 1.638.
+
+| Green NH3 price [$/lb] | Scenario | MJSP full | MJSP mix (65.5 %) | Abate full alloc | Abate full disp |
+|--:|--|--:|--:|--:|--:|
+| 0.4535 | current | 4.654 | 3.644 | 2 499 | 789 |
+| 0.288 | base (avg) | 3.483 | 2.877 | 1 528 | 482 |
+| 0.1225 | projected | 2.311 | 2.110 | 558 | 176 |
+
+(Abatement in $/t CO2 vs grey base; alloc ΔGHG 38.12, disp 120.76 g/MJ; E = 31.66.)
+
+**Findings.**
+- **Entirely price-driven.** Full-ammonia MJSP swings 4.65 → 2.31 $/L across the
+  price range; the process/CAPEX terms are secondary.
+- **Never beats grey on absolute cost.** Even at the projected 0.1225 $/lb, full
+  ammonia (2.31) and mix (2.11) stay above grey base (1.64). Green ammonia buys
+  emissions reduction, not cheaper fuel.
+- **Abatement only reasonable at the projected price.** 558 (alloc) / 176 (disp)
+  $/t at 0.1225, vs 1 528 / 482 at the base price and 2 499 / 789 at current.
+- **Still costlier than CCS per ton.** Post-fix CCS is ~192–414 (alloc) / 61–131
+  (disp) $/t; even projected-price ammonia (558 / 176) does not undercut it.
+- **Ammonia's real value = depth, not cost.** Full ammonia reaches ~2.3 g/MJ
+  (displacement) — near-zero, deeper than partial CCS on grey can reach. That deep
+  decarbonization is affordable only if the projected green-ammonia price is met.
+
+**Answer.** Green-ammonia economics live or die on the feedstock price. At today's
+price it is uncompetitive (MJSP 4.65, ~2 500 $/t CO2); at the projected future price
+it becomes reasonable (MJSP 2.31, ~558/176 $/t) but still pricier than grey H2 and
+than CCS. Its niche is deep/near-zero emissions, contingent on the price projection.
+
 ## Log history
 
 ### 2026-09-26
@@ -326,6 +361,10 @@ separate downstream task.
   scale (0.207→0.139); CCS abatement falls with scale (251→168 alloc); ammonia
   unchanged. CCS still ≪ ammonia. Base scale de-syncs from manuscript (Base 1.638 vs
   1.58, CCS 1.845 vs 1.74) — manuscript used the linear bug.
+- Green-ammonia price sensitivity (§5): ammonia feed = 2.038 $/L (59 % of MJSP);
+  MJSP full 4.65 / 3.48 / 2.31 at price 0.4535 / 0.288 / 0.1225 $/lb; abatement
+  2499 / 1528 / 558 $/t (alloc). Reasonable only at projected price; still above grey
+  and CCS. Ammonia's niche = deep decarb (near-zero via displacement), not low cost.
 
 **Open**
 - KR-allocation CCS $/t not tabulated (only US alloc + disp); needed to state the
