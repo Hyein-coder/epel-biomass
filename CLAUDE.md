@@ -23,6 +23,8 @@ Prefer vectorized pandas/numpy operations.
 
 When adding to a report or document, only append. Never replace or remove existing content without asking first. 
 
+Never commit changes before the user approves. Make edits freely, but run `git commit` only on explicit request or approval. 
+
 When writing, editing, or analyzing TEA code and results, refer to [[_WORKFRAME]] for the script lineage and calculation procedure. 
 
 ## Literature survey
