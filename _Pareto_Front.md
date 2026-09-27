@@ -99,7 +99,25 @@ Marginal abatement cost of each option vs the grey base (x0, CCS0 — cheapest, 
 - Whole-grid minimum abatement cost is the grey+CCS50 point (165 $/t); the maximum useful option
   (full green NH₃ + CCS100) reaches 6 g/MJ at 888 $/t.
 
+![Abatement cost contour](Figure/pareto_abatement_contour.png)
+
+Contour over the full grid (x = green-NH₃ H₂ substitution ratio, y = CCS portion; dots = the 30
+sampled points; base cell = reference, 0). The cost floor is the **left edge (NH₃ = 0)** — CCS on
+grey H₂. The **bottom-right hot zone** (high NH₃, low CCS) is the most expensive removal: buying
+green ammonia while capturing little process CO₂ pays a lot per tonne. Cheapest tonnes lie
+bottom-left (grey + shallow CCS); cost climbs rightward far faster than upward.
+
 ## Log history
+
+### 2026-09-28 (update 3)
+
+**Code**
+- `tea_pareto_front.py` — added abatement-cost contour (`Figure/pareto_abatement_contour.png`):
+  x = green-NH₃ H₂ substitution ratio, y = CCS portion, filled contour + labelled lines over the
+  30-point grid. Bug: colorbar `$` collided with mathtext; fixed by escaping `\$`.
+
+**Open**
+- Contour uses base cell = 0 (reference); it is not a real abatement value, only a plotting fill.
 
 ### 2026-09-28 (update 2)
 

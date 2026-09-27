@@ -131,6 +131,20 @@ def main() -> None:
     os.makedirs('Result', exist_ok=True)
     df.round(4).to_excel(os.path.join('Result', 'pareto_front.xlsx'), index=False)
 
+    # abatement-cost contour: x = NH3 substitution ratio, y = CCS portion --------
+    piv = df.pivot(index='ccs', columns='ammonia_portion', values='abatement')
+    piv.iloc[0, 0] = 0.0   # grey base is the reference (0/0 -> set 0, higher = worse abatement)
+    X, Y = np.meshgrid(piv.columns.values, piv.index.values)
+    fig2, ax2 = plt.subplots(figsize=(7, 6))
+    cf = ax2.contourf(X, Y, piv.values, levels=12, cmap='RdYlBu_r')
+    cs = ax2.contour(X, Y, piv.values, levels=cf.levels, colors='k', linewidths=0.4)
+    ax2.clabel(cs, inline=True, fmt='%.0f', fontsize=7)
+    ax2.scatter(X, Y, c='k', s=8, zorder=3)   # the 30 sampled combinations
+    fig2.colorbar(cf, ax=ax2, label='CO$_2$ abatement cost [\\$/tCO$_2$]')  # escape $ so mathtext keeps the currency sign
+    ax2.set_xlabel('Green NH$_3$ H$_2$ substitution ratio')
+    ax2.set_ylabel('CCS portion')
+    fig2.savefig(os.path.join('Figure', 'pareto_abatement_contour.png'), dpi=150)
+
     pd.set_option('display.width', 200, 'display.max_rows', 40)
     print(df.round(3).to_string(index=False))
     print('\nPareto front (min MJSP, min GHG) with CO2 abatement cost vs grey base:')
