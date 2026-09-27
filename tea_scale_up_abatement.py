@@ -25,6 +25,11 @@ CCS_GHG = {0.25: {'alloc': 76.01, 'disp': 86.44},
            0.50: {'alloc': 64.44, 'disp': 49.76},
            0.75: {'alloc': 54.17, 'disp': 17.23},
            1.00: {'alloc': 44.15, 'disp': -14.57}}
+# Korea grid-mix method (funs_lca on Pyrolysis_551_LCA_*_KRmix); heavier grid -> smaller net dGHG for CCS
+KR = {'base_alloc': 100.83, 'amm_alloc': 62.74, 'ccs100_alloc': 59.96,
+      'base_disp': 124.63, 'amm_disp': 3.83, 'ccs100_disp': -4.97}
+KR_dAMM = {'alloc': KR['base_alloc'] - KR['amm_alloc'], 'disp': KR['base_disp'] - KR['amm_disp']}
+KR_dCCS100 = {'alloc': KR['base_alloc'] - KR['ccs100_alloc'], 'disp': KR['base_disp'] - KR['ccs100_disp']}
 
 tea = TEA()
 
@@ -68,6 +73,16 @@ for n in scales:
             rec[f'CCS{tag}_abate_disp_ts{p}'] = abate(mjsp_ts - base, BASE_GHG['disp'] - CCS_GHG[r]['disp'])
         rec[f'CCS{tag}_abate_alloc_ts0'] = abate(ccs - base, BASE_GHG['alloc'] - CCS_GHG[r]['alloc'])
         rec[f'CCS{tag}_abate_disp_ts0'] = abate(ccs - base, BASE_GHG['disp'] - CCS_GHG[r]['disp'])
+
+    # Korea-mix abatement for the full options (§4): ammonia (base price) + full-CCS at T&S range
+    rec['Amm_KRalloc'] = abate(amm - base, KR_dAMM['alloc'])
+    rec['Amm_KRdisp'] = abate(amm - base, KR_dAMM['disp'])
+    ccs100 = rec['CCS100']
+    seq100 = (co2_left * 1.0 + co2_EGR) / 2204.62 * 8000.
+    for p in ts_prices:
+        m = ccs100 + seq100 * p / saf
+        rec[f'CCS100_KRalloc_ts{p}'] = abate(m - base, KR_dCCS100['alloc'])
+        rec[f'CCS100_KRdisp_ts{p}'] = abate(m - base, KR_dCCS100['disp'])
     rows.append(rec)
 
 df_all = pd.DataFrame(rows).set_index('scale').round(3)
@@ -81,6 +96,10 @@ print(df_all[['Amm_abate_alloc', 'Amm_abate_disp',
 print('\n=== Ammonia abatement price range [$/tCO2] (low 0.1225 - high 0.4535 $/lb) ===')
 print(df_all[['Amm_abate_alloc_low', 'Amm_abate_alloc_high',
               'Amm_abate_disp_low', 'Amm_abate_disp_high']].to_string())
+print('\n=== Korea-mix full-option abatement [$/tCO2] ===')
+print(df_all[['Amm_KRalloc', 'Amm_KRdisp',
+              'CCS100_KRalloc_ts4', 'CCS100_KRalloc_ts45',
+              'CCS100_KRdisp_ts4', 'CCS100_KRdisp_ts45']].round(0).to_string())
 print('\n=== Abatement vs CCS rate at base scale x1 [$/tCO2] ===')
 base_row = df_all.loc[1]
 for r in rates:

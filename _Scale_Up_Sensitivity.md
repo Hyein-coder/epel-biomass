@@ -205,20 +205,26 @@ Cost of avoiding 1 t CO2 vs the grey-H2 base: `$/tCO2 = ΔMJSP[$/L] · 1e6 / (Δ
 E = 31.66 MJ/L. WTWa GHG intensities are scale-independent (same LCA per MJ SAF); ΔMJSP carries
 the scale and T&S dependence from §2.
 
-**WTWa GHG-100 [g CO2e/MJ SAF] (US method):**
+**WTWa GHG-100 [g CO2e/MJ SAF] — U.S. and Korea grid-mix methods:**
 
 | LCA method | Base (grey) | Full ammonia | Full CCS (100 %) |
 |---|--:|--:|--:|
-| Allocation | 87.57 | 49.45 | 44.15 |
-| Displacement | 123.03 | 2.27 | −14.57 |
+| Allocation (U.S.) | 87.57 | 49.45 | 44.15 |
+| Displacement (U.S.) | 123.03 | 2.27 | −14.57 |
+| Allocation (Korea) | 100.83 | 62.74 | 59.96 |
+| Displacement (Korea) | 124.63 | 3.83 | −4.97 |
 
-ΔGHG vs base: ammonia 38.12 (alloc) / 120.76 (disp); full-CCS 43.42 / 137.60. CORSIA threshold =
-0.9 × conventional = 75.93 g CO2e/MJ. Full-CCS displacement is net-negative (BECCS: captured
-biogenic CO2 credited as removal).
+ΔGHG vs base — ammonia: 38.12/120.76 (U.S. alloc/disp), 38.10/120.81 (Korea); full-CCS:
+43.42/137.60 (U.S.), 40.87/129.60 (Korea). CORSIA threshold = 0.9 × conventional = 75.93 g CO2e/MJ.
+Full-CCS displacement is net-negative (BECCS: captured biogenic CO2 credited as removal). Ammonia
+ΔGHG is nearly region-independent (U.S. ≈ Korea) so its abatement barely moves; the heavier Korea
+grid lowers the net CCS ΔGHG, raising Korea CCS abatement ~6 %.
 
-**Abatement cost [$/tCO2].** Full ammonia at the base NH3 price (0.288 $/lb) with, in parentheses,
-the range over the green-NH3 price span (low = projected 0.1225, high = current 0.4535 $/lb, §3);
-full-CCS at the T&S range.
+**Abatement cost [$/tCO2],** for both the U.S. and Korea grid-mix LCA methods. Full ammonia at the
+base NH3 price (0.288 $/lb) with, in parentheses, the range over the green-NH3 price span (low =
+projected 0.1225, high = current 0.4535 $/lb, §3); full-CCS at the T&S range.
+
+*U.S. method:*
 
 | Scale × | Ammonia alloc (range) | Ammonia disp (range) | CCS100 alloc +$4/+$45 | CCS100 disp +$4/+$45 |
 |--:|--:|--:|--:|--:|
@@ -230,7 +236,20 @@ full-CCS at the T&S range.
 | 20  | 1 433 (463–2 404) | 452 (146–759) | 364 / 565 | 115 / 178 |
 | 30  | 1 429 (459–2 400) | 451 (145–758) | 359 / 561 | 113 / 177 |
 
-(Full-CCS no-T&S baseline: alloc 414 → 340 $/t, disp 131 → 107 $/t over 1→30×.)
+*Korea grid-mix method:*
+
+| Scale × | Ammonia alloc | Ammonia disp | CCS100 alloc +$4/+$45 | CCS100 disp +$4/+$45 |
+|--:|--:|--:|--:|--:|
+| 1   | 1 529 | 482 | 460 / 674 | 145 / 213 |
+| 2.5 | 1 485 | 468 | 428 / 642 | 135 / 202 |
+| 5   | 1 471 | 464 | 410 / 624 | 129 / 197 |
+| 7.5 | 1 463 | 461 | 402 / 616 | 127 / 194 |
+| 10  | 1 452 | 458 | 397 / 611 | 125 / 193 |
+| 20  | 1 434 | 452 | 387 / 601 | 122 / 189 |
+| 30  | 1 430 | 451 | 382 / 596 | 120 / 188 |
+
+(Ammonia Korea abatement ≈ U.S. — ΔGHG near-identical; the green-NH3 price range mirrors the U.S.
+table. Full-CCS no-T&S baseline: U.S. alloc 414→340, disp 131→107; Korea alloc 439→361, disp 138→113 $/t over 1→30×.)
 
 - **Full-CCS is far cheaper per ton than full ammonia** at every scale — ~3–4× even at the high
   T&S ($45/t), and ~4–11× at low/no T&S.
@@ -244,6 +263,10 @@ full-CCS at the T&S range.
   scale on shared/capture CAPEX.
 - **Displacement ≈ 3× cheaper than allocation** (fertilizer co-product credit drives ammonia WTWa
   to near zero and CCS net-negative).
+- **Korea grid-mix raises CCS abatement ~6 %** (e.g. base scale alloc 460/674 vs U.S. 433/635 at
+  $4/$45), because the heavier grid adds emissions to the capture energy and shrinks the net ΔGHG.
+  Ammonia is essentially unchanged (its ΔGHG is region-independent). Ranking holds: CCS ≪ ammonia
+  under both methods.
 - **Design-point context (CORSIA):** the study's operating points — 34.5 % grey ammonia mix and
   60 % capture — are the minimum that clear the 75.93 threshold under the binding **KR-allocation**
   method; the full options tabulated here bracket those design points.
@@ -277,6 +300,12 @@ Same method, base scale (1×), sweeping capture rate. GHG per rate (LCA sheets `
 ### 2026-09-27
 
 **Discussion**
+- **Added Korea grid-mix (KRmix) cases to §4** (user request; I had mislabeled the existing tables
+  — they were **U.S.**, not KR). Extracted GHG-100 from `Pyrolysis_551_LCA_*_KRmix.xlsx` via
+  `funs_lca.get_WTWa_pyrolysis`; US extraction reproduces the report (base 87.57, CCS100 44.15).
+  KR: base 100.83/124.63, ammonia 62.74/3.83, CCS100 59.96/−4.97 (alloc/disp). Ammonia ΔGHG ≈ US
+  (region-independent → abatement unchanged); heavier KR grid shrinks net CCS ΔGHG, raising KR CCS
+  abatement ~6 % (base scale alloc 460/674 vs US 433/635 at $4/$45). Ranking unchanged (CCS ≪ NH3).
 - **Reordered §3–§5 (user request):** §3 Green Ammonia, §4 Abatement (full-ammonia & full-CCS),
   §5 Abatement vs CCS rate. Added an ammonia price-sensitivity range to the §4 abatement table —
   full-ammonia abatement at the low/high green-NH3 price (0.1225–0.4535 $/lb): e.g. base scale
