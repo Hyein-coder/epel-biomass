@@ -23,6 +23,7 @@ ELEC_F = (0.70, 1.30)      # electricity price +-30%
 COPROD_F = (0.80, 1.20)    # co-product price +-20%
 CAPEX_PM = 0.30            # CAPEX +-30%
 CF_HOURS = (0.85 * 8760, 0.91 * 8760)   # capacity factor 85% / 91% (base 8000 h = 91.3%)
+TS_RANGE = (4, 45)         # CO2 transport & storage, $/tCO2 (Full-CCS only; base = 0)
 # Ammonia price: same source of truth as tea_scale_up_abatement.py:20-23
 AMM_FEED_USD_L, AMM_P_BASE = 2.038, 0.288
 AMM_PRICE = (0.1225, 0.4535)   # $/lb, low (projected) / high (current)
@@ -92,6 +93,15 @@ def cell_bars(fs: str, fa: str, cfg: str) -> tuple[float, list[tuple[str, float,
 
     cap_inv = row['capital investment']               # $/L, config-specific (incl. CCS for Full-CCS)
     bars.append(('CAPEX ±30%', base - CAPEX_PM * cap_inv, base + CAPEX_PM * cap_inv))
+
+    if s['ccs']:
+        # CO2 T&S ($/tCO2) on sequestered CO2; base = 0 (off). Seq def matches calc_cost_CCS / abatement.
+        dfm = pd.read_excel(fs, sheet_name='Material', header=3)
+        idx = tea.get_idx_material(dfm)
+        seq_tpy = (dfm['623CO2'][idx['mass flow [lb/hr]']] * s['ccs']
+                   + dfm['622X'][idx['mass flow [lb/hr]']]) / 2204.62 * op   # t/yr
+        lo, hi = TS_RANGE
+        bars.append(('CO₂ T&S 4–45 $/t', base + seq_tpy * lo / saf, base + seq_tpy * hi / saf))
 
     # re-run bars ----------------------------------------------------------
     e_lo, e_hi = ELEC_F
