@@ -348,6 +348,10 @@ $4–45/tCO2:
 MJSP rises linearly with the T&S price (Δ ratio 11.25 ≈ 45/4), i.e. ~$0.0068/L per
 $1/tCO2 at full capture. At the high end ($45/tCO2) T&S adds ~14% to MJSP.
 
+T&S price-range reference: Smith et al., *The cost of CO2 transport and storage in
+global integrated assessment modeling*, IJGGC 2021
+(`D:\ObsidianVault\KAN\VibeCoding\References\biomass\IJGGC_2021_Smith_The cost of CO2 transport and storage in global integrated assessment modeling.pdf`).
+
 ## Log history
 
 ### 2026-09-25

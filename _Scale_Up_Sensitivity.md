@@ -1,5 +1,11 @@
 # Scale-Up Sensitivity — Grey-H2, Full-Ammonia, CCS
 
+> **Note.** CO2 transport & storage (T&S) is **not** baked into this report's CCS
+> numbers. §1 is capture cost only; where T&S appears (§2–§3) it is a separate
+> $4–$45/tCO2 sensitivity range, not a fixed cost. The $10/tCO2 T&S basis adopted
+> for the CCS unit is applied only in `_Tornado_Sensitivity.md` and
+> `_Scale_Up_Subunits.md` (see `_Base_Revision.md` §4.11).
+
 ## 1. Scale Effect: Grey-H2 / Full-Ammonia / CCS
 
 **Question.** Does scaling the plant make the grey-hydrogen (Base) or the CCS
@@ -300,6 +306,9 @@ Same method, base scale (1×), sweeping capture rate. GHG per rate (LCA sheets `
 ### 2026-09-27
 
 **Discussion**
+- **CO2 T&S not adopted as a basis here (user clarification).** This report keeps T&S out of
+  the base CCS numbers; where shown it stays a $4–$45/tCO2 range. The new $10/tCO2 CCS basis
+  applies only to `_Tornado_Sensitivity.md` and `_Scale_Up_Subunits.md`. Added a note at the top.
 - **Added Korea grid-mix (KRmix) cases to §4** (user request; I had mislabeled the existing tables
   — they were **U.S.**, not KR). Extracted GHG-100 from `Pyrolysis_551_LCA_*_KRmix.xlsx` via
   `funs_lca.get_WTWa_pyrolysis`; US extraction reproduces the report (base 87.57, CCS100 44.15).

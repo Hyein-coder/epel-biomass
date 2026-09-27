@@ -4,6 +4,8 @@ Addresses Critical Review §4.7 ("No sensitivity analysis"), reinforced by §4.5
 (ammonia price range) and §8. One-at-a-time MJSP sensitivity over the reviewer's
 seven parameters, on the 551 basis, for Base / Full-Ammonia / Full-CCS at scale
 ×1 and ×30. Driver: `tea_tornado.py` (reuses `funs.TEA`, no engine change).
+CO₂ T&S in the CCS unit is costed at a **$10/tCO₂ basis** (Full-CCS); the T&S bar
+sweeps 4–45 $/tCO₂ around it.
 
 ## 1. Method
 
@@ -24,7 +26,7 @@ at base, and records MJSP. Two mechanisms:
 | Co-product | ±20% | all | re-run — `product_price_stream` (316GAS, 336DIES) |
 | CAPEX | ±30% | all | linear — `df_mjsp['capital investment']` |
 | Capacity factor | 85% / 91% | all | re-run — `operation_hr` (0.85/0.91 × 8760) |
-| CO₂ T&S | 4–45 $/tCO₂ | Full-CCS | linear — seq. CO₂ (623CO2 + 622X) × price / SAF; base = 0 |
+| CO₂ T&S | 4–45 $/tCO₂ | Full-CCS | re-run — `co2_ts_usd_per_ton`; **basis $10/tCO₂** in CCS |
 
 Configs map to `economic_analysis` as: Base = `['Base'], ccs=0`; Full-Ammonia =
 `['Base','Ammonia'], ccs=0` (Ammonia row); Full-CCS = `['Base'], ccs=1.0` (its
@@ -48,7 +50,7 @@ Base MJSP ($/L SAF):
 |---|---|---|
 | Base | 1.64 | 0.66 |
 | Full-Ammonia | 3.48 | 2.39 |
-| Full-CCS | 2.21 | 1.13 |
+| Full-CCS | 2.28 | 1.20 |
 
 Ranked drivers (figure: `Figure/tornado.png`; table: `Figure/tornado_sensitivity.xlsx`):
 
@@ -61,7 +63,8 @@ Ranked drivers (figure: `Figure/tornado.png`; table: `Figure/tornado_sensitivity
   below biomass. Biomass ±50% is scale-robust (~0.62–0.65 $/L).
 - **Electricity and capacity factor are minor** (spans ≤ 0.36 $/L), so the
   optimistic 8000 h assumption is not a material MJSP risk on its own.
-- **CO₂ T&S (4–45 $/tCO₂, Full-CCS)** adds up to ~0.28 $/L (scale-invariant),
+- **CO₂ T&S** sits at a $10/tCO₂ basis (raising Full-CCS base MJSP by ~0.07 $/L
+  vs. no T&S); sweeping 4–45 $/tCO₂ moves MJSP within ~0.28 $/L (scale-invariant),
   below CAPEX and biomass — transport & storage price is not a dominant risk.
 
 Conclusion: MJSP uncertainty is governed by the hydrogen source price (gray H₂ or
@@ -81,7 +84,12 @@ ranking is contingent on the assumed ammonia price.
 - Optional CO₂ T&S bar on Full-CCS left out by default to match the reviewer's
   seven-item list.
 - Update (same session): user then requested the CO₂ T&S bar be added to
-  Full-CCS; now included as a linear bar ($4–45/tCO₂, base 0).
+  Full-CCS; first added as a $0-base bar ($4–45/tCO₂).
+- Update (same session): user set a **$10/tCO₂ basis** for CO₂ T&S in the CCS
+  unit. T&S now baked into the Full-CCS base run (via `co2_ts_usd_per_ton=10`);
+  Full-CCS base MJSP 2.21→2.28 (×1), 1.13→1.20 (×30). Sensitivity report
+  `_Scale_Up_Sensitivity.md` explicitly excludes T&S; `_Scale_Up_Subunits.md`
+  numbers updated to the same $10/t basis.
 
 **Code**
 - `tea_tornado.py` — new driver; per (config, scale) computes base MJSP and the
@@ -99,6 +107,9 @@ ranking is contingent on the assumed ammonia price.
   labels). Cause: Windows default console codec. Fix: `sys.stdout.reconfigure(encoding='utf-8')`.
 - Self-check (in `__main__`): base MJSP > 0, biomass/CAPEX bars straddle base, and
   capacity re-run moves MJSP — all pass.
+- CO₂ T&S: `TS_BASE=10` set on the CCS base run and on every Full-CCS re-run
+  (`rerun_knob` applies it before knobs); the T&S bar re-runs at 4/45 $/tCO₂.
+  Engine `calc_cost_CCS` applies it on `co2_seq` — matches the abatement-script def.
 
 **Open**
 - Electricity bar does not re-price APEA-embedded main-plant electricity (fixed $);
