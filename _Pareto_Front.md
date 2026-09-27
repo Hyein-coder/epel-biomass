@@ -22,7 +22,9 @@ Script: `tea_pareto_front.py` → `Figure/pareto_front.png`, `Result/pareto_fron
 - **MJSP** — `funs.TEA.economic_analysis` at `Scale0100`. For x0, the grey `Base` row; for
   x1–x10, the `Mix` row (partial grey/ammonia H₂ **with CCS applied at the same portion**).
   No engine change. CO₂ T&S = **$10/tCO₂** (current basis, commit 95db93c).
-- **GHG** — `funs_lca.get_WTWa_pyrolysis`, GHG-100, Allocation. CCS uses the per-portion LCA
+- **GHG** — `funs_lca.get_WTWa_pyrolysis`, GHG-100, **Allocation method, US grid mix**
+  (`Pyrolysis_551_LCA_Allocation.xlsx`, *not* the `_KRmix` / Displacement variants; base
+  87.57 g/MJ = the US-Allocation value, vs 100.83 for KR-Allocation). CCS uses the per-portion LCA
   sheets (`Base`, `CCS025/050/075/100` — no interpolation). The ammonia lever is applied as an
   additive delta from base:
   `GHG(a,c) = ghg_ccs[c] − a·(ghg_base − ghg_ammonia)`.
@@ -107,7 +109,61 @@ grey H₂. The **bottom-right hot zone** (high NH₃, low CCS) is the most expen
 green ammonia while capturing little process CO₂ pays a lot per tonne. Cheapest tonnes lie
 bottom-left (grey + shallow CCS); cost climbs rightward far faster than upward.
 
+## 6. MJSP sensitivity on the frontier
+
+Error bars on each Pareto-front point apply the §4.7 tornado conditions
+(`_Tornado_Sensitivity.md`) to the **Mix** points, reusing `tea_tornado.py` constants:
+biomass ±50%, gray H₂ 1–4 $/kg (on the grey share 1−a), green NH₃ 0.12–0.45 $/lb (on the
+ammonia share a), CAPEX ±30%, CO₂ T&S 4–45 $/tCO₂ (CCS points), electricity ±30%,
+co-product ±20%, capacity 85/91%. Bar = envelope (min…max) of the one-at-a-time swings.
+Table `Result/pareto_front_sensitivity.xlsx`.
+
+| Green NH₃ | CCS | MJSP [$/L] | MJSP low | MJSP high |
+|-----------|-----|------------|----------|-----------|
+| 0%   | 0%   | 0.793 | 0.48 | 1.84 |
+| 0%   | 25%  | 0.855 | 0.54 | 1.90 |
+| 0%   | 50%  | 0.913 | 0.60 | 1.96 |
+| 1%*  | 50%  | 1.098 | 0.78 | 2.04 |
+| 0%   | 75%  | 1.111 | 0.80 | 2.16 |
+| 10%  | 75%  | 1.296 | 0.98 | 2.24 |
+| 0%   | 100% | 1.334 | 1.02 | 2.38 |
+| 10%  | 100% | 1.518 | 1.21 | 2.46 |
+| 25%  | 100% | 1.782 | 1.47 | 2.57 |
+| 50%  | 100% | 2.221 | 1.64 | 2.81 |
+| 75%  | 100% | 2.657 | 1.78 | 3.54 |
+| 100% | 100% | 3.085 | 1.91 | 4.26 |
+
+(*10% NH₃ share, rounded.)
+
+- **Bars are wide and upward-skewed**, driven by the hydrogen price (gray H₂ 1–4 $/kg or
+  green NH₃ 0.12–0.45 $/lb) — the same conclusion as `_Tornado_Sensitivity.md`. Every point
+  can reach ~1.8–2.4 $/L at the high-H₂-price end; the ammonia-heavy points widen most
+  (full-NH₃+CCS100 spans 1.9–4.3 $/L).
+- **Frontier ordering is not robust to H₂ price**: the sensitivity ranges of adjacent points
+  overlap heavily, so at unfavourable H₂/NH₃ prices the cost gap between grey+CCS and green-NH₃
+  routes narrows or collapses. The mean-price front is the central estimate, not a guarantee.
+- The low end of each bar (cheap H₂, high capacity) keeps the trade-off shape but shifts the
+  whole front down ~0.3 $/L.
+
 ## Log history
+
+### 2026-09-28 (update 4)
+
+**Discussion**
+- Added MJSP sensitivity (§4.7 tornado conditions) as error bars on each Pareto-front point,
+  reusing `tea_tornado.py` constants/`raw_costs`. Adapted to Mix points: gray-H₂ swing scales
+  with grey share (1−a), ammonia swing with share a, CO₂ T&S only where CCS>0; bar = min…max
+  envelope of one-at-a-time swings.
+- Clarified GHG basis of this plot: **Allocation method, US grid mix** (not KRmix, not
+  Displacement) — stated in §2 and annotated on the figure.
+
+**Code**
+- `tea_pareto_front.py` — added `mix_row`/`rerun_mix`/`mjsp_error`; error bars + on-plot GHG-basis
+  note; writes `Result/pareto_front_sensitivity.xlsx`. ~100 `economic_analysis` re-runs → ~10 min.
+
+**Open**
+- Sensitivity is MJSP-only (economic). GHG-side method spread (Allocation↔Displacement, US↔KR)
+  not shown as x-error; it is a discrete methodological choice, noted in §2.
 
 ### 2026-09-28 (update 3)
 

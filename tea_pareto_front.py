@@ -58,6 +58,67 @@ def mjsp(tea: TEA, a: float, c: float) -> float:
     return da['cost'][-1]['MJSP']   # 'Mix' row
 
 
+# Tornado sensitivity conditions (_Tornado_Sensitivity.md §1) reused as the single
+# source of truth; adapted here to Mix frontier points (partial grey + partial ammonia).
+from tea_tornado import (BIOMASS_PM, H2_RANGE, ELEC_F, COPROD_F, CAPEX_PM,
+                         CF_HOURS, TS_RANGE, TS_BASE, AMM_FEED_USD_L, AMM_P_BASE,
+                         AMM_PRICE, LB2KG, raw_costs)
+
+
+def mix_row(tea: TEA, a: float, c: float) -> tuple[float, pd.Series, float]:
+    """(MJSP, df_mjsp row, annual SAF) for a Mix point; a=0 -> grey Base row."""
+    if a == 0:
+        dfm, _, saf, _, _, da, _ = tea.economic_analysis(FS, FA, ['Base'], ccs_portion=c)
+        return da['cost'][0]['MJSP'], dfm.iloc[0], saf
+    dfm, _, saf, _, _, da, _ = tea.economic_analysis(FS, FA, ['Base'], ccs_portion=c, ammonia_portion=a)
+    return da['cost'][-1]['MJSP'], dfm.iloc[-1], saf
+
+
+def rerun_mix(a: float, c: float, **knobs) -> float:
+    """Mix MJSP with scalar knob(s) on a fresh TEA (T&S basis kept at $10/t)."""
+    t = TEA()
+    t.co2_ts_usd_per_ton = TS_BASE
+    for k, v in knobs.items():
+        setattr(t, k, v)
+    if 'elec_price_usd_per_mmbtu' in knobs:
+        t.product_price_work['ELC-'] = t.elec_price_usd_per_mmbtu
+    return mix_row(t, a, c)[0]
+
+
+def mjsp_error(tea: TEA, a: float, c: float, h2_cost: float, h2_rate: float,
+               bio_cost: float, op: float) -> tuple[float, float, float]:
+    """(base, min, max) MJSP over the tornado drivers applicable to a Mix point.
+    Envelope of one-at-a-time swings; grey-H2 scales with (1-a), ammonia with a,
+    T&S/electricity/co-product/capacity re-run, biomass/CAPEX linear."""
+    base, row, saf = mix_row(tea, a, c)
+    ends = [base]
+    d_bio = BIOMASS_PM * bio_cost * op / saf                     # biomass +-50% (all)
+    ends += [base - d_bio, base + d_bio]
+    if a < 1:                                                    # gray H2 on the grey share
+        p_kg = (h2_cost / h2_rate) / LB2KG
+        h2_term = h2_cost * (1 - a) * op / saf
+        lo, hi = H2_RANGE
+        ends += [base + (lo / p_kg - 1.) * h2_term, base + (hi / p_kg - 1.) * h2_term]
+    if a > 0:                                                    # ammonia price on the ammonia share
+        lo, hi = AMM_PRICE
+        ends += [base + a * AMM_FEED_USD_L * (lo / AMM_P_BASE - 1.),
+                 base + a * AMM_FEED_USD_L * (hi / AMM_P_BASE - 1.)]
+    ends += [base - CAPEX_PM * row['capital investment'],        # CAPEX +-30% (Mix cap inv, incl CCS)
+             base + CAPEX_PM * row['capital investment']]
+    if c > 0:                                                    # CO2 T&S 4-45 $/t (CCS only)
+        lo, hi = TS_RANGE
+        ends += [rerun_mix(a, c, co2_ts_usd_per_ton=lo), rerun_mix(a, c, co2_ts_usd_per_ton=hi)]
+    e_lo, e_hi = ELEC_F                                          # electricity +-30%
+    ends += [rerun_mix(a, c, elec_price_usd_per_mmbtu=19.05 * e_lo),
+             rerun_mix(a, c, elec_price_usd_per_mmbtu=19.05 * e_hi)]
+    c_lo, c_hi = COPROD_F                                        # co-product +-20%
+    ends += [rerun_mix(a, c, product_price_stream={'316GAS': 0.75757 * c_lo, '326SAF': 0, '336DIES': 0.6 * c_lo}),
+             rerun_mix(a, c, product_price_stream={'316GAS': 0.75757 * c_hi, '326SAF': 0, '336DIES': 0.6 * c_hi})]
+    h85, h91 = CF_HOURS                                          # capacity 85% / 91%
+    ends += [rerun_mix(a, c, operation_hr=h85), rerun_mix(a, c, operation_hr=h91)]
+    return base, min(ends), max(ends)
+
+
 def pareto_mask(pts: pd.DataFrame) -> pd.Series:
     """Non-dominated set minimizing both ghg and mjsp (O(n^2), n=30)."""
     dominated = pd.Series(False, index=pts.index)
@@ -116,6 +177,17 @@ def main() -> None:
     front = df[df['pareto']].sort_values('ghg')
     ax.plot(front['ghg'], front['mjsp'], '-', color='#333333', lw=1.2, zorder=2, label='Pareto front')
 
+    # MJSP error bars on each frontier point (tornado-driver envelope) --------
+    h2_cost, h2_rate, bio_cost = raw_costs(tea, FA)
+    op = tea.operation_hr
+    err = [mjsp_error(tea, r['ammonia_portion'], r['ccs'], h2_cost, h2_rate, bio_cost, op)
+           for _, r in front.iterrows()]
+    e_base = [e[0] for e in err]
+    yerr = [[b - lo for b, lo, _ in err], [hi - b for b, _, hi in err]]
+    ax.errorbar(front['ghg'], e_base, yerr=yerr, fmt='none', ecolor='#555555',
+                elinewidth=1.0, capsize=3, zorder=1, label='MJSP sensitivity (§4.7)')
+    front = front.assign(mjsp_lo=[e[1] for e in err], mjsp_hi=[e[2] for e in err])
+
     ax.set_xlabel('WTWa GHG-100 [g CO$_2$e/MJ SAF]')
     ax.set_ylabel('MJSP [$/L SAF]')
     # legend states H2 share from the green-ammonia cracker (= ammonia_portion), not raw scale
@@ -123,7 +195,13 @@ def main() -> None:
                         label=f'Green NH$_3$ {s / MAIN_SCALE * 100:g}%') for s in AMM_SCALES]
     ccs_h = [plt.Line2D([], [], marker=ccs_markers[c], ls='', color='0.6', mec='black',
                         label=f'CCS {int(c * 100)}%') for c in CCS_RATES]
-    ax.legend(handles=amm_h + ccs_h, ncol=2, loc='best')
+    front_h = plt.Line2D([], [], color='#333333', lw=1.2, label='Pareto front')
+    err_h = plt.Line2D([], [], color='#555555', lw=1.0, marker='|', ls='',
+                       label='MJSP sensitivity (§4.7)')
+    ax.legend(handles=amm_h + ccs_h + [front_h, err_h], ncol=2, loc='best')
+    # GHG basis stated on-plot to remove ambiguity (US grid mix, Allocation)
+    ax.text(0.02, 0.02, 'WTWa GHG: Allocation, US grid mix', transform=ax.transAxes,
+            ha='left', va='bottom', fontsize=8, color='#555555')
     ax.set_ylim(0, ax.get_ylim()[1] * 1.2)
 
     os.makedirs('Figure', exist_ok=True)
@@ -147,8 +225,9 @@ def main() -> None:
 
     pd.set_option('display.width', 200, 'display.max_rows', 40)
     print(df.round(3).to_string(index=False))
-    print('\nPareto front (min MJSP, min GHG) with CO2 abatement cost vs grey base:')
-    print(front[['amm_scale', 'ccs', 'ghg', 'mjsp', 'abatement']].round(2).to_string(index=False))
+    print('\nPareto front with CO2 abatement cost + MJSP sensitivity range (§4.7):')
+    print(front[['amm_scale', 'ccs', 'ghg', 'mjsp', 'mjsp_lo', 'mjsp_hi', 'abatement']].round(2).to_string(index=False))
+    front.round(4).to_excel(os.path.join('Result', 'pareto_front_sensitivity.xlsx'), index=False)
 
     # self-checks: base positive; GHG base matches report ~87.57; more CCS lowers GHG at fixed NH3;
     # more NH3 lowers GHG at fixed CCS; front is non-empty and trades off (ghg up <-> mjsp down).
