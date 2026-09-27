@@ -169,6 +169,18 @@ axis.
 ### 2026-09-27
 
 **Discussion**
+- **Validation pass — independent engine re-run (report-only, no numbers changed).** Re-ran
+  the engine from repo root and re-derived every column against §2/§3. Engine columns (MJSP,
+  4-method GHG, mean GHG, abs CO2, $/t alloc/disp for the ammonia sweep; §3 CCS sweep; §2
+  matched-CCS %cap/MJSP/$/t) reproduce to the last printed digit — ammonia $/t 1528→1429 alloc
+  / 482→451 disp, §3 CCS 115–340 / 36–107, matched-CCS 127→304 / 40→96. Derived-only columns
+  (price lo–hi, %red) recomputed from the exact (unrounded) MJSP match within rounding: %red ≤0.1
+  (×1 disp 3.3 vs 3.2, ×20 disp 65.4 vs 65.5), and the price-range $/t within ~1 % at ×1 (558 vs
+  550) because the report derived those from the rounded 3-dp MJSP lo–hi rather than full precision
+  — a presentation choice, not an error. Anchors all pass: base 0.664, full NH3 2.389, GHG
+  87.57→49.45 (alloc) / 123.03→2.27 (disp), CCS discrete 0.706/0.746/0.926/1.131, E=31.66 (script
+  assert), and the ×1-slice $/t 1528/482 equals a re-run stand-alone ×1 full-NH3 plant (finding #1
+  confirmed: abatement price is set by cracker absolute size, not main-unit size).
 - Added **same-reduction CCS** columns to §2 (CCS %cap, CCS MJSP, CCS $/t alloc/disp) at
   the request "run CCS to the same GHG reduction, no linear interpolation." Method: for
   each ammonia row set ccs_portion = f·(38.12/43.42) = f·0.878 (capture linear in CO2
@@ -224,6 +236,10 @@ axis.
   60 % interpolated.
 
 **Code**
+- Validation re-run (session scratchpad, not committed): copies of `subunit_sweep.py`,
+  `ccs_sweep.py`, `ccs_match_ammonia.py` plus `arith_audit.py` (price lo–hi / %red). Run with
+  `PYTHONPATH`=repo root, Excel output redirected to scratchpad so repo `Result/` stayed untouched.
+  All engine anchors asserted green.
 - `scratchpad/subunit_sweep.py` (not committed): sweeps cracker ×{1..30} at fixed ×30 main
   via `H2Mix(30)`; grey base MJSP + SAF energy from `TEA.economic_analysis(['Base'])`;
   abatement = ΔMJSP·1e6/(ΔGHG·E). Writes `Result/ScaleUp_Subunits_ammonia.xlsx`.
