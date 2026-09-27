@@ -62,7 +62,7 @@ capital-heavy, would benefit disproportionately from scale.)
 total CAPEX at every scale (hard assert passed); per-raw-material + utility OPEX
 recorded per case in the workbook for line-by-line audit.
 
-## 2. Cross-Check Against Manuscript
+### 1.2. Cross-Check Against Manuscript
 
 Source: `Downloads/Biomass_LCA_ACS (2).pdf` (newest; no "(3)" exists). Same TEA
 engine + 551 data as the manuscript, so base-scale numbers reproduce to 3 digits.
@@ -107,211 +107,46 @@ Consistent.
 (Fig 8 Ammonia = Mix) or axis (portion-nonlinearity vs scale-invariance), not
 numeric disagreement.
 
-## 3. Ammonia CO2 Abatement Cost and Sweet Spot
+## 2. Six-Tenths Cost Model & CO2 T&S — Updated MJSP
 
-**Question.** Cost of reducing 1 ton CO2 via the ammonia route, and the mix-ratio
-sweet spot. Base scale (1 % coverage), via `H2Mix` (`funs_lca.py`) = the paper's
-551 TEA+LCA coupling. SAF energy density E = **31.66 MJ/L** (process basis).
-Conversion: $/t CO2 = ΔMJSP[$/L] · 1e6 / (ΔGHG[g/MJ] · E). ΔMJSP anchored to the
-paper's reported MJSP (Base 1.58, Mix-65.5 % 2.82, full Ammonia 3.43); `H2Mix`
-reproduces the ammonia line (2.820 @ 0.655, 3.426 @ 1.0) but its p=0 endpoint is a
-1.67 code-path artifact, so Base is taken as the paper's 1.58.
+§1 / §1.2 above report the **original** numbers (linear sub-unit CAPEX), which match the
+manuscript. Two model updates change every downstream figure and define the basis for §3–§5:
 
-**WTWa GHG-100 [g CO2e/MJ SAF] (base scale):**
+1. **Six-tenths CAPEX fix** (`unit_cost_interpolation`, `funs.py:159`): branches on the key —
+   CAPEX scales `r_scale**0.6`, OPEX `r_scale**0.7`, streams/rates linear. The interpolated
+   sub-units (CCS, PSA, R-510) now scale sub-linearly. Base scale rises slightly (interpolates
+   *up* from the large Rao base case to a smaller unit); large scale falls (real economy of scale).
+2. **CO2 transport & storage (T&S)** (`TEA.co2_ts_usd_per_ton`, `calc_cost_CCS`): a $/tCO2 charge
+   on the sequestered CO2 `co2_seq = co2_left·portion + co2_EGR` (lb/hr → t/yr via `/2204.62 ×
+   8000 h`), folded into the CCS unit OPEX so it flows into MJSP. Linear in price; default 0. Range
+   **$4–45/tCO2** (reported onshore-to-offshore T&S span). This subsumes the earlier standalone
+   T&S section.
 
-| LCA method | Base (grey) | Full ammonia |
-|---|--:|--:|
-| Allocation (US) | 87.57 | 49.45 |
-| Displacement (US) | 123.03 | 2.27 |
-| Allocation (KR mix) | 100.83 | 62.74 |
-| Displacement (KR mix) | 124.63 | 3.83 |
-| Mean | 109.02 | 29.57 |
+**Basis:** 551 feedstock files, all study scales `[1, 2.5, 5, 7.5, 10, 20, 30]×`, post-fix cost
+model. CCS shown at **100 % capture** (full-CCS). Full ammonia = all grey H2 replaced by
+ammonia-cracked H2.
 
-CORSIA threshold = 0.9 × conventional = **75.93 g CO2e/MJ**.
+**Updated MJSP [$/L SAF]:**
 
-**Abatement cost — $/t CO2 (ammonia vs grey base).** Both MJSP and GHG are linear
-in ammonia fraction, so $/t is **constant along the mix** (not a curve with a
-minimum):
+| Scale × | Base | Ammonia (full) | CCS 100 % | CCS 100 % +$4/t | CCS 100 % +$45/t |
+|--:|--:|--:|--:|--:|--:|
+| 1   | 1.638 | 3.483 | 2.207 | 2.234 | 2.511 |
+| 2.5 | 1.258 | 3.049 | 1.785 | 1.812 | 2.089 |
+| 5   | 1.015 | 2.789 | 1.519 | 1.546 | 1.823 |
+| 7.5 | 0.884 | 2.649 | 1.377 | 1.404 | 1.681 |
+| 10  | 0.780 | 2.531 | 1.266 | 1.293 | 1.570 |
+| 20  | 0.701 | 2.431 | 1.174 | 1.201 | 1.478 |
+| 30  | 0.664 | 2.389 | 1.131 | 1.158 | 1.435 |
 
-| Method | $/t CO2 |
-|---|--:|
-| Allocation (US) | ~1 530 |
-| Allocation (KR) | ~1 530 |
-| Displacement (US) | ~484 |
-| Displacement (KR) | ~484 |
-| Mean | ~735 |
+- **Base** falls 1.638 → 0.664 $/L (−59 %), knee near ~10×; grey-H2 variable cost sets the floor.
+- **Full ammonia** stays far above base (2.39–3.48 $/L) at every scale — NH3-feed-dominated (§3).
+- **Full-CCS premium over base shrinks with scale**: 0.569 (1×) → 0.467 (30×), no T&S. This is a
+  genuine economy of scale on the capture unit — the *opposite* of the flat +0.16 $/L premium in
+  the pre-fix §1 (that flatness was the linear-CAPEX bug).
+- **T&S adds a flat ~$0.027/L ($4/t) to ~$0.304/L ($45/t)** at 100 % capture, scale-independent
+  (sequestered CO2 and SAF both scale ~linearly).
 
-Method dominates: displacement credits the ammonium-sulfate fertilizer co-product
-(ammonia WTWa → near zero), roughly **3× cheaper** abatement than allocation.
-
-**Sweet spot = min ammonia fraction meeting the threshold** (max cheap grey H2
-while compliant). Because $/t is flat, the optimum is compliance, not a cost
-minimum — any extra ammonia beyond the threshold is over-abatement you pay for and
-do not need.
-
-| Method | grey fraction allowed | ammonia needed |
-|---|--:|--:|
-| Allocation (US) | 69.5 % | 30.5 % |
-| Displacement (US) | 61.0 % | 39.0 % |
-| **Allocation (KR)** | **34.6 %** | **65.4 %** |
-| Displacement (KR) | 59.7 % | 40.3 % |
-
-**Binding case = Korea allocation → 34.6 % grey, i.e. the manuscript's 34.5 % grey
-mix.** So the paper's mix ratio is set by the strictest LCA method (KR allocation);
-under US allocation only ~30 % ammonia would be required.
-
-**Answer.** Reducing CO2 through ammonia costs ~735 $/t on average (~1 530 under
-allocation, ~484 under displacement). The sweet spot is the minimum ammonia that
-clears CORSIA — 65.4 % ammonia (34.6 % grey), governed by KR allocation — matching
-the manuscript.
-
-### 3b. CCS abatement cost (comparison lever)
-
-CCS WTWa emissions per capture portion exist in `Pyrolysis_551_LCA_Allocation.xlsx`
-/ `_Displacement.xlsx` (sheets `CCS025/050/075/100`) — the earlier "cannot compute"
-was wrong (the `tea_co2_portion.py:30` `데이터가 없음` TODO is stale). Base-scale
-MJSP matches Fig 7 exactly (0/25/50/60/75/100 % = 1.582 / 1.632 / 1.682 / 1.743 /
-1.873 / 2.090 $/L). Same E = 31.66 MJ/L.
-
-| Capture | GHG alloc | $/t alloc | GHG disp | $/t disp |
-|--:|--:|--:|--:|--:|
-| 0 % | 87.57 | — | 123.03 | — |
-| 25 % | 76.01 | 136 | 86.44 | 43 |
-| 50 % | 64.44 | 136 | 49.76 | 43 |
-| 75 % | 54.17 | 275 | 17.23 | 87 |
-| 100 % | 44.15 | 369 | −14.57 | 117 |
-
-**CCS is ~4–11× cheaper per ton than ammonia** (136–369 vs ~1530 allocation;
-43–117 vs ~484 displacement). Marginal CCS cost is flat and cheap ≤50 % capture
-(process waste heat covers the reboiler), then jumps past the ~54 % waste-heat
-threshold — the same kink as Fig 7. Displacement 100 % = −14.6 g/MJ is net-negative
-(BECCS: captured biogenic CO2 credited as removal).
-
-**Sweet spot / CORSIA compliance:** under US allocation ~25 % capture already meets
-the 75.93 threshold (GHG 76.01); the manuscript's "60 % capture" is the **Korea
-allocation** binding case — the same strictest-method logic that fixes ammonia's
-34.5 % grey. So both levers' design points are set by KR allocation.
-
-**Lever verdict.** For meeting CORSIA at least cost, **CCS dominates ammonia on
-$/t CO2**. Ammonia's value is as a low-carbon H2 pathway (and deeper cuts /
-net-negative via displacement), not as the cheapest abatement.
-
-### 3c. Abatement cost vs production scale (post-fix, incl. projected NH3 price)
-
-Updated 2026-09-26 to the fixed six-tenths cost model (§4) and extended with the
-**projected (lowest) NH3 price 0.1225 $/lb** alongside the base 0.288 $/lb.
-
-GHG intensity [g/MJ] is scale-independent (same LCA per MJ SAF); only MJSP moves with
-scale. $/t = ΔMJSP(scale) · 1e6 / (ΔGHG · E). ΔGHG: NH3 38.12 (alloc) / 120.76
-(disp); CCS-60 % 26.05 / 82.56. E = 31.66 MJ/L.
-
-**How the NH3 price is applied.** The ammonia cracking unit's economics are read per
-scale from `NH3_Cracking_130_scale####_APEAresult.xlsm` (`get_ammonia_cost_at_scale`,
-`funs.py:351`): cracker CAPEX + cracker electricity + NH3 feed purchase. NH3 price
-affects only the **feed purchase** (the `Ammonia` raw-material line = 2.038 $/L, flat
-across scale — feed and SAF both scale linearly). Projected MJSP =
-MJSP(0.288) − 2.038 + 2.038·(0.1225/0.288); cracker CAPEX and electricity are left
-untouched (a cheaper NH3 market does not change the built cracker).
-
-**MJSP [$/L SAF]:**
-
-| Scale × | Base | NH3 (0.288) | NH3 (0.1225 proj) | CCS 60 % |
-|--:|--:|--:|--:|--:|
-| 1 | 1.638 | 3.483 | 2.311 | 1.845 |
-| 2.5 | 1.258 | 3.049 | 1.878 | 1.437 |
-| 5 | 1.015 | 2.789 | 1.618 | 1.178 |
-| 7.5 | 0.884 | 2.649 | 1.478 | 1.040 |
-| 10 | 0.780 | 2.531 | 1.360 | 0.931 |
-| 20 | 0.701 | 2.431 | 1.259 | 0.844 |
-| 30 | 0.664 | 2.389 | 1.218 | 0.802 |
-
-**Abatement cost [$/t CO2]** (allocation | displacement):
-
-| Scale × | NH3 alloc | NH3-proj alloc | CCS alloc | NH3 disp | NH3-proj disp | CCS disp |
-|--:|--:|--:|--:|--:|--:|--:|
-| 1 | 1528 | 558 | 251 | 482 | 176 | 79 |
-| 2.5 | 1484 | 514 | 217 | 469 | 162 | 68 |
-| 5 | 1470 | 500 | 198 | 464 | 158 | 62 |
-| 7.5 | 1462 | 492 | 189 | 462 | 155 | 60 |
-| 10 | 1451 | 481 | 184 | 458 | 152 | 58 |
-| 20 | 1433 | 463 | 173 | 452 | 146 | 55 |
-| 30 | 1429 | 459 | 168 | 451 | 145 | 53 |
-
-- **CCS falls with scale** (251 → 168 alloc; 79 → 53 disp) — post-fix economy of scale
-  on the capture unit.
-- **Ammonia weakly falls** at both prices (~−6.5 %); projected NH3 price cuts ammonia
-  abatement ~3× (1528 → 558 alloc; 482 → 176 disp) — the dominant lever for ammonia.
-- **CCS stays cheapest at every scale**, even against projected-price ammonia (168 vs
-  459 alloc at scale 30; 53 vs 145 disp). Projected NH3 + displacement (145–176 $/t)
-  is the closest ammonia gets, still ~2–3× above CCS.
-
-> **CAVEAT (2026-09-26): the flat CCS-vs-scale behavior above is a BUG artifact.**
-> `unit_cost_interpolation` (`funs.py:157`) branches on the dict *value* `v`
-> (`if not isinstance(v, str) ... elif 'CAPEX' in v`) instead of the *key* `k`.
-> All cost values are numbers, so the six-tenths (`r_scale**0.6`) and OPEX-0.7
-> branches never run — every sub-unit cost (CCS, PSA, R-510) scales strictly
-> linearly. Fixing it (`'CAPEX' in k` / `'OPEX' in k`) makes CCS CAPEX ~3× higher at
-> base scale (~24.7→~68 M$) and −31 % at scale 30 (~741→~512 M$): the base-scale CCS
-> MJSP would exceed the manuscript's 1.74, and the premium would *shrink* with scale.
-> §1/§3c CCS scale conclusions hold only under the (buggy) linear model the
-> manuscript used. **FIXED 2026-09-26 — see §4 for post-fix results.** §1/§3b/§3c
-> above are retained as the pre-fix (linear, manuscript-matching) record.
-
-## 4. Post-Fix Results (six-tenths CAPEX scaling applied)
-
-`unit_cost_interpolation` corrected to branch on the key (`'CAPEX' in k` → 0.6,
-`'OPEX' in k` → 0.7, else linear). CCS/PSA/R-510 CAPEX now follow the six-tenth
-rule. Base scale rises (six-tenths interpolates *up* from the large Rao base case to
-a smaller plant unit); large scale falls (real economies of scale).
-
-**MJSP [$/L SAF] per scale, post-fix:**
-
-| Scale × | Base | Ammonia (full) | CCS 60 % | CCS−Base premium |
-|--:|--:|--:|--:|--:|
-| 1 | 1.638 | 3.483 | 1.845 | 0.207 |
-| 2.5 | 1.258 | 3.049 | 1.437 | 0.179 |
-| 5 | 1.015 | 2.789 | 1.178 | 0.163 |
-| 7.5 | 0.884 | 2.649 | 1.040 | 0.156 |
-| 10 | 0.780 | 2.531 | 0.931 | 0.152 |
-| 20 | 0.701 | 2.431 | 0.844 | 0.143 |
-| 30 | 0.664 | 2.389 | 0.803 | 0.139 |
-
-The CCS premium **shrinks with scale** (0.207 → 0.139, −33 %) — it is no longer flat
-(§1 corrected). This is genuine economy of scale on the capture unit.
-
-**Base-scale CCS abatement [$/t CO2], post-fix:**
-
-| Capture | $/t alloc | $/t disp |
-|--:|--:|--:|
-| 25 % | 204 | 64 |
-| 50 % | 192 | 61 |
-| 75 % | 325 | 102 |
-| 100 % | 414 | 131 |
-
-(pre-fix §3b was 136/136/275/369 alloc.) Ammonia abatement essentially unchanged
-(~1455 alloc / ~459 disp — NH3-feed dominated, not sub-unit CAPEX).
-
-**Abatement cost vs scale [$/t CO2], post-fix:**
-
-| Scale × | NH3 alloc | NH3 disp | CCS alloc | CCS disp |
-|--:|--:|--:|--:|--:|
-| 1 | 1528 | 482 | 251 | 79 |
-| 5 | 1470 | 464 | 198 | 62 |
-| 10 | 1451 | 458 | 184 | 58 |
-| 30 | 1429 | 451 | 168 | 53 |
-
-- **CCS abatement now falls with scale** (251 → 168 alloc, −33 %) — scaling
-  preferentially improves the CCS lever (vindicates the original a-priori intuition;
-  the earlier "flat" was the bug).
-- **Ammonia stays weak** (−6.5 %).
-- **Ranking unchanged:** CCS still ~6–9× cheaper per ton than ammonia at every scale.
-
-**Manuscript note.** Post-fix base scale (Base 1.638, CCS 60 % 1.845) no longer
-matches the manuscript (1.58, 1.74) — the manuscript was generated under the linear
-bug. Re-syncing the manuscript's CCS/PSA/R-510 numbers to the six-tenths model is a
-separate downstream task.
-
-## 5. Green Ammonia Economics (price sensitivity)
+## 3. Green Ammonia Economics (price sensitivity)
 
 The ammonia in this study *is* green ammonia (green-H2 carrier). Its base price
 0.288 $/lb (Table 7) is the average of **current 0.4535** and **projected (≈15 yr)
@@ -346,9 +181,9 @@ price it is uncompetitive (MJSP 4.65, ~2 500 $/t CO2); at the projected future p
 it becomes reasonable (MJSP 2.31, ~558/176 $/t) but still pricier than grey H2 and
 than CCS. Its niche is deep/near-zero emissions, contingent on the price projection.
 
-### 5b. Effect of the six-tenths fix on green ammonia
+### 3b. Effect of the six-tenths fix on green ammonia
 
-The fix (§4) changes only interpolated sub-units (PSA, R-510, and the EGR-residual
+The fix (§2) changes only interpolated sub-units (PSA, R-510, and the EGR-residual
 CCS at `ccs_portion=0`). The green-ammonia case has no large CCS unit, and those
 sub-units are shared with the grey base, so they cancel in the ammonia−base premium.
 Ammonia cost is NH3-feed-dominated (price-driven), untouched by the fix.
@@ -362,96 +197,102 @@ Ammonia cost is NH3-feed-dominated (price-driven), untouched by the fix.
 **Negligible impact.** Absolute MJSP shifts a flat +0.057 $/L (~1.6 % at base scale,
 PSA/R-510 costing more at r_scale < 1) and shrinks/reverses at larger scale.
 **Abatement cost is unchanged** — the shared sub-units cancel in the premium. The
-six-tenths fix is material for the CCS case (§4), not for green ammonia.
+six-tenths fix is material for the CCS case (§2, §4–§5), not for green ammonia.
 
-## 6. CO2 Transport & Storage Cost Sensitivity (all scales)
+## 4. CO2 Abatement Cost — Full-Ammonia & Full-CCS
 
-The CCS unit previously charged only capture (CAPEX + reboiler fuel/electricity); CO2
-transport & storage (T&S) was not costed. Added an optional T&S charge on the
-**sequestered CO2** stream, controlled by `TEA.co2_ts_usd_per_ton` ($/tCO2, default 0 =
-off). `tea_scale_up_co2ts.py` sweeps it across all study scales.
+Cost of avoiding 1 t CO2 vs the grey-H2 base: `$/tCO2 = ΔMJSP[$/L] · 1e6 / (ΔGHG[g/MJ] · E)`,
+E = 31.66 MJ/L. WTWa GHG intensities are scale-independent (same LCA per MJ SAF); ΔMJSP carries
+the scale and T&S dependence from §2.
 
-**Assumptions**
-- Scenario: **CCS 60 % capture** (the KR-allocation binding design point, §3b), Base H2
-  source, all study scales `[1, 2.5, 5, 7.5, 10, 20, 30]×`.
-- T&S applied to sequestered CO2 `co2_seq = co2_left·0.60 + co2_EGR` (lb/hr → t/yr via
-  `/2204.62 × 8000 h/yr`), the same tonnage the CCS unit cost is based on.
-- Price range **$4–45/tCO2** (reported onshore-to-offshore T&S span; low = onshore
-  pipeline + saline aquifer, high = offshore/long-distance). Linear in price — cost is a
-  flat $/t on a fixed tonnage.
-- Feedstock basis: **551 files** (`Pyrolysis_551_Scale####`), matching §1–§5 and the
-  manuscript. Post-fix six-tenths cost model (§4); the no-T&S column reproduces §3c/§4.
-- T&S folded into the CCS unit `utilities` line so it flows into MJSP.
+**WTWa GHG-100 [g CO2e/MJ SAF] (US method):**
 
-**Results — MJSP [$/L SAF] and T&S adder (551 basis):**
+| LCA method | Base (grey) | Full ammonia | Full CCS (100 %) |
+|---|--:|--:|--:|
+| Allocation | 87.57 | 49.45 | 44.15 |
+| Displacement | 123.03 | 2.27 | −14.57 |
 
-| Scale × | MJSP no T&S | +$4/t | +$45/t | adder $4 | adder $45 | CO2 seq [Mt/yr] |
+ΔGHG vs base: ammonia 38.12 (alloc) / 120.76 (disp); full-CCS 43.42 / 137.60. CORSIA threshold =
+0.9 × conventional = 75.93 g CO2e/MJ. Full-CCS displacement is net-negative (BECCS: captured
+biogenic CO2 credited as removal).
+
+**Abatement cost [$/tCO2].** Full ammonia at the base NH3 price (0.288 $/lb) with, in parentheses,
+the range over the green-NH3 price span (low = projected 0.1225, high = current 0.4535 $/lb, §3);
+full-CCS at the T&S range.
+
+| Scale × | Ammonia alloc (range) | Ammonia disp (range) | CCS100 alloc +$4/+$45 | CCS100 disp +$4/+$45 |
+|--:|--:|--:|--:|--:|
+| 1   | 1 528 (558–2 498) | 482 (176–789) | 433 / 635 | 137 / 200 |
+| 2.5 | 1 484 (514–2 455) | 469 (162–775) | 403 / 604 | 127 / 191 |
+| 5   | 1 470 (500–2 440) | 464 (158–770) | 386 / 588 | 122 / 185 |
+| 7.5 | 1 462 (492–2 432) | 462 (155–768) | 378 / 580 | 119 / 183 |
+| 10  | 1 451 (481–2 422) | 458 (152–764) | 373 / 575 | 118 / 181 |
+| 20  | 1 433 (463–2 404) | 452 (146–759) | 364 / 565 | 115 / 178 |
+| 30  | 1 429 (459–2 400) | 451 (145–758) | 359 / 561 | 113 / 177 |
+
+(Full-CCS no-T&S baseline: alloc 414 → 340 $/t, disp 131 → 107 $/t over 1→30×.)
+
+- **Full-CCS is far cheaper per ton than full ammonia** at every scale — ~3–4× even at the high
+  T&S ($45/t), and ~4–11× at low/no T&S.
+- **Ammonia abatement swings ~4.5× with the green-NH3 price** (e.g. base scale alloc 558 at the
+  projected 0.1225 $/lb to 2 498 at the current 0.4535 $/lb). Even the low-price end (558 alloc /
+  176 disp) stays above full-CCS at $45/t T&S (635 / 200) — only at the projected price does
+  ammonia get near CCS territory. The green-NH3 price is the dominant lever for the ammonia route.
+- **T&S raises CCS abatement by a scale-flat increment**: +~20 $/t at $4, +~221 $/t at $45
+  (allocation); +~6 / +~70 $/t (displacement). It narrows the CCS-vs-ammonia gap but never closes it.
+- **Both fall weakly with scale** (ammonia ~−6 %; CCS ~−18 % no-T&S) via the six-tenths economy of
+  scale on shared/capture CAPEX.
+- **Displacement ≈ 3× cheaper than allocation** (fertilizer co-product credit drives ammonia WTWa
+  to near zero and CCS net-negative).
+- **Design-point context (CORSIA):** the study's operating points — 34.5 % grey ammonia mix and
+  60 % capture — are the minimum that clear the 75.93 threshold under the binding **KR-allocation**
+  method; the full options tabulated here bracket those design points.
+
+## 5. CO2 Abatement Cost vs CCS Capture Rate
+
+Same method, base scale (1×), sweeping capture rate. GHG per rate (LCA sheets `CCS025/050/075/100`),
+ΔGHG vs base [g/MJ]: 25 % 11.56/36.59, 50 % 23.13/73.27, 75 % 33.40/105.80, 100 % 43.42/137.60
+(alloc/disp).
+
+**Abatement cost [$/tCO2] at base scale:**
+
+| Capture | alloc (no T&S) | alloc +$4 | alloc +$45 | disp (no T&S) | disp +$4 | disp +$45 |
 |--:|--:|--:|--:|--:|--:|--:|
-| 1   | 1.845 | 1.863 | 2.051 | 0.018 | 0.206 | 0.26 |
-| 2.5 | 1.437 | 1.455 | 1.642 | 0.018 | 0.206 | 0.65 |
-| 5   | 1.178 | 1.196 | 1.384 | 0.018 | 0.206 | 1.30 |
-| 7.5 | 1.040 | 1.059 | 1.246 | 0.018 | 0.206 | 1.95 |
-| 10  | 0.931 | 0.950 | 1.137 | 0.018 | 0.206 | 2.60 |
-| 20  | 0.844 | 0.862 | 1.049 | 0.018 | 0.206 | 5.19 |
-| 30  | 0.803 | 0.821 | 1.008 | 0.018 | 0.206 | 7.79 |
+| 25 %  | 204 | 233 | 529 | 64  | 73  | 167 |
+| 50 %  | 192 | 214 | 439 | 61  | 68  | 139 |
+| 75 %  | 325 | 345 | 554 | 102 | 108 | 175 |
+| 100 % | 414 | 433 | 635 | 131 | 137 | 200 |
 
-- **The T&S adder is flat per litre** (~$0.0046/L per $1/tCO2 → +0.018 $/L at $4,
-  +0.206 $/L at $45) and **scale-independent**: sequestered CO2 and SAF both scale
-  ~linearly, so $/L T&S does not change with plant size.
-- Because MJSP itself falls with scale while the adder stays fixed, the **relative** T&S
-  penalty *grows* with scale: +$45/t is +11 % of MJSP at 1× but +26 % at 30×.
-- At the study's 60 % design point, even the high end ($45/t) keeps MJSP below the
-  full-ammonia case at every scale; T&S is a second-order lever vs. the H2-source choice.
-
-## 7. Outdated Inventory After the Six-Tenths Fix
-
-Everything that reports absolute MJSP, CAPEX, or $/t abatement at any scale is generated
-through `unit_cost_interpolation` (CCS, PSA, R-510, OGR, SMR sub-units) and moved when the
-six-tenths rule was fixed (`bd5a017`). Verified on the **551** files (the report basis):
-current code gives Base 1× = 1.638, CCS-60 % 1× = 1.845 — i.e. it **exactly reproduces §3c/§4**,
-so §3c/§4/§5 are already post-fix and current; only the earlier pre-fix tables are stale. (The
-1.479 / 1.942 figures reported earlier this session were on the `Jones_572_2MC` files, not 551
-— a wrong-file comparison, since corrected; there is no unexplained code drift.)
-
-**What is NOT affected:** §3c/§4/§5 (already post-fix on 551, verified current);
-`_H2_Price_Dynamics.md` (unit prices, scale-independent); `_Base_Revision.md` §4.11 (§4.11 was
-computed on the 551 base-scale file, on HEAD). Ammonia cracker CAPEX is read per scale from
-`NH3_Cracking_130_scale####_APEAresult.xlsm` (not interpolated), so ammonia moves only via the
-shared PSA/R-510 units. §6 was regenerated on the 551 basis (2026-09-27) and now reproduces
-§3c/§4's no-T&S CCS-60 % baseline.
-
-**This report (`_Scale_Up_Sensitivity.md`):**
-
-| Section / table | What is stale | Status |
-|---|---|---|
-| §1 table (Base/Ammonia/CCS MJSP, Base & CCS-unit CAPEX, all 7 scales) + Findings 1–4 + Answer | Pre-fix linear (CCS-unit CAPEX "24.69 M$ × n"); the "+0.161 $/L flat CCS premium, no economy of scale" conclusion is a bug artifact | Outdated (kept as pre-fix record) |
-| §2 cross-check table + Fig 7/Fig 8 premium figures + "reproduces manuscript" verdict | Base-scale MJSP/CAPEX 1.582/428.7/1.743 are pre-fix = manuscript = no longer HEAD | Outdated |
-| §3b CCS abatement table (136/136/275/369 alloc; 43/117 disp) + "4–11× cheaper" | Pre-fix CCS CAPEX | Outdated |
-| §3c MJSP table + abatement-vs-scale table (incl. projected NH3) | — verified: current code on 551 reproduces 1.638/1.845 | **Current** (post-fix, keep) |
-| §4 all three post-fix tables (MJSP/scale, base-scale abatement 204/192/325/414, abatement/scale) | — verified against current code on 551 | **Current** (post-fix, keep) |
-| §5 / §5b green-ammonia absolute MJSP (4.65 / 3.48 / 2.31) + "+0.057 $/L six-tenth delta" | Post-fix on 551; spot-check absolutes if regenerating | Current (spot-check) |
-| §6 CO2 T&S table | Regenerated on 551 (2026-09-27); no-T&S column reproduces §3c/§4 | Current |
-
-**Manuscript (`Downloads/Biomass_LCA_ACS (2).pdf`), all generated under the linear bug:**
-
-| Item | Stale content |
-|---|---|
-| Table 9 (TEA) | Base/Ammonia/CCS MJSP + CAPEX |
-| Fig 7 | MJSP vs capture portion; premiums 0.05/0.10/0.29/0.51 $/L |
-| Fig 8 | Scalability lines (65.5 % Mix + 60 % CCS) |
-| Abstract | Base 1.58, CCS 1.74–1.75 $/L |
-| Conclusion | MJSP headline figures |
-| Any in-text $/t abatement | If present |
-
-Re-sync order: (1) regenerate the pre-fix §1 / §2 / §3b tables to the post-fix model on 551
-(§3c/§4/§5 already done); (2) fix §6 to the settled feedstock basis; (3) re-sync manuscript
-Table 9 / Fig 7 / Fig 8 to the post-fix numbers.
+- **Non-monotonic in capture rate — cheapest near ~50 %** (alloc 192, disp 61 $/t), then a jump at
+  75–100 %. The kink is the **~54 % waste-heat threshold**: process waste heat covers the capture
+  reboiler for free up to ~54 %; beyond it, purchased fuel/electricity drives marginal cost up.
+- **Partial CCS (≤50 %) is the cheap abatement region.** The 60 % design point sits just past the
+  knee — set by the KR-allocation CORSIA constraint, not by cost minimisation.
+- **T&S widens with capture rate** in absolute $/L (more CO2 stored) but the $/t T&S increment is
+  broadly similar across rates, since both stored tonnage and ΔMJSP grow together.
+- **Displacement ≈ 3× cheaper than allocation** at every rate.
 
 ## Log history
 
 ### 2026-09-27
 
 **Discussion**
+- **Reordered §3–§5 (user request):** §3 Green Ammonia, §4 Abatement (full-ammonia & full-CCS),
+  §5 Abatement vs CCS rate. Added an ammonia price-sensitivity range to the §4 abatement table —
+  full-ammonia abatement at the low/high green-NH3 price (0.1225–0.4535 $/lb): e.g. base scale
+  alloc 558–2 498 $/t. Even the cheapest ammonia (558) stays above full-CCS at $45/t T&S (635).
+- **Restructured the report (user request).** New layout: §1 keeps the original (linear,
+  manuscript-matching) numbers; the manuscript cross-check becomes §1.2. §2 = six-tenths + T&S
+  assumptions with updated Base/full-Ammonia/full-CCS(100 %) MJSP per scale (folds the old
+  standalone T&S §6). §3 = abatement of full-ammonia vs full-CCS (T&S range $4/$45). §4 =
+  abatement vs CCS capture rate (25/50/75/100 %, base scale). §5 green-ammonia kept. Dropped the
+  old §3/§3b/§3c/§4(post-fix)/§7 (superseded by the new §2–§4). Basis decisions (user): T&S shown
+  as $4 & $45 range; CCS = 100 % in §2/§3; keep §5, fold §6, drop §7.
+- **Key results (551, post-fix):** full-CCS premium over base now *shrinks* with scale
+  (0.569→0.467 $/L, no T&S) — real economy of scale, unlike the pre-fix flat premium. Abatement
+  (alloc): full ammonia 1528→1429, full-CCS 414→340 (no T&S) rising to 635→561 at $45/t T&S; CCS
+  stays ~3–11× cheaper than ammonia. Abatement vs rate is non-monotonic (cheapest ~50 %, kink at
+  the ~54 % waste-heat threshold). Cross-check: base-scale CCS-100 alloc = 414, matches old §4.
 - **Correction to the 2026-09-26 "§3c/§4 drift" claim — it was wrong.** The 1.479/1.942 figures
   were computed on the `Pyrolysis_Jones_572_2MC_####` files; §1–§5 use the **551** files. Under
   current code on 551, Base 1× = 1.6384 and CCS-60 % 1× = 1.8451 — exactly §3c/§4. So there is
@@ -467,6 +308,10 @@ Table 9 / Fig 7 / Fig 8 to the post-fix numbers.
 
 **Code**
 - `tea_scale_up_co2ts.py`: switched feedstock files from Jones_572_2MC to 551.
+- `tea_scale_up_abatement.py`: computes Base/full-Ammonia/CCS-by-rate MJSP + abatement ($/tCO2,
+  alloc & disp, T&S 0/4/45) per scale on 551; writes `Figure/scale_up_abatement.xlsx`; asserts
+  base-scale CCS-100 alloc = 414 (old §4). Feeds §2/§4/§5. Extended with the ammonia price-range
+  abatement (feed 2.038 $/L flat, prices 0.1225/0.4535 $/lb).
 
 **Open**
 - `tea_scale_up.py` itself still reads Jones_572_2MC — repoint to 551 if it should match the report.
