@@ -94,6 +94,14 @@ def main() -> None:
     df = pd.DataFrame(rows)
     df['pareto'] = pareto_mask(df)
 
+    # CO2 abatement cost vs grey base (x0, CCS0): extra $ per tonne CO2 avoided.
+    # abate = dMJSP[$/L] / (dGHG[g/MJ] * E[MJ/L]) * 1e6  (same as tea_scale_up_abatement.py)
+    E_MJ_PER_L = 31.66   # MJ/L SAF (report section 3b)
+    base = df[(df['amm_scale'] == 0) & (df['ccs'] == 0)].iloc[0]
+    d_ghg = (base['ghg'] - df['ghg']) * E_MJ_PER_L        # g/L avoided
+    df['abatement'] = (df['mjsp'] - base['mjsp']) * 1e6 / d_ghg   # $/tCO2; base row -> inf/NaN
+    df.loc[base.name, 'abatement'] = float('nan')
+
     # scatter: color by ammonia scale, marker by CCS -----------------------
     plt.rcParams.update(SA_RC)
     import numpy as np
@@ -125,8 +133,8 @@ def main() -> None:
 
     pd.set_option('display.width', 200, 'display.max_rows', 40)
     print(df.round(3).to_string(index=False))
-    print('\nPareto front (min MJSP, min GHG):')
-    print(front[['amm_scale', 'ccs', 'ghg', 'mjsp']].round(3).to_string(index=False))
+    print('\nPareto front (min MJSP, min GHG) with CO2 abatement cost vs grey base:')
+    print(front[['amm_scale', 'ccs', 'ghg', 'mjsp', 'abatement']].round(2).to_string(index=False))
 
     # self-checks: base positive; GHG base matches report ~87.57; more CCS lowers GHG at fixed NH3;
     # more NH3 lowers GHG at fixed CCS; front is non-empty and trades off (ghg up <-> mjsp down).

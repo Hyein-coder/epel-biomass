@@ -70,7 +70,52 @@ Full 30-point grid in `Result/pareto_front.xlsx`.
 - This is a first scatter at base green-ammonia price ($0.288/lb) and $10/tCO₂ T&S; both move
   the ammonia and CCS tails respectively (see `_Tornado_Sensitivity.md` ranges).
 
+## 5. CO₂ abatement cost
+
+Marginal abatement cost of each option vs the grey base (x0, CCS0 — cheapest, dirtiest):
+`abatement = ΔMJSP / (ΔGHG · E) · 10⁶` [$/tCO₂], `E = 31.66 MJ/L SAF` (§3b). Same formula as
+`tea_scale_up_abatement.py`. Full grid in `Result/pareto_front.xlsx` (`abatement` column).
+
+**Pareto-front points** (grey base = reference, no abatement):
+
+| Green NH₃ | CCS | GHG [g/MJ] | MJSP [$/L] | Abatement [$/tCO₂] |
+|-----------|-----|------------|------------|--------------------|
+| 0%   | 25%  | 76.01 | 0.855 | 170 |
+| 0%   | 50%  | 64.44 | 0.913 | 165 |
+| 0%   | 75%  | 54.18 | 1.111 | 301 |
+| 10%  | 50%  | 60.63 | 1.098 | 358 |
+| 0%   | 100% | 44.15 | 1.334 | 394 |
+| 10%  | 75%  | 50.36 | 1.296 | 427 |
+| 10%  | 100% | 40.34 | 1.518 | 485 |
+| 25%  | 100% | 34.62 | 1.782 | 590 |
+| 50%  | 100% | 25.09 | 2.221 | 722 |
+| 75%  | 100% | 15.56 | 2.657 | 818 |
+| 100% | 100% |  6.03 | 3.085 | 888 |
+
+- **Cheapest CO₂ removal ≈ 165–170 $/tCO₂** — grey H₂ + CCS 25–50%. Abatement cost *rises* as CCS
+  deepens (75%→100% grey = 301→394 $/t): the last increments of capture cost more per tonne.
+- **Green ammonia is the expensive tail: 485 → 888 $/tCO₂** (10%→100% share, all at CCS100). It is
+  only worth buying once CCS100 is exhausted at 44 g/MJ and deeper cuts are still needed.
+- Whole-grid minimum abatement cost is the grey+CCS50 point (165 $/t); the maximum useful option
+  (full green NH₃ + CCS100) reaches 6 g/MJ at 888 $/t.
+
 ## Log history
+
+### 2026-09-28 (update 2)
+
+**Discussion**
+- Legend relabelled `Green NH₃ ##%` (## = H₂ share supplied by the cracker = ammonia_portion),
+  replacing raw cracker-scale `×N`. Cosmetic; grid values unchanged.
+- Added CO₂ abatement cost (§5) vs the grey base, reusing the `tea_scale_up_abatement.py`
+  formula (E = 31.66 MJ/L). Reference = x0/CCS0.
+
+**Code**
+- `tea_pareto_front.py` — added `abatement` column ($/tCO₂ vs grey base), printed for the front,
+  written to `Result/pareto_front.xlsx`; legend labels changed to `Green NH₃ ##%`.
+
+**Open**
+- Abatement cost is single point-estimate (base NH₃ price, $10/t T&S), Allocation only — same
+  caveats as MJSP/GHG.
 
 ### 2026-09-28
 
