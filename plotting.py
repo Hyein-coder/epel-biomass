@@ -57,10 +57,10 @@ def plot_stack_bar(df, ylabel, colors=None, label_lim=0.1, save_name=None, fs=15
             cumulative_height_neg += val * neg_mask
             if val > label_lim:
                 ax.text(x[i], cumulative_height_pos - val * pos_mask / 2, f'{val:.2f}',
-                        ha='center', va='center', fontsize=fs-5, color='black')
+                        ha='center', va='center', fontsize=fs-5, fontweight=200, color='black')
             elif val < -label_lim:
                 ax.text(x[i], cumulative_height_neg - val * neg_mask / 2, f'{val:.2f}',
-                        ha='center', va='center', fontsize=fs-5, color='black')
+                        ha='center', va='center', fontsize=fs-5, fontweight=200, color='black')
 
     if tot_sum:
         total_sums = df.sum(axis=1)
@@ -76,7 +76,7 @@ def plot_stack_bar(df, ylabel, colors=None, label_lim=0.1, save_name=None, fs=15
         for bar in total_bars:
             height = bar.get_height()
             ax.text(bar.get_x() + bar.get_width() / 2, height / 2, f'{height:.2f}', ha='center', va='center',
-                    fontsize=fs-2, fontweight='bold', color='black')
+                    fontsize=fs-2, fontweight=400, color='black')
 
     # Legend
     ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
@@ -91,12 +91,10 @@ def plot_stack_bar(df, ylabel, colors=None, label_lim=0.1, save_name=None, fs=15
     ax.tick_params(axis='both', which='major', labelsize=fs)
     plt.tight_layout()
 
-    # Add horizontal grid
-    ax.yaxis.grid(True, linestyle=':', alpha=0.7)
+    # _PLOTTING_STYLE.md: no grid, save .png only
     if save_name is None:
         save_name = os.path.join(os.getcwd(), 'stack_bar')
     plt.savefig(save_name + '.png')
-    plt.savefig(save_name + '.eps')
     plt.show()
     return fig, ax
 

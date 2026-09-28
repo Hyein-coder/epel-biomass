@@ -6,6 +6,22 @@ import os
 from funs import TEA
 from plotting import plot_stack_bar
 
+# _PLOTTING_STYLE.md (SA_RC lives only in the notebook; inlined here)
+SA_RC = {
+    'figure.dpi': 150, 'figure.facecolor': 'white', 'figure.autolayout': True,
+    'axes.facecolor': 'white', 'axes.edgecolor': '#444444', 'axes.linewidth': 0.8,
+    'axes.spines.top': True, 'axes.spines.right': True, 'axes.labelsize': 12,
+    'axes.labelcolor': 'black', 'axes.labelweight': '500', 'axes.grid': False,
+    'xtick.labelsize': 12, 'xtick.color': 'black', 'ytick.labelsize': 10, 'ytick.color': 'black',
+    'font.family': 'sans-serif',
+    'font.sans-serif': ['Helvetica Neue LT Pro', 'Helvetica Neue', 'Arial', 'DejaVu Sans'],
+    'font.size': 10, 'font.weight': '300', 'text.color': 'black',
+    'patch.edgecolor': 'black', 'patch.linewidth': 0.7, 'patch.force_edgecolor': True,
+    'legend.fontsize': 8, 'legend.title_fontsize': 9, 'legend.framealpha': 0.0,
+    'legend.edgecolor': '#444444', 'lines.linewidth': 0.7, 'lines.markersize': 3,
+    'savefig.dpi': 150, 'savefig.bbox': 'tight', 'savefig.facecolor': 'white',
+}
+
 tea = TEA()
 
 # case_scale = [7.5, 8.6, 10]
@@ -163,11 +179,18 @@ plt.savefig(os.path.join(fig_folder, f'scale_up_{fig_tag}_opex.eps'))
 plt.show()
 
 #%% MJSP Breakdown
+# x-axis in SAF production scale [MMt/yr]; short ton (2000 lb) -> metric tonne x0.907185
+saf_mmt = [round(tea.get_annual_prod_saf_ton(
+    f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_Streams.xlsx') * 0.907185 / 1e6, 2)
+    for n in case_scale]
 mjsp_all = {case: pd.DataFrame([case_data['mjsp'][idx].loc[case] for idx in range(len(case_data['mjsp']))],
-                               index=case_scale)
+                               index=saf_mmt)
             for case in ['Ammonia', 'Mix']}
 mjsp_ccs = {'Base': pd.DataFrame([case_data['CCS mjsp'][idx].loc['Base'] for idx in range(len(case_data['mjsp']))],
-                               index=case_scale)}
+                               index=saf_mmt)}
+# Base-case MJSP breakdown for base_summary (kept out of mjsp_all: line plot above uses 2 subplots)
+mjsp_base = pd.DataFrame([case_data['mjsp'][idx].loc['Base'] for idx in range(len(case_data['mjsp']))],
+                         index=saf_mmt)
 
 fig, ax = plt.subplots(1, 2, figsize=(15,5), sharey='row')
 colors = cmap(np.linspace(0, 1, len(mjsp_all['Ammonia'].columns)+1))
@@ -187,16 +210,20 @@ plt.tight_layout()
 plt.subplots_adjust(right=.8)
 plt.show()
 
+plt.rcParams.update(SA_RC)  # _PLOTTING_STYLE.md
 colors_stack_bar = ['#FAE8BC', '#F0B1AC', '#BBDBB4', '#F5D3A6', '#8DB1B1', '#DAB7DB', '#E5C1C6', '#FBCBA4', '#B5D7EB']
 plot_stack_bar(mjsp_all['Ammonia'], 'MJSP [$/L SAF]', colors_stack_bar,
                save_name=os.path.join(fig_folder, f'scale_up_{fig_tag}_Ammonia_summary'), figsize=(10,5),
-               xlabel='Domestic Fuel Demand Coverage [%]', fs=13)
+               xlabel='SAF production [MMt/yr]', fs=13)
 plot_stack_bar(mjsp_all['Mix'], 'MJSP [$/L SAF]', colors_stack_bar,
                save_name=os.path.join(fig_folder, f'scale_up_{fig_tag}_mix_summary'), figsize=(10,5),
-               xlabel='Domestic Fuel Demand Coverage [%]', fs=13)
+               xlabel='SAF production [MMt/yr]', fs=13)
 plot_stack_bar(mjsp_ccs['Base'], 'MJSP [$/L SAF]', colors_stack_bar,
                save_name=os.path.join(fig_folder, f'scale_up_{fig_tag}_ccs_summary'), figsize=(10,5),
-               xlabel='Domestic Fuel Demand Coverage [%]', fs=13)
+               xlabel='SAF production [MMt/yr]', fs=13)
+plot_stack_bar(mjsp_base, 'MJSP [$/L SAF]', colors_stack_bar,
+               save_name=os.path.join(fig_folder, f'scale_up_{fig_tag}_base_summary'), figsize=(10,5),
+               xlabel='SAF production [MMt/yr]', fs=13)
 
 #%%
 ratio_mjsp_to_capex = {
