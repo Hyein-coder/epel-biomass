@@ -120,7 +120,8 @@ SA_RC = {
 plt.rcParams.update(SA_RC)
 
 bar_colors_price = ['#cfe0f1', '#93bfe0', '#4a90c7']   # pastel-blue gradient, one per price model
-line_colors = ['#70818A', '#369C0F', '#FF7B33']   # Base black; green/orange: Ammonia / CCS(60%) lines
+# Base grey / Ammonia red / CCS(60%) green
+line_colors = ['#70818A', '#CF4B40', '#5A7853']
 styles_price = ['-', '-.', ':']
 markers_model = ["o", "x", "^"]
 
