@@ -129,7 +129,7 @@ Error bars on each Pareto-front point apply the §4.7 tornado conditions
 **except biomass**: since this front is fixed at the x10 plant (0.457 MMt/yr SAF), the
 biomass price range is the supply-curve price-model span *at that scale* — FR-price floor
 **0.0486 → galik 0.0527 $/lb (+8.3%)**, one-sided up (FR is the floor), replacing the
-generic ±50% swing (§3.3, `tea_scale_up_price_models.py`). Other knobs unchanged: gray H₂
+generic ±50% swing (§3.1, `tea_scale_up_price_models.py`). Other knobs unchanged: gray H₂
 1–4 $/kg (on the grey share 1−a), green NH₃ 0.12–0.45 $/lb (on the ammonia share a), CAPEX
 ±30%, CO₂ T&S 4–45 $/tCO₂ (CCS points), electricity ±30%, co-product ±20%, capacity 85/91%.
 Bar = envelope (min…max) of the one-at-a-time swings. Table `Result/pareto_front_sensitivity.xlsx`.

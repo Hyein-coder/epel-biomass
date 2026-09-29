@@ -102,48 +102,60 @@ supply_rate_in_coverage = {
     k: v/(case_data['Biomass Feed'][0] * 24 / 2e3) for k, v in supply_rate_in_tpd.items()
 }
 
-colors_price = plt.cm.Greys(np.linspace(1, 0, 6))
-bar_colors_price = ['#1c5d8e', '#2986cc', '#69aadb']
-# ccs_colors = ['#8e4d1c', '#cc6f29', '#db9a69']
-# price_colors = plt.cm.viridis(np.linspace(0, 1, 4))
+# _PLOTTING_STYLE.md SA_RC (no grid/title, transparent legend, png only)
+SA_RC = {
+    'figure.dpi': 150, 'figure.facecolor': 'white', 'figure.autolayout': True,
+    'axes.facecolor': 'white', 'axes.edgecolor': '#444444', 'axes.linewidth': 0.8,
+    'axes.spines.top': True, 'axes.spines.right': True, 'axes.labelsize': 12,
+    'axes.labelcolor': 'black', 'axes.labelweight': '500', 'axes.grid': False,
+    'xtick.labelsize': 12, 'xtick.color': 'black', 'ytick.labelsize': 10, 'ytick.color': 'black',
+    'font.family': 'sans-serif',
+    'font.sans-serif': ['Helvetica Neue LT Pro', 'Helvetica Neue', 'Arial', 'DejaVu Sans'],
+    'font.size': 10, 'font.weight': '300', 'text.color': 'black',
+    'patch.edgecolor': 'black', 'patch.linewidth': 0.7, 'patch.force_edgecolor': True,
+    'legend.fontsize': 8, 'legend.title_fontsize': 9, 'legend.framealpha': 0.0,
+    'legend.edgecolor': '#444444', 'lines.linewidth': 0.7, 'lines.markersize': 3,
+    'savefig.dpi': 150, 'savefig.bbox': 'tight', 'savefig.facecolor': 'white',
+}
+plt.rcParams.update(SA_RC)
+
+bar_colors_price = ['#1c5d8e', '#2986cc', '#69aadb']   # biomass price bars, one per price model
+line_colors = plt.cm.RdYlBu(np.linspace(0.1, 0.9, len(mjsp)))   # MJSP lines, one colour per H2 config
 styles_price = ['-', '-.', ':']
 markers_model = ["o", "x", "^"]
 
-ms = 9
-lw = 2
-params = {'legend.fontsize': 'x-large',
-          # 'figure.figsize': (15, 5),
-         'axes.labelsize': 'xx-large',
-         'axes.titlesize':'xx-large',
-         'xtick.labelsize':'x-large',
-         'ytick.labelsize':'x-large'}
-plt.rcParams.update(params)
+# x-axis = SAF production [MMt/yr] (scale-only; identical across price models and H2 configs)
+m0 = unique_cats[0]
+saf_mmt = (cost_base_all[cost_base_all['case price model'] == m0]
+           .set_index('case scale').loc[case_scale, 'saf production'] / 1e6)
+xlabels = [f'{v:.3f}' for v in saf_mmt]
 
-fig, ax = plt.subplots(figsize=(13, 5))
-df_price.plot(kind='bar', color=bar_colors_price, ax=ax)
-ax.set_ylabel("Biomass Price [$/lb]")
-ax.set_xlabel("Domestic Aviation Fuel Demand Coverage [%]")
-ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+fig, ax = plt.subplots(figsize=(9, 4.5))
+df_price.plot(kind='bar', color=bar_colors_price, ax=ax, width=0.7)
+ax.set_ylabel("Biomass price [$/lb]")
+ax.set_xlabel("SAF production [MMt/yr]")
+ax.set_xticklabels(xlabels, rotation=0)
+ax.set_ylim(0, ax.get_ylim()[1] * 1.2)
 
 ax2 = ax.twinx()
 offset = 0.2
-for model_idx, (name, df) in enumerate(mjsp.items()):
+for cfg_idx, (name, df) in enumerate(mjsp.items()):
     for price_idx, col in enumerate(df.columns):
-        price_offset = offset * (price_idx-1)
-        if price_idx < 1:
-            ax2.plot([k+price_offset for k, _ in enumerate(df.index)], df[col],
-                     color=colors_price[price_idx], marker=markers_model[model_idx],
-                     linestyle=styles_price[price_idx], label=name)
-        else:
-            ax2.plot([k+price_offset for k, _ in enumerate(df.index)], df[col],
-                     color=colors_price[price_idx], marker=markers_model[model_idx],
-                     linestyle=styles_price[price_idx])
-
+        xs = [k + offset * (price_idx - 1) for k in range(len(df.index))]
+        ax2.plot(xs, df[col], color=line_colors[cfg_idx], marker=markers_model[price_idx],
+                 linestyle=styles_price[price_idx],
+                 label=name if price_idx == 0 else None)
 ax2.set_ylabel("MJSP [$/L SAF]")
-ax2.grid(axis='y', alpha=0.5)
-plt.legend(loc='upper left', bbox_to_anchor=(0.2,1.))
+ax2.set_ylim(0, ax2.get_ylim()[1] * 1.2)
 
-plt.tight_layout()
+handles, labels = ax.get_legend_handles_labels()
+h2, l2 = ax2.get_legend_handles_labels()
+ax.legend(handles + h2, labels + l2, loc='upper left')
+
 plt.savefig(os.path.join(fig_folder, 'scale_up_price_model_mjsp.png'))
-plt.savefig(os.path.join(fig_folder, 'scale_up_price_model_mjsp.eps'))
-plt.show()
+
+# report data
+print("Biomass price [$/lb] by scale x price model:\n", df_price)
+for name, df in mjsp.items():
+    print(f"\nMJSP [$/L] {name}:\n", df)
+print("\nSAF production [MMt/yr]:\n", saf_mmt.to_string())
