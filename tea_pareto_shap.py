@@ -1,11 +1,13 @@
-"""Exact KernelSHAP attribution of MJSP across the §4.7 drivers, for the two
-~25%-decarbonization frontier points: grey-H2 + CCS 25% (a=0, c=0.25) and
-Green NH3 25% (a=0.25, c=0). Interaction-aware complement to tea_tornado.
+"""SHAP attribution of MJSP across the §4.7 drivers, for the two ~25%-decarbonization
+frontier points: grey-H2 + CCS 25% (a=0, c=0.25) and Green NH3 25% (a=0.25, c=0).
+Distribution-based complement to tea_tornado (beeswarm over sampled inputs).
 
 MJSP model is the SAME one the whole pareto analysis uses (mix_row engine re-run
-for T&S/electricity/co-product/capacity + linear cost terms for biomass/H2/
-ammonia/CAPEX). Each point has <=7 drivers, so KernelSHAP with nsamples=2**M and
-l1_reg=0 enumerates every coalition -> values are exact Shapley (sum == f(hi)-f(lo)).
+for T&S/electricity/co-product/capacity + linear cost terms for biomass/H2/ammonia/
+CAPEX). Method: Latin-hypercube sample N points over each point's driver ranges
+(N TEA calls), fit a gradient-boosted surrogate, TreeSHAP on the surrogate (no
+further TEA calls). SHAP is exact on the surrogate; the surrogate is the only
+approximation, and TEA is near-additive so in-sample R2 ~ 1 (asserted).
 """
 import os
 import sys
@@ -14,6 +16,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import shap
+from scipy.stats import qmc
+from sklearn.ensemble import GradientBoostingRegressor
 from funs import TEA
 
 # reuse the analysis' single source of truth for files, style, MJSP model, ranges
@@ -69,58 +73,79 @@ def mjsp_point(a: float, c: float, v: dict[str, float]) -> float:
     return mjsp
 
 
-def shap_point(a: float, c: float, order: list[str]) -> tuple[float, np.ndarray, float]:
-    """(base = MJSP at all-low inputs, exact Shapley values, MJSP at all-high inputs)."""
-    def f(X: np.ndarray) -> np.ndarray:
-        return np.array([mjsp_point(a, c, dict(zip(order, row))) for row in np.atleast_2d(X)])
-
-    x_lo = np.array([[RANGES[k][0] for k in order]])
-    x_hi = np.array([[RANGES[k][1] for k in order]])
-    expl = shap.KernelExplainer(f, x_lo)                  # background = cheaper-input corner
-    # nsamples=2**M enumerates all coalitions; l1_reg=0 keeps every feature -> exact Shapley
-    sv = np.asarray(expl.shap_values(x_hi, nsamples=2 ** len(order), l1_reg=0)).ravel()
-    return float(expl.expected_value), sv, float(f(x_hi)[0])
+N_SAMPLES = 128   # LHS points per frontier point over its 7 driver ranges (>100, user request)
 
 
-def panel(ax, name: str, order: list[str], base: float, sv: np.ndarray) -> None:
-    """Signed Shapley contribution per driver, largest on top, bars from the base MJSP."""
-    idx = np.argsort(np.abs(sv))                          # ascending -> largest on top
-    y = range(len(order))
-    for i, j in enumerate(idx):
-        ax.barh(i, sv[j], left=base, color='#d73027' if sv[j] >= 0 else '#4575b4', edgecolor='white')
-    ax.axvline(base, color='k', lw=1)
-    ax.set_yticks(list(y))
-    ax.set_yticklabels([order[j] for j in idx])
-    ax.set_xlabel('MJSP [$/L SAF]')
-    ax.text(0.98, 0.04, f'{name}\n(base {base:.2f} -> {base + sv.sum():.2f})',
-            transform=ax.transAxes, ha='right', va='bottom', fontsize='large')
+def shap_sample(a: float, c: float, order: list[str], n: int = N_SAMPLES,
+                seed: int = 0) -> tuple[np.ndarray, np.ndarray, float]:
+    """LHS-sample n points over the point's driver ranges (n TEA calls), fit a surrogate,
+    return (X, per-sample TreeSHAP values, surrogate in-sample R2)."""
+    lo = np.array([RANGES[k][0] for k in order])
+    hi = np.array([RANGES[k][1] for k in order])
+    X = qmc.scale(qmc.LatinHypercube(d=len(order), seed=seed).random(n), lo, hi)
+    y = np.array([mjsp_point(a, c, dict(zip(order, row))) for row in X])   # the n TEA calls
+    surr = GradientBoostingRegressor(random_state=seed).fit(X, y)
+    sv = np.asarray(shap.TreeExplainer(surr).shap_values(X))
+    return X, sv, float(surr.score(X, y))
+
+
+def beeswarm(ax, X: np.ndarray, sv: np.ndarray, order: list[str], title: str, seed: int = 0):
+    """SHAP beeswarm: one row of n dots per driver, x = SHAP value, colour = driver value
+    (blue low -> red high). Drivers ordered by mean|SHAP|, largest on top."""
+    rank = np.argsort(np.abs(sv).mean(0))                 # ascending -> largest ends on top
+    rng = np.random.default_rng(seed)
+    sc = None
+    for row, j in enumerate(rank):
+        f = X[:, j]
+        span = f.max() - f.min()
+        fn = (f - f.min()) / span if span else np.zeros_like(f)   # normalise value to 0..1 for colour
+        jit = (rng.random(len(f)) - 0.5) * 0.7            # vertical jitter so dots don't stack
+        sc = ax.scatter(sv[:, j], row + jit, c=fn, cmap='RdYlBu_r', s=10,
+                        edgecolor='none', alpha=0.8, vmin=0, vmax=1)
+    ax.axvline(0, color='k', lw=1)
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels([order[j] for j in rank])
+    ax.set_xlabel('SHAP value [$/L SAF]')
+    # title bottom-left: bottom-right collides with the right-side colorbar
+    ax.text(0.02, 0.04, title, transform=ax.transAxes, ha='left', va='bottom', fontsize='large')
+    return sc
 
 
 def main() -> None:
     sys.stdout.reconfigure(encoding='utf-8')
     plt.rcParams.update(SA_RC)
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5), sharex=True)
-    records = []
-    for ax, (name, (a, c, order)) in zip(axes, POINTS.items()):
-        base, sv, hi = shap_point(a, c, order)
-        assert abs(base + sv.sum() - hi) < 1e-6, name    # exactness: contributions sum to the swing
-        panel(ax, name, order, base, sv)
-        print(f'\n{name}: base(all-low) MJSP = {base:.3f} $/L -> all-high = {hi:.3f}')
-        for k, s in sorted(zip(order, sv), key=lambda t: -abs(t[1])):
-            print(f'   {k:<12} {s:+.4f}')
-            records.append({'point': name, 'driver': k, 'shap_usd_per_L': s,
-                            'base_mjsp': base, 'high_mjsp': hi})
+    plt.rcParams['figure.autolayout'] = False   # let constrained_layout place the colorbar (autolayout fights it)
+    os.makedirs('Result', exist_ok=True)
+    # cache the LHS samples + SHAP so cosmetic replots skip the ~13-min resample;
+    # delete Result/shap_samples.npz to force a fresh sample
+    cache = os.path.join('Result', 'shap_samples.npz')
+    if os.path.exists(cache):
+        data = np.load(cache, allow_pickle=True)['data'].item()
+    else:
+        data = {}
+        for name, (a, c, order) in POINTS.items():
+            X, sv, r2 = shap_sample(a, c, order)
+            data[name] = {'X': X, 'sv': sv, 'r2': r2, 'order': order}
+        np.savez(cache, data=np.array(data, dtype=object))
 
-    from matplotlib.patches import Patch
-    fig.legend(handles=[Patch(color='#d73027', label='raises MJSP'),
-                        Patch(color='#4575b4', label='lowers MJSP')],
-               loc='upper center', ncol=2, framealpha=0.)
-    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    fig, axes = plt.subplots(1, 2, figsize=(9, 4.5), sharex=True, constrained_layout=True)
+    records, sc = [], None
+    for ax, (name, d) in zip(axes, data.items()):
+        X, sv, r2, order = d['X'], d['sv'], d['r2'], d['order']
+        assert r2 > 0.99, (name, r2)                     # surrogate must track the near-additive TEA
+        sc = beeswarm(ax, X, sv, order, f'{name}\n(n={len(X)}, R²={r2:.3f})')
+        print(f'\n{name}: n={len(X)} LHS points, surrogate R²={r2:.4f}')
+        for k, m, s in sorted(zip(order, np.abs(sv).mean(0), sv.mean(0)), key=lambda t: -t[1]):
+            print(f'   {k:<12} mean|SHAP| {m:.4f}   mean {s:+.4f}')
+            records.append({'point': name, 'driver': k, 'mean_abs_shap': m, 'mean_shap': s})
+
+    cb = fig.colorbar(sc, ax=list(axes), fraction=0.03, pad=0.02)
+    cb.set_ticks([0, 1]); cb.set_ticklabels(['low', 'high']); cb.set_label('driver value')
     os.makedirs('Figure', exist_ok=True)
-    fig.savefig(os.path.join('Figure', 'shap_ccs25_vs_nh325.png'), dpi=150)
+    fig.savefig(os.path.join('Figure', 'shap_beeswarm_ccs25_vs_nh325.png'), dpi=150)
     os.makedirs('Result', exist_ok=True)
     pd.DataFrame(records).round(4).to_excel(os.path.join('Result', 'shap_ccs25_vs_nh325.xlsx'), index=False)
-    print('\nOK: exact-Shapley self-checks passed; wrote Figure/shap_ccs25_vs_nh325.png + Result xlsx')
+    print('\nOK: surrogate R²>0.99; wrote Figure/shap_beeswarm_ccs25_vs_nh325.png + Result xlsx')
 
 
 if __name__ == '__main__':
