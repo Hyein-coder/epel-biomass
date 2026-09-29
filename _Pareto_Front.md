@@ -167,6 +167,28 @@ Bar = envelope (min…max) of the one-at-a-time swings. Table `Result/pareto_fro
 
 ## Log history
 
+### 2026-09-29 (update 3)
+
+**Discussion**
+- Floor point (grey+CCS25) now shown as the **$0/tCO₂ reference** on the abatement contour and in
+  the §5 table, instead of being blanked (user request). Only points *strictly dirtier* than the
+  floor (GHG > 76.0 g/MJ: grey/CCS0, NH₃10%/CCS0, NH₃25%/CCS0) stay n/a.
+- §3 gained a compliance-floor paragraph (grey+CCS25 = cheapest CORSIA-compliant point, CCS-only);
+  §5 rebased from the grey base onto the floor, with grey+CCS25 restored as the reference row.
+
+**Code**
+- `tea_pareto_front.py` — abatement mask `>= anchor` → `> anchor`, floor row set to 0.0; contour
+  written to `Figure/pareto_abatement_contour_compliance.png`. Regenerated `Result/pareto_front.xlsx`
+  (+ sensitivity) and figures; self-checks pass.
+- Removed orphaned `Figure/pareto_abatement_contour.png` (old grey-base contour, superseded).
+- Commits: `55b79e5` (Manuscript drafts), `e308797` (abatement rebase onto compliance floor).
+
+**Open**
+- Exact-threshold point (75.9 g/MJ, CCS ≈ 25.2%) not GREET-sampled; using the real CCS25 run at
+  76.0 g/MJ. GREET is external (not runnable here) — a dedicated re-sample stays a to-do.
+- `Manuscript/SI. Supporting Information.md` still states the old grey-base abatement reference —
+  needs the compliance-floor wording.
+
 ### 2026-09-29 (update 2)
 
 **Discussion**
