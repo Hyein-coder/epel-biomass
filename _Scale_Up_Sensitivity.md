@@ -303,6 +303,50 @@ Same method, base scale (1×), sweeping capture rate. GHG per rate (LCA sheets `
 
 ## Log history
 
+### 2026-09-29
+
+**Discussion**
+- **Price-model figure now uses full-ammonia + full-CCS** (was Mix 65.5 % ammonia + 60 % CCS).
+  Aligns the price-model MJSP basis with §3.2 / the 09-28 grouped-bar figure (both full-ammonia,
+  full-CCS). The 65.5 % Mix and 60 % partial-CCS variants are dropped from this figure only.
+
+**Code**
+- `tea_scale_up_price_models.py`: ammonia case switched to full ammonia (`ammonia_portion` dropped
+  -> reads the `'Ammonia'` row, all grey H2 stripped, per [[tea-ammonia-source-recipe]]); CCS case
+  `ccs_portion` 0.6 -> 1.0 (full capture, funs.py:504). Fixes the prior Mix-as-Ammonia mislabel.
+- Same file: dropped the `base_only` toggle; now emits BOTH figures each run.
+  `scale_up_price_model_mjsp_base.png` keeps the old layout (bar = Base MJSP per price model,
+  line = biomass price). `scale_up_price_model_mjsp.png` restored to the multi-case layout
+  (bar = biomass price hatched per price model, line = MJSP mean + full price-model range band
+  per case: Base / Ammonia / CCS). Both regenerated, exit 0. Full-ammonia +~\$1.7/L, full-CCS
+  +~\$0.47/L over Base at 30x (30x: Base 0.66 / Ammonia 2.39 / CCS 1.13 \$/L, FR Price).
+
+**Open**
+- None for this task.
+
+### 2026-09-28
+
+**Discussion**
+- **Drafted Manuscript §3.2 "Green ammonia and CCS integration"** (`Manuscript/3. Results.md`)
+  from this report's §1 (551 basis, linear-CAPEX = manuscript Fig 7/8 basis). Economics: full
+  green ammonia +$1.7–1.8/L flat premium (never cost-competitive), 60% CCS flat +$0.16/L
+  scale-invariant premium; neither shifts the ~0.42 MMt/yr MES from §3.1.
+- **Total GHG per scale, per-subunit split (user request).** WTWa intensity is scale-independent
+  (§4), so total annual emissions = intensity × SAF energy scale linearly. Used LHV 44.8 MJ/kg
+  (`_Base_Revision.md` §2.3) for kt/yr→MJ; allocation method. Base 87.6 / full-ammonia 49.5 read
+  from §4; **CCS-60% intensity (60.3 g/MJ) linearly interpolated** from the §5 50%/75% capture
+  points (§4 tabulates only full-CCS-100%). Totals 0.18→5.37 (base) / 0.10→3.03 (ammonia) /
+  0.12→3.70 (CCS) Mt CO2e/yr over 0.046→1.37 MMt/yr.
+- **Basis mismatch flagged, not merged.** Draft §3.1 figure (`scale_up_wo_price_model_*`, from
+  `tea_scale_up.py`) is on **Jones_572_2MC**; §3.2 uses the **551** §1 data. MJSP levels are not
+  continuous across the two subsections (e.g. base 30× = $0.54 Jones vs $0.678 in §1). Left in
+  Left-over for the user to reconcile.
+
+**Code**
+- `plot_scale_up_mjsp_bar.py`: grouped bar chart of MJSP (Base / Full-Ammonia / Full-CCS)
+  across the seven scales, hardcoded from the §1 table (linear-CAPEX, manuscript basis).
+  Writes `Figure/scale_up_mjsp_bar.png` (SA_RC style, no grid/title, RdYlBu colors).
+
 ### 2026-09-27
 
 **Discussion**

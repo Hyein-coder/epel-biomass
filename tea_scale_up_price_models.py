@@ -36,11 +36,12 @@ for model, folder in case_price_model_and_folder:
         # file_stream = f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_Streams.xlsx'
         # file_apea = folder + f'\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_APEAresults.xlsm'
 
+        # full ammonia (ammonia_portion=None -> 'Ammonia' row, all grey H2 stripped) and full CCS (ccs_portion=1.0)
         df_mjsp, energy_production, annual_prod_saf, main_h2_demand, opex_names, data_all, name_h2_source_new = \
-            tea.economic_analysis(file_stream, file_apea, name_h2_source, ammonia_portion=.655)
+            tea.economic_analysis(file_stream, file_apea, name_h2_source)
         df_mjsp_ccs, _, _, _, _, data_ccs, _ = \
-            tea.economic_analysis(file_stream, file_apea, name_h2_source[:1], ccs_portion=0.6)
-        df_mjsp_all = pd.concat([df_mjsp.loc[['Base', 'Mix']], df_mjsp_ccs])
+            tea.economic_analysis(file_stream, file_apea, name_h2_source[:1], ccs_portion=1.0)
+        df_mjsp_all = pd.concat([df_mjsp.loc[['Base', 'Ammonia']], df_mjsp_ccs])
         df_mjsp_all.index = ['Base', 'Ammonia', 'CCS']
 
         annual_prod_saf_ton = tea.get_annual_prod_saf_ton(file_stream)  # ton/yr
@@ -51,7 +52,7 @@ for model, folder in case_price_model_and_folder:
         case_data['MJSP'].append(df_mjsp_all)
 
         case_data['Base'].append(data_all['cost'][name_h2_source_new.index('Base')])
-        case_data['Ammonia'].append(data_all['cost'][name_h2_source_new.index('Mix')])
+        case_data['Ammonia'].append(data_all['cost'][name_h2_source_new.index('Ammonia')])
         case_data['CCS'].append(data_ccs['cost'][name_h2_source_new.index('Base')])
 
         case_data['Price Model'].append(model)
@@ -119,9 +120,9 @@ SA_RC = {
 }
 plt.rcParams.update(SA_RC)
 
-bar_hatches = ['///', 'xxx', '...']   # color-free bars, one hatch per price model
-# base_summary palette, darkened for line visibility: Base / Ammonia / CCS(60%)
-line_colors = ['#D6AE5C', '#D57F78', '#85B27C']
+bar_colors = ['#F0B1AC', '#BBDBB4', '#B5D7EB']   # one color per price model (MJSP bars); from base_summary palette
+styles_price = ['-', '-.', ':']      # one linestyle per price model (biomass price lines)
+markers_model = ['o', 'x', '^']      # one marker per price model
 
 # x-axis = SAF production [MMt/yr] (scale-only; identical across price models and H2 configs)
 m0 = unique_cats[0]
@@ -129,9 +130,38 @@ saf_mmt = (cost_base_all[cost_base_all['case price model'] == m0]
            .set_index('case scale').loc[case_scale, 'saf production'] / 1e6)
 xlabels = [f'{v:.3f}' for v in saf_mmt]
 
+x = np.arange(len(case_scale))
+
+# --- Figure 1 (_base): bar = MJSP of Base plant per price model; line = biomass price ---
+mjsp_bar = mjsp['Base']
+fig, ax = plt.subplots(figsize=(9, 4.5))
+mjsp_bar.plot(kind='bar', color=bar_colors, edgecolor='black', ax=ax, width=0.7)   # MJSP bars, one color per price model
+ax.set_ylabel("MJSP [$/L SAF]")
+ax.set_xlabel("SAF production [MMt/yr]")
+ax.set_xticklabels(xlabels, rotation=0)
+ax.set_ylim(0, ax.get_ylim()[1] * 1.2)
+
+ax2 = ax.twinx()
+for price_idx, col in enumerate(df_price.columns):   # biomass price lines, all black
+    ax2.plot(x, df_price[col], color='black', marker=markers_model[price_idx],
+             linestyle=styles_price[price_idx], linewidth=2, markersize=5, label=col)
+ax2.set_ylabel("Biomass price [$/lb]")
+ax2.set_ylim(0, ax2.get_ylim()[1] * 1.2)
+
+handles, labels = ax.get_legend_handles_labels()
+h2, l2 = ax2.get_legend_handles_labels()
+ax.legend(handles + h2, labels + l2, loc='upper left')
+plt.savefig(os.path.join(fig_folder, 'scale_up_price_model_mjsp_base.png'))
+
+# --- Figure 2: bar = biomass price per price model (hatched); line = MJSP mean + price-model range band per case ---
+bar_hatches = ['///', 'xxx', '...']   # color-free bars, one hatch per price model
+line_colors = ['#D6AE5C', '#D57F78', '#85B27C']   # base_summary palette, darkened: Base / Ammonia / CCS
+case_styles = ['-', '--', ':']       # one linestyle per case
+case_markers = ['o', 's', '^']       # one marker per case
+
 fig, ax = plt.subplots(figsize=(9, 4.5))
 df_price.plot(kind='bar', color='white', edgecolor='black', ax=ax, width=0.7)
-for container, hatch in zip(ax.containers, bar_hatches):   # one hatch pattern per price model
+for container, hatch in zip(ax.containers, bar_hatches):   # one hatch per price model
     for bar in container:
         bar.set_hatch(hatch)
 ax.set_ylabel("Biomass price [$/lb]")
@@ -140,11 +170,7 @@ ax.set_xticklabels(xlabels, rotation=0)
 ax.set_ylim(0, ax.get_ylim()[1] * 1.2)
 
 ax2 = ax.twinx()
-x = np.arange(len(case_scale))
-case_styles = ['-', '--', ':']       # one linestyle per case (Base / Ammonia / CCS)
-case_markers = ['o', 's', '^']       # one marker per case
-# per case: mean line (own style+marker) = mean over the 3 price models; shaded band = their full range
-for cfg_idx, (name, df) in enumerate(mjsp.items()):
+for cfg_idx, (name, df) in enumerate(mjsp.items()):   # per case: mean line = mean over price models; band = their full range
     ax2.fill_between(x, df.min(axis=1), df.max(axis=1),
                      color=line_colors[cfg_idx], alpha=0.25, linewidth=0)
     ax2.plot(x, df.mean(axis=1), color=line_colors[cfg_idx], linewidth=2,
@@ -155,7 +181,6 @@ ax2.set_ylim(0, ax2.get_ylim()[1] * 1.2)
 handles, labels = ax.get_legend_handles_labels()
 h2, l2 = ax2.get_legend_handles_labels()
 ax.legend(handles + h2, labels + l2, loc='upper left')
-
 plt.savefig(os.path.join(fig_folder, 'scale_up_price_model_mjsp.png'))
 
 # report data
