@@ -119,11 +119,9 @@ SA_RC = {
 }
 plt.rcParams.update(SA_RC)
 
-bar_colors_price = ['#cfe0f1', '#93bfe0', '#4a90c7']   # pastel-blue gradient, one per price model
+bar_hatches = ['///', 'xxx', '...']   # color-free bars, one hatch per price model
 # base_summary palette, darkened for line visibility: Base / Ammonia / CCS(60%)
 line_colors = ['#D6AE5C', '#D57F78', '#85B27C']
-styles_price = ['-', '-.', ':']
-markers_model = ["o", "x", "^"]
 
 # x-axis = SAF production [MMt/yr] (scale-only; identical across price models and H2 configs)
 m0 = unique_cats[0]
@@ -132,20 +130,25 @@ saf_mmt = (cost_base_all[cost_base_all['case price model'] == m0]
 xlabels = [f'{v:.3f}' for v in saf_mmt]
 
 fig, ax = plt.subplots(figsize=(9, 4.5))
-df_price.plot(kind='bar', color=bar_colors_price, ax=ax, width=0.7)
+df_price.plot(kind='bar', color='white', edgecolor='black', ax=ax, width=0.7)
+for container, hatch in zip(ax.containers, bar_hatches):   # one hatch pattern per price model
+    for bar in container:
+        bar.set_hatch(hatch)
 ax.set_ylabel("Biomass price [$/lb]")
 ax.set_xlabel("SAF production [MMt/yr]")
 ax.set_xticklabels(xlabels, rotation=0)
 ax.set_ylim(0, ax.get_ylim()[1] * 1.2)
 
 ax2 = ax.twinx()
-offset = 0.2
+x = np.arange(len(case_scale))
+case_styles = ['-', '--', ':']       # one linestyle per case (Base / Ammonia / CCS)
+case_markers = ['o', 's', '^']       # one marker per case
+# per case: mean line (own style+marker) = mean over the 3 price models; shaded band = their full range
 for cfg_idx, (name, df) in enumerate(mjsp.items()):
-    for price_idx, col in enumerate(df.columns):
-        xs = [k + offset * (price_idx - 1) for k in range(len(df.index))]
-        ax2.plot(xs, df[col], color=line_colors[cfg_idx], marker=markers_model[price_idx],
-                 linestyle=styles_price[price_idx], linewidth=2, markersize=5,
-                 label=name if price_idx == 0 else None)
+    ax2.fill_between(x, df.min(axis=1), df.max(axis=1),
+                     color=line_colors[cfg_idx], alpha=0.25, linewidth=0)
+    ax2.plot(x, df.mean(axis=1), color=line_colors[cfg_idx], linewidth=2,
+             linestyle=case_styles[cfg_idx], marker=case_markers[cfg_idx], markersize=5, label=name)
 ax2.set_ylabel("MJSP [$/L SAF]")
 ax2.set_ylim(0, ax2.get_ylim()[1] * 1.2)
 
