@@ -321,6 +321,16 @@ Same method, base scale (1×), sweeping capture rate. GHG per rate (LCA sheets `
   per case: Base / Ammonia / CCS). Both regenerated, exit 0. Full-ammonia +~\$1.7/L, full-CCS
   +~\$0.47/L over Base at 30x (30x: Base 0.66 / Ammonia 2.39 / CCS 1.13 \$/L, FR Price).
 
+- `Manuscript/3. Results.md` §3.1: appended the `scale_up_price_model_mjsp_base.png` figure +
+  one bullet arguing x10 (0.457 MMt/yr) is the best operating point — MJSP bars coincide across
+  all three price models through x10 (feedstock at \$0.0486/lb floor), split only at x20/x30 as
+  the elastic models escalate. Append-only; existing §3.1 bullets left intact.
+- CORRECTION (same session): §3.1 then **rewritten** (user asked, overriding append-only) into a
+  3-step flow — Step 1 scale return fades by ~x10, Step 2 feedstock price flat then escalates past
+  x10, Step 3 the two cross at x10 -> cheapest scale. `_base` figure removed (back to two figures:
+  base_summary + mjsp.png). Dropped the stale 60%-CCS/Mix-ammonia inline deltas; caption relabeled
+  "60% CCS" -> "full CCS" to match the current data.
+
 **Open**
 - None for this task.
 
