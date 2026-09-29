@@ -68,7 +68,7 @@ def mjsp(tea: TEA, a: float, c: float) -> float:
 # source of truth; adapted here to Mix frontier points (partial grey + partial ammonia).
 from tea_tornado import (H2_RANGE, ELEC_F, COPROD_F, CAPEX_PM,
                          CF_HOURS, TS_RANGE, TS_BASE, AMM_FEED_USD_L, AMM_P_BASE,
-                         AMM_PRICE, LB2KG, raw_costs)
+                         AMM_PRICE, LB2KG, raw_costs, tornado)
 
 
 def mix_row(tea: TEA, a: float, c: float) -> tuple[float, pd.Series, float]:
@@ -91,41 +91,67 @@ def rerun_mix(a: float, c: float, **knobs) -> float:
     return mix_row(t, a, c)[0]
 
 
-def mjsp_error(tea: TEA, a: float, c: float, h2_cost: float, h2_rate: float,
-               bio_cost: float, op: float) -> tuple[float, float, float]:
-    """(base, min, max) MJSP over the tornado drivers applicable to a Mix point.
-    Envelope of one-at-a-time swings; grey-H2 scales with (1-a), ammonia with a,
-    T&S/electricity/co-product/capacity re-run, biomass/CAPEX linear."""
+def mix_bars(tea: TEA, a: float, c: float, h2_cost: float, h2_rate: float,
+             bio_cost: float, op: float) -> tuple[float, list[tuple[str, float, float]]]:
+    """(base, per-driver tornado bars) for a Mix point. Bars = [(label, MJSP@low, MJSP@high)];
+    grey-H2 scales with (1-a), ammonia with a, T&S/electricity/co-product/capacity re-run,
+    biomass/CAPEX linear. Single source for both the frontier band and the tornado panels."""
     base, row, saf = mix_row(tea, a, c)
-    ends = [base]
+    bars: list[tuple[str, float, float]] = []
     # Biomass price range = supply-curve price-model span at this x10 plant (0.457 MMt/yr
     # SAF): FR-price floor 0.04865 $/lb (base) up to the galik supply-curve 0.05268 $/lb
     # (+8.3%). One-sided (FR is the floor); replaces the generic +-50% swing.
     d_bio = (BIO_PRICE_HI / BIO_PRICE_FR - 1.) * bio_cost * op / saf
-    ends += [base, base + d_bio]
+    bars.append(('Biomass +8.3%', base, base + d_bio))
     if a < 1:                                                    # gray H2 on the grey share
         p_kg = (h2_cost / h2_rate) / LB2KG
         h2_term = h2_cost * (1 - a) * op / saf
         lo, hi = H2_RANGE
-        ends += [base + (lo / p_kg - 1.) * h2_term, base + (hi / p_kg - 1.) * h2_term]
+        bars.append(('Gray H₂ 1–4 $/kg', base + (lo / p_kg - 1.) * h2_term, base + (hi / p_kg - 1.) * h2_term))
     if a > 0:                                                    # ammonia price on the ammonia share
         lo, hi = AMM_PRICE
-        ends += [base + a * AMM_FEED_USD_L * (lo / AMM_P_BASE - 1.),
-                 base + a * AMM_FEED_USD_L * (hi / AMM_P_BASE - 1.)]
-    ends += [base - CAPEX_PM * row['capital investment'],        # CAPEX +-30% (Mix cap inv, incl CCS)
-             base + CAPEX_PM * row['capital investment']]
+        bars.append(('Ammonia 0.12–0.45 $/lb', base + a * AMM_FEED_USD_L * (lo / AMM_P_BASE - 1.),
+                     base + a * AMM_FEED_USD_L * (hi / AMM_P_BASE - 1.)))
+    bars.append(('CAPEX ±30%', base - CAPEX_PM * row['capital investment'],   # Mix cap inv, incl CCS
+                 base + CAPEX_PM * row['capital investment']))
     if c > 0:                                                    # CO2 T&S 4-45 $/t (CCS only)
         lo, hi = TS_RANGE
-        ends += [rerun_mix(a, c, co2_ts_usd_per_ton=lo), rerun_mix(a, c, co2_ts_usd_per_ton=hi)]
+        bars.append(('CO₂ T&S 4–45 $/t', rerun_mix(a, c, co2_ts_usd_per_ton=lo), rerun_mix(a, c, co2_ts_usd_per_ton=hi)))
     e_lo, e_hi = ELEC_F                                          # electricity +-30%
-    ends += [rerun_mix(a, c, elec_price_usd_per_mmbtu=19.05 * e_lo),
-             rerun_mix(a, c, elec_price_usd_per_mmbtu=19.05 * e_hi)]
+    bars.append(('Electricity ±30%', rerun_mix(a, c, elec_price_usd_per_mmbtu=19.05 * e_lo),
+                 rerun_mix(a, c, elec_price_usd_per_mmbtu=19.05 * e_hi)))
     c_lo, c_hi = COPROD_F                                        # co-product +-20%
-    ends += [rerun_mix(a, c, product_price_stream={'316GAS': 0.75757 * c_lo, '326SAF': 0, '336DIES': 0.6 * c_lo}),
-             rerun_mix(a, c, product_price_stream={'316GAS': 0.75757 * c_hi, '326SAF': 0, '336DIES': 0.6 * c_hi})]
+    bars.append(('Co-product ±20%',
+                 rerun_mix(a, c, product_price_stream={'316GAS': 0.75757 * c_lo, '326SAF': 0, '336DIES': 0.6 * c_lo}),
+                 rerun_mix(a, c, product_price_stream={'316GAS': 0.75757 * c_hi, '326SAF': 0, '336DIES': 0.6 * c_hi})))
     h85, h91 = CF_HOURS                                          # capacity 85% / 91%
-    ends += [rerun_mix(a, c, operation_hr=h85), rerun_mix(a, c, operation_hr=h91)]
+    bars.append(('Capacity 85% / 91%', rerun_mix(a, c, operation_hr=h85), rerun_mix(a, c, operation_hr=h91)))
+    return base, bars
+
+
+def mjsp_error(tea: TEA, a: float, c: float, h2_cost: float, h2_rate: float,
+               bio_cost: float, op: float) -> tuple[float, float, float]:
+    """(base, min, max) MJSP envelope over the tornado drivers of a Mix point."""
+    base, bars = mix_bars(tea, a, c, h2_cost, h2_rate, bio_cost, op)
+    ends = [base] + [v for _, lo, hi in bars for v in (lo, hi)]
     return base, min(ends), max(ends)
+
+
+def tornado_compare(tea: TEA, h2_cost: float, h2_rate: float, bio_cost: float, op: float) -> None:
+    """Two-panel MJSP tornado: the two ~25%-decarbonization frontier points reviewers weigh
+    against each other -- grey-H2 + CCS 25% (a=0, c=0.25) vs Green NH3 25% (a=0.25, c=0)."""
+    cases = [(0.0, 0.25, 'Grey H₂ + CCS 25%'), (0.25, 0.0, 'Green NH₃ 25%')]
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5), sharex=True)   # shared x -> spans comparable
+    for ax, (a, c, name) in zip(axes, cases):
+        base, bars = mix_bars(tea, a, c, h2_cost, h2_rate, bio_cost, op)
+        assert base > 0 and bars, name
+        tornado(ax, base, bars, f'{name}  (base {base:.2f})')
+    from matplotlib.patches import Patch
+    fig.legend(handles=[Patch(color='#4575b4', label='low input'),
+                        Patch(color='#d73027', label='high input')],
+               loc='upper center', ncol=2, framealpha=0.)
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    fig.savefig(os.path.join('Figure', 'tornado_ccs25_vs_nh325.png'), dpi=150)
 
 
 def pareto_mask(pts: pd.DataFrame) -> pd.Series:
@@ -217,7 +243,7 @@ def main() -> None:
     # GHG basis stated on-plot to remove ambiguity (US grid mix, Allocation)
     ax.text(0.02, 0.02, 'WTWa GHG: Allocation, US grid mix', transform=ax.transAxes,
             ha='left', va='bottom', fontsize=8, color='#555555')
-    ax.set_ylim(0, ax.get_ylim()[1] * 1.2)
+    ax.set_ylim(0, 4)  # fix y-axis top at $4/L SAF
 
     os.makedirs('Figure', exist_ok=True)
     fig.savefig(os.path.join('Figure', 'pareto_front.png'), dpi=150)
@@ -244,6 +270,8 @@ def main() -> None:
     print('\nPareto front with CO2 abatement cost + MJSP sensitivity range (§4.7):')
     print(front[['amm_scale', 'ccs', 'ghg', 'mjsp', 'mjsp_lo', 'mjsp_hi', 'abatement']].round(2).to_string(index=False))
     front.round(4).to_excel(os.path.join('Result', 'pareto_front_sensitivity.xlsx'), index=False)
+
+    tornado_compare(tea, h2_cost, h2_rate, bio_cost, op)   # CCS 25% vs Green NH3 25% panels
 
     # self-checks: base positive; GHG base matches report ~87.57; more CCS lowers GHG at fixed NH3;
     # more NH3 lowers GHG at fixed CCS; front is non-empty and trades off (ghg up <-> mjsp down).

@@ -167,6 +167,22 @@ Bar = envelope (min…max) of the one-at-a-time swings. Table `Result/pareto_fro
 
 ## Log history
 
+### 2026-09-29 (update 4)
+
+**Discussion**
+- Added a two-panel MJSP tornado comparing the two ~25%-decarbonization frontier points reviewers
+  weigh against each other: grey-H₂ + CCS 25% (a=0, c=0.25, the compliance floor) vs Green NH₃ 25%
+  (a=0.25, c=0). Shared x-axis so driver spans are directly comparable across the two routes.
+
+**Code**
+- `tea_pareto_front.py` — split the per-driver tornado logic out of `mjsp_error` into new `mix_bars`
+  (returns labeled `[(driver, MJSP@low, MJSP@high)]`); `mjsp_error` now derives its min/max envelope
+  from `mix_bars`, so the frontier band and the tornado panels share one source. New `tornado_compare`
+  reuses `tea_tornado.tornado` and writes `Figure/tornado_ccs25_vs_nh325.png`. Self-checks pass.
+
+**Open**
+- None new. Manuscript SI abatement-reference wording (update 3) still outstanding.
+
 ### 2026-09-29 (update 3)
 
 **Discussion**
