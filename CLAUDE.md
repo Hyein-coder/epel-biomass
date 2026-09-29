@@ -43,6 +43,14 @@ When generating any figure, follow the shared style in [[_PLOTTING_STYLE]]
 (apply `SA_RC` via `plt.rcParams.update(SA_RC)`; no grid, no titles, transparent legend,  
 save `.png` only). 
 
+## Markdown ($ escaping)
+
+When writing or editing any markdown, escape every literal dollar sign as `\$`
+(e.g. `\$5.30/GJ`, MJSP of `\$1.20/L`). Unescaped `$` pairs render as LaTeX math
+and mangle the text — this project quotes money constantly ($/GJ, $/L, $/t), so
+this is the default, not an exception. Alternatively wrap the value in backticks
+(`$5.30/GJ`). Applies to reports, logs, and every markdown answer.
+
 ## Answers
 
 End every answer with a `## Left-over action points` section listing what is still not done: items  
