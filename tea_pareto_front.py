@@ -15,7 +15,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from funs import TEA
-from funs_lca import get_WTWa_pyrolysis
+from funs_lca import get_WTWa_pyrolysis, get_WTWa_conventional
 
 # _PLOTTING_STYLE.md (SA_RC lives only in the notebook; inlined here)
 SA_RC = {
@@ -37,7 +37,7 @@ MAIN_SCALE = 10                 # main SAF unit fixed at knee-point x10
 AMM_SCALES = [0, 1, 2.5, 5, 7.5, 10]   # ammonia cracker scale
 CCS_RATES = [0.0, 0.25, 0.50, 0.75, 1.00]
 CO2_TS = 10.0                   # $/tCO2 T&S basis (current, commit 95db93c)
-LCA_METHOD = 'Allocation'       # report primary; GHG-100
+LCA_METHOD = 'Allocation_KRmix'  # report primary; GHG-100, Korea grid mix
 
 # Biomass price-model span at the x10 plant (0.457 MMt/yr SAF), from
 # tea_scale_up_price_models.py / tea_biomass_price_only.py: FR-price floor and galik
@@ -190,18 +190,19 @@ def main() -> None:
     df = pd.DataFrame(rows)
     df['pareto'] = pareto_mask(df)
 
-    # CO2 abatement cost vs the compliance floor (converted from the old grey-base reference).
-    # A producer is forced only to the cheapest CORSIA-compliant point; abatement = extra $/tCO2 to
-    # decarbonize *below* it. Anchor = grey-H2 + CCS25 (no ammonia): the CCS25 GREET sample is the
-    # nearest real run to the 0.9x-conventional line (76.0 g/MJ ~ 75.9 threshold; no interpolation,
-    # user choice) and is the cheapest compliant point on the front (every NH3-bearing compliant
-    # point costs more). Same formula as tea_scale_up_abatement.py: dMJSP / (dGHG * E) * 1e6.
+    # CO2 abatement cost vs the compliance floor. A producer is forced only to the cheapest
+    # CORSIA-compliant point (GHG <= 0.9x conventional); abatement = extra $/tCO2 to decarbonize
+    # *below* it. Floor = cheapest-MJSP point among the compliant runs, picked dynamically: under US
+    # mix this was grey-H2+CCS25, but under KR mix CCS25 alone (89.9 g/MJ) is not compliant, so the
+    # floor shifts to a deeper-decarbonization run. Same formula as tea_scale_up_abatement.py.
     E_MJ_PER_L = 31.66   # MJ/L SAF (report section 3b)
-    anchor = df[(df['amm_scale'] == 0) & (df['ccs'] == 0.25)].iloc[0]
+    threshold = 0.9 * get_WTWa_conventional(FILE_WTWA)['WTWa']['GHG-100']
+    compliant = df[df['ghg'] <= threshold]
+    anchor = compliant.loc[compliant['mjsp'].idxmin()]
     d_ghg = (anchor['ghg'] - df['ghg']) * E_MJ_PER_L        # g/L avoided vs the floor
     df['abatement'] = (df['mjsp'] - anchor['mjsp']) * 1e6 / d_ghg   # $/tCO2
-    df.loc[df['ghg'] > anchor['ghg'], 'abatement'] = float('nan')   # strictly above the floor (dirtier): n/a
-    df.loc[anchor.name, 'abatement'] = 0.0                          # the floor itself = 0 $/tCO2 reference (colored on contour)
+    df.loc[df['ghg'] > anchor['ghg'], 'abatement'] = float('nan')   # above the floor (dirtier): n/a
+    df.loc[anchor.name, 'abatement'] = 0.0                          # the floor itself = 0 $/tCO2 reference
 
     # scatter: color by ammonia scale, marker by CCS -----------------------
     plt.rcParams.update(SA_RC)
@@ -240,8 +241,8 @@ def main() -> None:
     err_h = plt.matplotlib.patches.Patch(facecolor='#999999', alpha=0.25, edgecolor='none',
                                          label='MJSP sensitivity (§4.7)')
     ax.legend(handles=amm_h + ccs_h + [front_h, err_h], ncol=2, loc='best')
-    # GHG basis stated on-plot to remove ambiguity (US grid mix, Allocation)
-    ax.text(0.02, 0.02, 'WTWa GHG: Allocation, US grid mix', transform=ax.transAxes,
+    # GHG basis stated on-plot to remove ambiguity (Korea grid mix, Allocation)
+    ax.text(0.02, 0.02, 'WTWa GHG: Allocation, Korea grid mix', transform=ax.transAxes,
             ha='left', va='bottom', fontsize=8, color='#555555')
     ax.set_ylim(0, 4)  # fix y-axis top at $4/L SAF
 
@@ -273,10 +274,10 @@ def main() -> None:
 
     tornado_compare(tea, h2_cost, h2_rate, bio_cost, op)   # CCS 25% vs Green NH3 25% panels
 
-    # self-checks: base positive; GHG base matches report ~87.57; more CCS lowers GHG at fixed NH3;
+    # self-checks: base positive; GHG base matches report ~100.83 (KR mix); more CCS lowers GHG at fixed NH3;
     # more NH3 lowers GHG at fixed CCS; front is non-empty and trades off (ghg up <-> mjsp down).
     assert (df['mjsp'] > 0).all()
-    assert abs(ghg_base - 87.57) < 1.0, ghg_base
+    assert abs(ghg_base - 100.83) < 1.0, ghg_base
     g = df.pivot(index='amm_scale', columns='ccs', values='ghg')
     assert (g[1.0] < g[0.0]).all() and (g.loc[10] < g.loc[0]).all()
     assert len(front) >= 2 and front['mjsp'].is_monotonic_decreasing

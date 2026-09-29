@@ -2,7 +2,7 @@
 
 Two-objective trade-off (minimize MJSP, minimize WTWa GHG) for the SAF pyrolysis
 process, main unit fixed at scale **x10** (MJSP economies-of-scale knee), sweeping
-ammonia-cracker scale and CCS portion. 551 basis, Allocation LCA.
+ammonia-cracker scale and CCS portion. 551 basis, Allocation LCA, **Korea grid mix**.
 
 Script: `tea_pareto_front.py` → `Figure/pareto_front.png`, `Result/pareto_front.xlsx`.
 
@@ -22,16 +22,16 @@ Script: `tea_pareto_front.py` → `Figure/pareto_front.png`, `Result/pareto_fron
 - **MJSP** — `funs.TEA.economic_analysis` at `Scale0100`. For x0, the grey `Base` row; for
   x1–x10, the `Mix` row (partial grey/ammonia H₂ **with CCS applied at the same portion**).
   No engine change. CO₂ T&S = **$10/tCO₂** (current basis, commit 95db93c).
-- **GHG** — `funs_lca.get_WTWa_pyrolysis`, GHG-100, **Allocation method, US grid mix**
-  (`Pyrolysis_551_LCA_Allocation.xlsx`, *not* the `_KRmix` / Displacement variants; base
-  87.57 g/MJ = the US-Allocation value, vs 100.83 for KR-Allocation). CCS uses the per-portion LCA
+- **GHG** — `funs_lca.get_WTWa_pyrolysis`, GHG-100, **Allocation method, Korea grid mix**
+  (`Pyrolysis_551_LCA_Allocation_KRmix.xlsx`, *not* the US-mix / Displacement variants; base
+  100.83 g/MJ = the KR-Allocation value, vs 87.57 for US-Allocation). CCS uses the per-portion LCA
   sheets (`Base`, `CCS025/050/075/100` — no interpolation). The ammonia lever is applied as an
   additive delta from base:
   `GHG(a,c) = ghg_ccs[c] − a·(ghg_base − ghg_ammonia)`.
   - **Assumption**: ammonia-H₂ abatement (removing upstream grey-H₂/SMR emissions) is
     independent of, and additive to, CCS process-CO₂ capture — they act on largely different
     emission sources. Cross-terms not modelled (no combined ammonia+CCS LCA case exists).
-- **Pareto front**: non-dominated set minimizing both objectives (12 of 30 points).
+- **Pareto front**: non-dominated set minimizing both objectives (15 of 30 points under KR mix).
 
 ## 3. Results
 
@@ -41,86 +41,94 @@ Colour = ammonia scale; marker = CCS portion; line = Pareto front.
 
 **Pareto-optimal points** (grey-end cheap → ammonia-end clean):
 
-| NH₃ scale | CCS | GHG [g CO₂e/MJ] | MJSP [$/L] |
+| Green NH₃ | CCS | GHG [g CO₂e/MJ] | MJSP [$/L] |
 |-----------|-----|-----------------|------------|
-| x0  | 0%   | 87.57 | 0.793 |
-| x0  | 25%  | 76.01 | 0.855 |
-| x0  | 50%  | 64.44 | 0.913 |
-| x0  | 75%  | 54.18 | 1.111 |
-| x1  | 50%  | 60.63 | 1.098 |
-| x1  | 75%  | 50.36 | 1.296 |
-| x0  | 100% | 44.15 | 1.334 |
-| x1  | 100% | 40.34 | 1.518 |
-| x2.5| 100% | 34.62 | 1.782 |
-| x5  | 100% | 25.09 | 2.221 |
-| x7.5| 100% | 15.56 | 2.657 |
-| x10 | 100% |  6.03 | 3.085 |
+| 0%   | 0%   | 100.83 | 0.793 |
+| 0%   | 25%  |  89.93 | 0.855 |
+| 0%   | 50%  |  78.99 | 0.913 |
+| 10%  | 50%  |  75.18 | 1.098 |
+| 0%   | 75%  |  69.36 | 1.111 |
+| 10%  | 75%  |  65.55 | 1.296 |
+| 0%   | 100% |  59.96 | 1.334 |
+| 10%  | 100% |  56.15 | 1.518 |
+| 25%  | 100% |  50.44 | 1.782 |
+| 50%  | 75%  |  50.31 | 1.998 |
+| 50%  | 100% |  40.91 | 2.221 |
+| 75%  | 75%  |  40.78 | 2.435 |
+| 75%  | 100% |  31.39 | 2.657 |
+| 100% | 75%  |  31.26 | 2.863 |
+| 100% | 100% |  21.86 | 3.085 |
 
-Full 30-point grid in `Result/pareto_front.xlsx`.
+Full 30-point grid in `Result/pareto_front.xlsx`. (MJSP is identical to the US-mix run — the LCA
+method changes only the GHG axis, hence the front membership; the economics are untouched.)
 
 **CORSIA-compliance floor.** The regulatory line is **75.9 g CO₂e/MJ** (0.9 × conventional-jet
-WTWa, CORSIA −10%). Grey H₂ + **CCS25** (76.0 g CO₂e/MJ, 0.855 $/L) is the nearest sampled point to
-that line and the cheapest CCS-only route to it, so it is taken as the **compliance floor** — the
-point a producer is forced to, and the reference for the abatement cost in §5. Grey+CCS50 clears the
-line with margin (64.4 g/MJ) but costs more; every ammonia-bearing compliant point costs more still,
-so the cheapest way to satisfy the mandate is **CCS only, no ammonia**.
+WTWa, CORSIA −10%; unchanged — it is set by conventional jet, not the grid mix). Under the Korea
+grid the pyrolysis base is dirtier (100.8 g/MJ), so **CCS25 (89.9) and CCS50 (79.0) both miss the
+line** — the US-mix CCS-only compliance route no longer holds. The cheapest compliant point is now
+**10% green NH₃ + CCS50 (75.18 g/MJ, 1.098 $/L)**, taken as the **compliance floor** (the point a
+producer is forced to, and the reference for §5). CCS75-only clears the line too (69.4 g/MJ) at
+essentially the same cost (1.111 $/L). So under KR mix the mandate demands **either CCS ≥ 75% or
+CCS50 plus ~10% green ammonia** — materially deeper decarbonization than the US-mix CCS25 floor.
 
 ## 4. Reading the trade-off
 
-- **Front spans 0.79 → 3.09 $/L for 87.6 → 6.0 g CO₂e/MJ** — a ~14× GHG cut costs ~3.9× MJSP.
-- **CCS is the efficient near-term lever.** From grey-no-CCS, ramping CCS 0→100% (all at x0
-  ammonia) stays on or near the front down to 44 g at 1.33 $/L. Ammonia at low CCS is
-  dominated — every x2.5–x10 point at CCS <100% sits above the front.
-- **Ammonia only pays below ~44 g CO₂e/MJ.** Grey+CCS100 bottoms out at 44 g; going deeper
-  requires displacing grey H₂, so the whole deep-decarbonization tail of the front is
-  **CCS100 + rising ammonia scale**. Ammonia never appears on the front without CCS100.
-- **Knee of the front** is around the x0/CCS100 → x1/CCS100 region (44 g, 1.33 $/L): the last
-  cheap GHG reductions before ammonia's steep cost tail.
+- **Front spans 0.79 → 3.09 $/L for 100.8 → 21.9 g CO₂e/MJ** — a ~4.6× GHG cut costs ~3.9× MJSP.
+- **CCS is still the efficient near-term lever.** From grey-no-CCS, ramping CCS 0→100% (all at 0%
+  ammonia) stays on or near the front down to 60 g at 1.33 $/L. But under the dirtier KR base the
+  cheapest CCS-only points now need CCS75/100 to reach the mid-front.
+- **Ammonia enters the front earlier than under US mix.** Because CCS-only cannot clear the mandate,
+  the deep-decarbonization tail is **CCS75/CCS100 + rising ammonia scale** — the front now carries
+  CCS75 points (50/75/100% NH₃) as well as the CCS100 ladder. Ammonia no longer waits for CCS100.
+- **Knee of the front** is around the 10%/CCS50 → 0%/CCS75 region (69–75 g, ~1.10 $/L): the
+  compliance floor itself, just before the ammonia cost tail steepens.
 - This is a first scatter at base green-ammonia price ($0.288/lb) and $10/tCO₂ T&S; both move
   the ammonia and CCS tails respectively (see `_Tornado_Sensitivity.md` ranges).
 
 ## 5. CO₂ abatement cost (vs the CORSIA-compliance floor)
 
-Marginal cost of decarbonizing **below the compliance floor** — grey H₂ + **CCS25** (§3), the
-cheapest CORSIA-compliant point. Regulation forces a producer only as far as the floor; every
-reduction beyond it is voluntary, so the floor — not the dirty grey base — is the reference:
-`abatement = ΔMJSP / (ΔGHG · E) · 10⁶` [$/tCO₂], `E = 31.66 MJ/L SAF` (§3b), with ΔMJSP and ΔGHG
-taken against grey+CCS25 (76.0 g/MJ, 0.855 $/L). Points at or above the floor are non-abating
-(n/a). Same formula as `tea_scale_up_abatement.py`. Full grid in `Result/pareto_front.xlsx`
-(`abatement` column, rebased).
+Marginal cost of decarbonizing **below the compliance floor** — **10% green NH₃ + CCS50** (§3), the
+cheapest CORSIA-compliant point under the Korea grid. Regulation forces a producer only as far as
+the floor; every reduction beyond it is voluntary, so the floor — not the dirty grey base — is the
+reference: `abatement = ΔMJSP / (ΔGHG · E) · 10⁶` [$/tCO₂], `E = 31.66 MJ/L SAF` (§3b), with ΔMJSP
+and ΔGHG taken against the floor (75.18 g/MJ, 1.098 $/L). Points at or above the floor are
+non-abating (n/a). The floor is selected dynamically as the cheapest compliant run (not hardcoded),
+so it tracks the LCA basis. Same formula as `tea_scale_up_abatement.py`. Full grid in
+`Result/pareto_front.xlsx` (`abatement` column, rebased).
 
 **Pareto-front points** — first row is the compliance floor (reference); the rest lie below it and
 carry a marginal abatement cost:
 
 | Green NH₃ | CCS | GHG [g/MJ] | MJSP [$/L] | Abatement [$/tCO₂] |
 |-----------|-----|------------|------------|--------------------|
-| 0%   | 25%  | 76.01 | 0.855 | 0 (floor) |
-| 0%   | 50%  | 64.44 | 0.913 | 160 |
-| 10%  | 50%  | 60.63 | 1.098 | 499 |
-| 0%   | 75%  | 54.17 | 1.111 | 371 |
-| 10%  | 75%  | 50.36 | 1.296 | 543 |
-| 0%   | 100% | 44.15 | 1.334 | 475 |
-| 10%  | 100% | 40.34 | 1.518 | 588 |
-| 25%  | 100% | 34.62 | 1.782 | 707 |
-| 50%  | 100% | 25.09 | 2.221 | 847 |
-| 75%  | 100% | 15.56 | 2.657 | 942 |
-| 100% | 100% |  6.03 | 3.085 | 1007 |
+| 10%  | 50%  | 75.18 | 1.098 | 0 (floor) |
+| 0%   | 75%  | 69.36 | 1.111 | 74 |
+| 10%  | 75%  | 65.55 | 1.296 | 649 |
+| 0%   | 100% | 59.96 | 1.334 | 490 |
+| 10%  | 100% | 56.15 | 1.518 | 698 |
+| 25%  | 100% | 50.44 | 1.782 | 873 |
+| 50%  | 75%  | 50.31 | 1.998 | 1144 |
+| 50%  | 100% | 40.91 | 2.221 | 1035 |
+| 75%  | 75%  | 40.78 | 2.435 | 1228 |
+| 75%  | 100% | 31.39 | 2.657 | 1125 |
+| 100% | 75%  | 31.26 | 2.863 | 1269 |
+| 100% | 100% | 21.86 | 3.085 | 1177 |
 
-- **Cheapest step below the floor = grey+CCS50 at 160 $/tCO₂** — deepen CCS on grey H₂. Grey-only
-  CCS deepening then climbs: CCS50→75→100 = 160→371→475 $/t (the last tonnes of capture cost most).
-- **Green ammonia is the expensive tail: 499 → 1007 $/tCO₂** (10%→100% share, all at CCS100). It
-  only enters once grey+CCS100 (44 g/MJ) is exhausted and deeper cuts are still needed.
-- CCS on grey H₂ is the cheapest abatement lever at every depth below the floor; ammonia is always
-  dearer per tonne. The deepest option (full green NH₃ + CCS100) reaches 6 g/MJ at 1007 $/t.
+- **Cheapest step below the floor = grey + CCS75 at 74 $/tCO₂** — deepen CCS on grey H₂. The next
+  grey-CCS step, CCS100 (60 g/MJ), costs 490 $/t (the last tonnes of capture cost most).
+- **Green ammonia is the expensive tail: ~650 → 1270 $/tCO₂** (10%→100% share, at CCS75/CCS100). It
+  only pays once grey+CCS100 (60 g/MJ) is exhausted and deeper cuts are still needed.
+- CCS on grey H₂ is the cheapest abatement lever near the floor; ammonia is always dearer per tonne.
+  The deepest option (full green NH₃ + CCS100) reaches 21.9 g/MJ at ~1180 $/t.
 
 ![Abatement cost contour](Figure/pareto_abatement_contour_compliance.png)
 
 Contour over the grid (x = green-NH₃ H₂ substitution ratio, y = CCS portion; dots = the 30 sampled
-points). The floor itself (grey+CCS25) is coloured as the **0 $/tCO₂ reference**; only cells
-*strictly above* it (GHG > 76.0 g/MJ — the grey base and the low-CCS/low-NH₃ corner) are blank
-(non-abating). Below the floor the cheapest tonnes lie along the **left edge
-(NH₃ = 0)** — deepening CCS on grey H₂; cost climbs steeply rightward as green ammonia is added.
-Same message as the table: **CCS first, ammonia last.**
+points). The floor (10% NH₃ + CCS50) is coloured as the **0 $/tCO₂ reference**; cells *above* it
+(GHG > 75.18 g/MJ — the grey base and the low-CCS/low-NH₃ corner, now a larger blank region than
+under US mix) are non-abating. Below the floor the cheapest tonnes still lie toward the **CCS axis**
+— deepening CCS; cost climbs steeply as green ammonia is added. Same message as the table:
+**CCS first, ammonia last — but under KR mix the floor itself already sits at deep CCS.**
 
 ## 6. MJSP sensitivity on the frontier
 
@@ -139,17 +147,21 @@ Bar = envelope (min…max) of the one-at-a-time swings. Table `Result/pareto_fro
 | 0%   | 0%   | 0.793 | 0.55 | 1.84 |
 | 0%   | 25%  | 0.855 | 0.61 | 1.90 |
 | 0%   | 50%  | 0.913 | 0.67 | 1.96 |
-| 1%*  | 50%  | 1.098 | 0.85 | 2.04 |
+| 10%  | 50%  | 1.098 | 0.85 | 2.04 |
 | 0%   | 75%  | 1.111 | 0.86 | 2.16 |
 | 10%  | 75%  | 1.296 | 1.05 | 2.24 |
 | 0%   | 100% | 1.334 | 1.09 | 2.38 |
 | 10%  | 100% | 1.518 | 1.27 | 2.46 |
 | 25%  | 100% | 1.782 | 1.49 | 2.57 |
+| 50%  | 75%  | 1.998 | 1.41 | 2.58 |
 | 50%  | 100% | 2.221 | 1.64 | 2.81 |
+| 75%  | 75%  | 2.435 | 1.56 | 3.31 |
 | 75%  | 100% | 2.657 | 1.78 | 3.54 |
+| 100% | 75%  | 2.863 | 1.69 | 4.03 |
 | 100% | 100% | 3.085 | 1.91 | 4.26 |
 
-(*10% NH₃ share, rounded.)
+(MJSP columns are LCA-method-independent — identical to the US-mix run; only the set of
+front rows changes with the GHG axis.)
 
 - **Bars are wide and upward-skewed**, driven by the hydrogen price (gray H₂ 1–4 $/kg or
   green NH₃ 0.12–0.45 $/lb) — the same conclusion as `_Tornado_Sensitivity.md`. Every point
@@ -166,6 +178,50 @@ Bar = envelope (min…max) of the one-at-a-time swings. Table `Result/pareto_fro
   Highs are unchanged — the hydrogen price, not biomass, sets the top of every bar.
 
 ## Log history
+
+### 2026-09-29 (update 7)
+
+**Discussion**
+- Rebased the whole report from **US grid mix → Korea grid mix** (Allocation, still 551 basis), per
+  user request. KR base is dirtier: 100.83 g/MJ vs 87.57 (US); ammonia 62.7 vs 49.5.
+- Consequence for compliance: the 75.9 g/MJ CORSIA line is unchanged (set by conventional jet), but
+  under KR mix **CCS25 (89.9) and CCS50 (79.0) both miss it** — the US-mix "CCS-only clears the
+  mandate at CCS25" story does not survive. Cheapest compliant point moves to **10% green NH₃ + CCS50
+  (75.18 g/MJ, 1.098 \$/L)**; CCS75-only (69.4, 1.111 \$/L) is essentially tied. Floor for §5 abatement
+  reset to that point.
+- Decided to make the abatement anchor **dynamic** (cheapest compliant run) instead of the hardcoded
+  grey+CCS25 — that cell is no longer compliant under KR mix, so hardcoding it would rebase against a
+  dirty reference. Dynamic pick keeps the stated intent ("cheapest CORSIA-compliant point") valid for
+  either grid.
+- US-mix numbers were **replaced** in the body (rebase, not a side-by-side variant); the prior
+  US-mix values remain in older log entries for provenance.
+
+**Code**
+- `tea_pareto_front.py` — `LCA_METHOD='Allocation_KRmix'`; abatement block now computes the CORSIA
+  threshold from `get_WTWa_conventional` and picks `anchor = cheapest-MJSP compliant point`
+  (`ghg ≤ 0.9×conventional`); on-plot label → "Korea grid mix"; self-check base 87.57 → 100.83.
+  Regenerated `Figure/pareto_front.png`, `Figure/pareto_abatement_contour_compliance.png`,
+  `Result/pareto_front.xlsx`, `Result/pareto_front_sensitivity.xlsx`. Self-checks pass.
+- Front grows **12 → 15 points**: the CCS75 tail (50/75/100% NH₃ at CCS75) now joins the CCS100
+  ladder. MJSP per (a,c) is unchanged — the LCA method touches only the GHG axis, confirmed by the
+  identical MJSP columns.
+- `tea_pareto_shap.py` unaffected (imports only `FS/FA/SA_RC/mix_row/BIO_PRICE_FR`, all economics).
+
+**Open**
+- Subscript glyphs (₂/₃) still render as tofu (SA_RC font lacks them) — cosmetic, project-wide.
+- `Manuscript/SI. Supporting Information.md` cites this report's US-mix floor (grey+CCS25) and base
+  87.57 — now stale; needs the KR-mix floor (10% NH₃ + CCS50) and base 100.83.
+
+### 2026-09-29 (update 6)
+
+**Code**
+- `tea_pareto_shap.py` — added `scatter()`: both points overlaid on one axes (x = Shapley MJSP
+  contribution, y = driver, ○ CCS25 / ■ NH₃25), wired into `main()` →
+  `Figure/shap_scatter_ccs25_vs_nh325.png`. Rendered from the saved `Result/shap_ccs25_vs_nh325.xlsx`
+  (no explainer re-run). Not committed (plot-only request).
+
+**Open**
+- Subscript glyphs render as tofu boxes in the scatter too (SA_RC font lacks ₂/₃) — cosmetic, project-wide.
 
 ### 2026-09-29 (update 5)
 
