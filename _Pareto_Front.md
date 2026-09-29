@@ -58,6 +58,13 @@ Colour = ammonia scale; marker = CCS portion; line = Pareto front.
 
 Full 30-point grid in `Result/pareto_front.xlsx`.
 
+**CORSIA-compliance floor.** The regulatory line is **75.9 g CO₂e/MJ** (0.9 × conventional-jet
+WTWa, CORSIA −10%). Grey H₂ + **CCS25** (76.0 g CO₂e/MJ, 0.855 $/L) is the nearest sampled point to
+that line and the cheapest CCS-only route to it, so it is taken as the **compliance floor** — the
+point a producer is forced to, and the reference for the abatement cost in §5. Grey+CCS50 clears the
+line with margin (64.4 g/MJ) but costs more; every ammonia-bearing compliant point costs more still,
+so the cheapest way to satisfy the mandate is **CCS only, no ammonia**.
+
 ## 4. Reading the trade-off
 
 - **Front spans 0.79 → 3.09 $/L for 87.6 → 6.0 g CO₂e/MJ** — a ~14× GHG cut costs ~3.9× MJSP.
@@ -72,63 +79,72 @@ Full 30-point grid in `Result/pareto_front.xlsx`.
 - This is a first scatter at base green-ammonia price ($0.288/lb) and $10/tCO₂ T&S; both move
   the ammonia and CCS tails respectively (see `_Tornado_Sensitivity.md` ranges).
 
-## 5. CO₂ abatement cost
+## 5. CO₂ abatement cost (vs the CORSIA-compliance floor)
 
-Marginal abatement cost of each option vs the grey base (x0, CCS0 — cheapest, dirtiest):
-`abatement = ΔMJSP / (ΔGHG · E) · 10⁶` [$/tCO₂], `E = 31.66 MJ/L SAF` (§3b). Same formula as
-`tea_scale_up_abatement.py`. Full grid in `Result/pareto_front.xlsx` (`abatement` column).
+Marginal cost of decarbonizing **below the compliance floor** — grey H₂ + **CCS25** (§3), the
+cheapest CORSIA-compliant point. Regulation forces a producer only as far as the floor; every
+reduction beyond it is voluntary, so the floor — not the dirty grey base — is the reference:
+`abatement = ΔMJSP / (ΔGHG · E) · 10⁶` [$/tCO₂], `E = 31.66 MJ/L SAF` (§3b), with ΔMJSP and ΔGHG
+taken against grey+CCS25 (76.0 g/MJ, 0.855 $/L). Points at or above the floor are non-abating
+(n/a). Same formula as `tea_scale_up_abatement.py`. Full grid in `Result/pareto_front.xlsx`
+(`abatement` column, rebased).
 
-**Pareto-front points** (grey base = reference, no abatement):
+**Pareto-front points** — first row is the compliance floor (reference); the rest lie below it and
+carry a marginal abatement cost:
 
 | Green NH₃ | CCS | GHG [g/MJ] | MJSP [$/L] | Abatement [$/tCO₂] |
 |-----------|-----|------------|------------|--------------------|
-| 0%   | 25%  | 76.01 | 0.855 | 170 |
-| 0%   | 50%  | 64.44 | 0.913 | 165 |
-| 0%   | 75%  | 54.18 | 1.111 | 301 |
-| 10%  | 50%  | 60.63 | 1.098 | 358 |
-| 0%   | 100% | 44.15 | 1.334 | 394 |
-| 10%  | 75%  | 50.36 | 1.296 | 427 |
-| 10%  | 100% | 40.34 | 1.518 | 485 |
-| 25%  | 100% | 34.62 | 1.782 | 590 |
-| 50%  | 100% | 25.09 | 2.221 | 722 |
-| 75%  | 100% | 15.56 | 2.657 | 818 |
-| 100% | 100% |  6.03 | 3.085 | 888 |
+| 0%   | 25%  | 76.01 | 0.855 | 0 (floor) |
+| 0%   | 50%  | 64.44 | 0.913 | 160 |
+| 10%  | 50%  | 60.63 | 1.098 | 499 |
+| 0%   | 75%  | 54.17 | 1.111 | 371 |
+| 10%  | 75%  | 50.36 | 1.296 | 543 |
+| 0%   | 100% | 44.15 | 1.334 | 475 |
+| 10%  | 100% | 40.34 | 1.518 | 588 |
+| 25%  | 100% | 34.62 | 1.782 | 707 |
+| 50%  | 100% | 25.09 | 2.221 | 847 |
+| 75%  | 100% | 15.56 | 2.657 | 942 |
+| 100% | 100% |  6.03 | 3.085 | 1007 |
 
-- **Cheapest CO₂ removal ≈ 165–170 $/tCO₂** — grey H₂ + CCS 25–50%. Abatement cost *rises* as CCS
-  deepens (75%→100% grey = 301→394 $/t): the last increments of capture cost more per tonne.
-- **Green ammonia is the expensive tail: 485 → 888 $/tCO₂** (10%→100% share, all at CCS100). It is
-  only worth buying once CCS100 is exhausted at 44 g/MJ and deeper cuts are still needed.
-- Whole-grid minimum abatement cost is the grey+CCS50 point (165 $/t); the maximum useful option
-  (full green NH₃ + CCS100) reaches 6 g/MJ at 888 $/t.
+- **Cheapest step below the floor = grey+CCS50 at 160 $/tCO₂** — deepen CCS on grey H₂. Grey-only
+  CCS deepening then climbs: CCS50→75→100 = 160→371→475 $/t (the last tonnes of capture cost most).
+- **Green ammonia is the expensive tail: 499 → 1007 $/tCO₂** (10%→100% share, all at CCS100). It
+  only enters once grey+CCS100 (44 g/MJ) is exhausted and deeper cuts are still needed.
+- CCS on grey H₂ is the cheapest abatement lever at every depth below the floor; ammonia is always
+  dearer per tonne. The deepest option (full green NH₃ + CCS100) reaches 6 g/MJ at 1007 $/t.
 
-![Abatement cost contour](Figure/pareto_abatement_contour.png)
+![Abatement cost contour](Figure/pareto_abatement_contour_compliance.png)
 
-Contour over the full grid (x = green-NH₃ H₂ substitution ratio, y = CCS portion; dots = the 30
-sampled points; base cell = reference, 0). The cost floor is the **left edge (NH₃ = 0)** — CCS on
-grey H₂. The **bottom-right hot zone** (high NH₃, low CCS) is the most expensive removal: buying
-green ammonia while capturing little process CO₂ pays a lot per tonne. Cheapest tonnes lie
-bottom-left (grey + shallow CCS); cost climbs rightward far faster than upward.
+Contour over the grid (x = green-NH₃ H₂ substitution ratio, y = CCS portion; dots = the 30 sampled
+points). The floor itself (grey+CCS25) is coloured as the **0 $/tCO₂ reference**; only cells
+*strictly above* it (GHG > 76.0 g/MJ — the grey base and the low-CCS/low-NH₃ corner) are blank
+(non-abating). Below the floor the cheapest tonnes lie along the **left edge
+(NH₃ = 0)** — deepening CCS on grey H₂; cost climbs steeply rightward as green ammonia is added.
+Same message as the table: **CCS first, ammonia last.**
 
 ## 6. MJSP sensitivity on the frontier
 
 Error bars on each Pareto-front point apply the §4.7 tornado conditions
-(`_Tornado_Sensitivity.md`) to the **Mix** points, reusing `tea_tornado.py` constants:
-biomass ±50%, gray H₂ 1–4 $/kg (on the grey share 1−a), green NH₃ 0.12–0.45 $/lb (on the
-ammonia share a), CAPEX ±30%, CO₂ T&S 4–45 $/tCO₂ (CCS points), electricity ±30%,
-co-product ±20%, capacity 85/91%. Bar = envelope (min…max) of the one-at-a-time swings.
-Table `Result/pareto_front_sensitivity.xlsx`.
+(`_Tornado_Sensitivity.md`) to the **Mix** points, reusing `tea_tornado.py` constants,
+**except biomass**: since this front is fixed at the x10 plant (0.457 MMt/yr SAF), the
+biomass price range is the supply-curve price-model span *at that scale* — FR-price floor
+**0.0486 → galik 0.0527 $/lb (+8.3%)**, one-sided up (FR is the floor), replacing the
+generic ±50% swing (§3.3, `tea_scale_up_price_models.py`). Other knobs unchanged: gray H₂
+1–4 $/kg (on the grey share 1−a), green NH₃ 0.12–0.45 $/lb (on the ammonia share a), CAPEX
+±30%, CO₂ T&S 4–45 $/tCO₂ (CCS points), electricity ±30%, co-product ±20%, capacity 85/91%.
+Bar = envelope (min…max) of the one-at-a-time swings. Table `Result/pareto_front_sensitivity.xlsx`.
 
 | Green NH₃ | CCS | MJSP [$/L] | MJSP low | MJSP high |
 |-----------|-----|------------|----------|-----------|
-| 0%   | 0%   | 0.793 | 0.48 | 1.84 |
-| 0%   | 25%  | 0.855 | 0.54 | 1.90 |
-| 0%   | 50%  | 0.913 | 0.60 | 1.96 |
-| 1%*  | 50%  | 1.098 | 0.78 | 2.04 |
-| 0%   | 75%  | 1.111 | 0.80 | 2.16 |
-| 10%  | 75%  | 1.296 | 0.98 | 2.24 |
-| 0%   | 100% | 1.334 | 1.02 | 2.38 |
-| 10%  | 100% | 1.518 | 1.21 | 2.46 |
-| 25%  | 100% | 1.782 | 1.47 | 2.57 |
+| 0%   | 0%   | 0.793 | 0.55 | 1.84 |
+| 0%   | 25%  | 0.855 | 0.61 | 1.90 |
+| 0%   | 50%  | 0.913 | 0.67 | 1.96 |
+| 1%*  | 50%  | 1.098 | 0.85 | 2.04 |
+| 0%   | 75%  | 1.111 | 0.86 | 2.16 |
+| 10%  | 75%  | 1.296 | 1.05 | 2.24 |
+| 0%   | 100% | 1.334 | 1.09 | 2.38 |
+| 10%  | 100% | 1.518 | 1.27 | 2.46 |
+| 25%  | 100% | 1.782 | 1.49 | 2.57 |
 | 50%  | 100% | 2.221 | 1.64 | 2.81 |
 | 75%  | 100% | 2.657 | 1.78 | 3.54 |
 | 100% | 100% | 3.085 | 1.91 | 4.26 |
@@ -144,8 +160,85 @@ Table `Result/pareto_front_sensitivity.xlsx`.
   routes narrows or collapses. The mean-price front is the central estimate, not a guarantee.
 - The low end of each bar (cheap H₂, high capacity) keeps the trade-off shape but shifts the
   whole front down ~0.3 $/L.
+- **Bars are now more upward-skewed** than under the old ±50% biomass swing: with the biomass
+  range bounded to the x10 price-model span (FR floor → +8.3%, no downside), the low ends of the
+  grey/low-ammonia points rise ~0.06 $/L (e.g. grey-no-CCS 0.48 → 0.55, grey+CCS100 1.02 → 1.09).
+  Highs are unchanged — the hydrogen price, not biomass, sets the top of every bar.
 
 ## Log history
+
+### 2026-09-29 (update 2)
+
+**Discussion**
+- **Biomass sensitivity range on the x10 front rebased from generic ±50% to the supply-curve
+  price-model span at x10** (user request). Since the whole front is fixed at the x10 plant
+  (0.457 MMt/yr SAF), the feedstock price should be bounded by what the price models predict at
+  *that* scale, not an arbitrary ±50%. At x10 the models give FR-price floor 0.0486 → galik
+  0.0527 $/lb (+8.3%); range set **one-sided up** (FR is the floor), per user's choice.
+- Effect on §6: low ends of the grey/low-ammonia points rise ~0.06 $/L (grey-no-CCS 0.48 → 0.55,
+  grey+CCS100 1.02 → 1.09); highs unchanged (hydrogen price sets every bar's top). Front central
+  estimates and the CCS-first/ammonia-last ordering are unchanged.
+
+**Code**
+- `tea_pareto_front.py` — `mjsp_error` biomass block now one-sided FR→galik x10
+  (`BIO_PRICE_FR=0.04865`, `BIO_PRICE_HI=0.05268`); dropped now-unused `BIOMASS_PM` import.
+  Regenerated `Figure/pareto_front.png`, `Result/pareto_front.xlsx`,
+  `Result/pareto_front_sensitivity.xlsx`. Self-checks pass.
+- Cross-report (same session, logged here per session target): restyled
+  `tea_scale_up_price_models.py` to SA_RC + SAF-production [MMt/yr] x-axis (png only),
+  regenerated `Figure/scale_up_price_model_mjsp.png`; drafted **Manuscript §3.3 "Feedstock price
+  at scale"** — at x10 MES the price-model penalty is small (+~0.06 $/L) but beyond it the
+  supply-curve models reverse the scale benefit (base 1.37 MMt/yr: 0.66 → 1.76 / 3.26 $/L).
+
+**Open**
+- Stale `Figure/scale_up_price_model_mjsp.eps` (pre-restyle) orphaned; script no longer emits eps.
+  Delete pending user OK.
+- §3.3 numbers are 551 basis; the §3.1 figure is Jones_572_2MC — the pre-existing basis mismatch
+  flagged in `_Scale_Up_Sensitivity.md` still stands.
+
+### 2026-09-29
+
+**Discussion**
+- Rebased the CO₂ abatement cost (§5) from the **grey base** to the **CORSIA-compliance floor**:
+  grey H₂ + CCS25. Rationale (user): regulation forces a producer only to the cheapest compliant
+  point, so the marginal-cost question is the cost of decarbonizing *below* the mandate, not above
+  the dirtiest possible fuel.
+- Confirmed (user's check) that the cheapest CORSIA-compliant point on the front is **CCS-only, no
+  ammonia** — grey+CCS25 sits essentially on the 75.9 g/MJ line (76.0), grey+CCS50 clears it with
+  margin, and every ammonia-bearing compliant point costs more. Stated in §3.
+- Anchor point = the **CCS25 GREET sample** (a real run), chosen over interpolating the exact
+  CCS fraction (~25.2%) that lands on 75.9 g/MJ. GREET is an external Argonne tool, not runnable
+  here; the repo only reads its exported LCA sheets at CCS {25,50,75,100}%. Interpolation and the
+  exact-threshold GREET re-sample both dropped in favour of the nearest real sample (76.0 ≈ 75.9).
+
+**Code**
+- `tea_pareto_front.py` — `main()` abatement block now references grey+CCS25 (`anchor`) instead of
+  the grey base; points at/above the floor (GHG ≥ anchor) set to NaN. Abatement contour rebased and
+  written to a **new** file `Figure/pareto_abatement_contour_compliance.png` (old grey-base contour
+  left in place). `Result/pareto_front.xlsx` `abatement` column regenerated. Self-checks pass.
+- Cheapest step below the floor = grey+CCS50 at **160 $/tCO₂**; deepest (full NH₃+CCS100) = 1007 $/t.
+
+**Open**
+- Old §5 grey-base numbers (170/165/…/888 $/t) are replaced, not kept as a variant — the reference
+  changed, so the two number sets are not comparable side by side.
+- Exact-threshold (75.9 g/MJ, CCS≈25.2%) point not GREET-sampled; using the CCS25 real run at 76.0.
+
+### 2026-09-28 (update 5)
+
+**Discussion**
+- Switched the frontier MJSP sensitivity display from **error bars → shaded band**
+  (user request). Same §4.7 tornado min…max envelope and same numbers; purely a visual
+  encoding change, no method/data change.
+
+**Code**
+- `tea_pareto_front.py` — replaced `ax.errorbar(...)` with `ax.fill_between` (grey, α=0.25)
+  over the frontier's `mjsp_lo`/`mjsp_hi`; legend handle now a `Patch`. Regenerated
+  `Figure/pareto_front.png`; self-checks pass.
+- Committed the prior `Result/pareto_front.xlsx` grid-results update (commit `940c7f4`).
+
+**Open**
+- §6 body text still reads "Error bars on each Pareto-front point"; one-word fix to
+  "Shaded band" pending user OK (append-only rule).
 
 ### 2026-09-28 (update 4)
 

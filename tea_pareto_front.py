@@ -39,6 +39,12 @@ CCS_RATES = [0.0, 0.25, 0.50, 0.75, 1.00]
 CO2_TS = 10.0                   # $/tCO2 T&S basis (current, commit 95db93c)
 LCA_METHOD = 'Allocation'       # report primary; GHG-100
 
+# Biomass price-model span at the x10 plant (0.457 MMt/yr SAF), from
+# tea_scale_up_price_models.py / tea_biomass_price_only.py: FR-price floor and galik
+# supply-curve estimate. Sets the §6 biomass sensitivity range (one-sided up).
+BIO_PRICE_FR = 0.04865          # $/lb, FR-price model (base/floor)
+BIO_PRICE_HI = 0.05268          # $/lb, galik supply-curve at x10 demand
+
 FS = f'Process_Data\\Pyrolysis_551_Scale{MAIN_SCALE * 10:04d}_Streams.xlsx'
 FA = f'Process_Data\\Pyrolysis_551_Scale{MAIN_SCALE * 10:04d}_APEA.xlsm'
 FILE_LCA = f'Process_Data\\Pyrolysis_551_LCA_{LCA_METHOD}.xlsx'
@@ -60,7 +66,7 @@ def mjsp(tea: TEA, a: float, c: float) -> float:
 
 # Tornado sensitivity conditions (_Tornado_Sensitivity.md §1) reused as the single
 # source of truth; adapted here to Mix frontier points (partial grey + partial ammonia).
-from tea_tornado import (BIOMASS_PM, H2_RANGE, ELEC_F, COPROD_F, CAPEX_PM,
+from tea_tornado import (H2_RANGE, ELEC_F, COPROD_F, CAPEX_PM,
                          CF_HOURS, TS_RANGE, TS_BASE, AMM_FEED_USD_L, AMM_P_BASE,
                          AMM_PRICE, LB2KG, raw_costs)
 
@@ -92,8 +98,11 @@ def mjsp_error(tea: TEA, a: float, c: float, h2_cost: float, h2_rate: float,
     T&S/electricity/co-product/capacity re-run, biomass/CAPEX linear."""
     base, row, saf = mix_row(tea, a, c)
     ends = [base]
-    d_bio = BIOMASS_PM * bio_cost * op / saf                     # biomass +-50% (all)
-    ends += [base - d_bio, base + d_bio]
+    # Biomass price range = supply-curve price-model span at this x10 plant (0.457 MMt/yr
+    # SAF): FR-price floor 0.04865 $/lb (base) up to the galik supply-curve 0.05268 $/lb
+    # (+8.3%). One-sided (FR is the floor); replaces the generic +-50% swing.
+    d_bio = (BIO_PRICE_HI / BIO_PRICE_FR - 1.) * bio_cost * op / saf
+    ends += [base, base + d_bio]
     if a < 1:                                                    # gray H2 on the grey share
         p_kg = (h2_cost / h2_rate) / LB2KG
         h2_term = h2_cost * (1 - a) * op / saf
@@ -155,13 +164,18 @@ def main() -> None:
     df = pd.DataFrame(rows)
     df['pareto'] = pareto_mask(df)
 
-    # CO2 abatement cost vs grey base (x0, CCS0): extra $ per tonne CO2 avoided.
-    # abate = dMJSP[$/L] / (dGHG[g/MJ] * E[MJ/L]) * 1e6  (same as tea_scale_up_abatement.py)
+    # CO2 abatement cost vs the compliance floor (converted from the old grey-base reference).
+    # A producer is forced only to the cheapest CORSIA-compliant point; abatement = extra $/tCO2 to
+    # decarbonize *below* it. Anchor = grey-H2 + CCS25 (no ammonia): the CCS25 GREET sample is the
+    # nearest real run to the 0.9x-conventional line (76.0 g/MJ ~ 75.9 threshold; no interpolation,
+    # user choice) and is the cheapest compliant point on the front (every NH3-bearing compliant
+    # point costs more). Same formula as tea_scale_up_abatement.py: dMJSP / (dGHG * E) * 1e6.
     E_MJ_PER_L = 31.66   # MJ/L SAF (report section 3b)
-    base = df[(df['amm_scale'] == 0) & (df['ccs'] == 0)].iloc[0]
-    d_ghg = (base['ghg'] - df['ghg']) * E_MJ_PER_L        # g/L avoided
-    df['abatement'] = (df['mjsp'] - base['mjsp']) * 1e6 / d_ghg   # $/tCO2; base row -> inf/NaN
-    df.loc[base.name, 'abatement'] = float('nan')
+    anchor = df[(df['amm_scale'] == 0) & (df['ccs'] == 0.25)].iloc[0]
+    d_ghg = (anchor['ghg'] - df['ghg']) * E_MJ_PER_L        # g/L avoided vs the floor
+    df['abatement'] = (df['mjsp'] - anchor['mjsp']) * 1e6 / d_ghg   # $/tCO2
+    df.loc[df['ghg'] > anchor['ghg'], 'abatement'] = float('nan')   # strictly above the floor (dirtier): n/a
+    df.loc[anchor.name, 'abatement'] = 0.0                          # the floor itself = 0 $/tCO2 reference (colored on contour)
 
     # scatter: color by ammonia scale, marker by CCS -----------------------
     plt.rcParams.update(SA_RC)
@@ -177,16 +191,17 @@ def main() -> None:
     front = df[df['pareto']].sort_values('ghg')
     ax.plot(front['ghg'], front['mjsp'], '-', color='#333333', lw=1.2, zorder=2, label='Pareto front')
 
-    # MJSP error bars on each frontier point (tornado-driver envelope) --------
+    # MJSP tornado-driver envelope as a shaded band along the frontier --------
     h2_cost, h2_rate, bio_cost = raw_costs(tea, FA)
     op = tea.operation_hr
     err = [mjsp_error(tea, r['ammonia_portion'], r['ccs'], h2_cost, h2_rate, bio_cost, op)
            for _, r in front.iterrows()]
-    e_base = [e[0] for e in err]
-    yerr = [[b - lo for b, lo, _ in err], [hi - b for b, _, hi in err]]
-    ax.errorbar(front['ghg'], e_base, yerr=yerr, fmt='none', ecolor='#555555',
-                elinewidth=1.0, capsize=3, zorder=1, label='MJSP sensitivity (§4.7)')
-    front = front.assign(mjsp_lo=[e[1] for e in err], mjsp_hi=[e[2] for e in err])
+    lo = [e[1] for e in err]
+    hi = [e[2] for e in err]
+    # front is sorted by ghg, so fill_between reads left->right along the frontier
+    ax.fill_between(front['ghg'], lo, hi, color='#999999', alpha=0.25, lw=0,
+                    zorder=1, label='MJSP sensitivity (§4.7)')
+    front = front.assign(mjsp_lo=lo, mjsp_hi=hi)
 
     ax.set_xlabel('WTWa GHG-100 [g CO$_2$e/MJ SAF]')
     ax.set_ylabel('MJSP [$/L SAF]')
@@ -196,8 +211,8 @@ def main() -> None:
     ccs_h = [plt.Line2D([], [], marker=ccs_markers[c], ls='', color='0.6', mec='black',
                         label=f'CCS {int(c * 100)}%') for c in CCS_RATES]
     front_h = plt.Line2D([], [], color='#333333', lw=1.2, label='Pareto front')
-    err_h = plt.Line2D([], [], color='#555555', lw=1.0, marker='|', ls='',
-                       label='MJSP sensitivity (§4.7)')
+    err_h = plt.matplotlib.patches.Patch(facecolor='#999999', alpha=0.25, edgecolor='none',
+                                         label='MJSP sensitivity (§4.7)')
     ax.legend(handles=amm_h + ccs_h + [front_h, err_h], ncol=2, loc='best')
     # GHG basis stated on-plot to remove ambiguity (US grid mix, Allocation)
     ax.text(0.02, 0.02, 'WTWa GHG: Allocation, US grid mix', transform=ax.transAxes,
@@ -209,9 +224,10 @@ def main() -> None:
     os.makedirs('Result', exist_ok=True)
     df.round(4).to_excel(os.path.join('Result', 'pareto_front.xlsx'), index=False)
 
-    # abatement-cost contour: x = NH3 substitution ratio, y = CCS portion --------
+    # abatement-cost contour vs the compliance floor: x = NH3 substitution ratio, y = CCS portion.
+    # Cells at/above the floor (GHG >= anchor) are n/a (NaN) -> blank; only the decarbonize-below-
+    # compliance region carries a cost. New filename keeps the old grey-base contour + report section 5.
     piv = df.pivot(index='ccs', columns='ammonia_portion', values='abatement')
-    piv.iloc[0, 0] = 0.0   # grey base is the reference (0/0 -> set 0, higher = worse abatement)
     X, Y = np.meshgrid(piv.columns.values, piv.index.values)
     fig2, ax2 = plt.subplots(figsize=(7, 6))
     cf = ax2.contourf(X, Y, piv.values, levels=12, cmap='RdYlBu_r')
@@ -221,7 +237,7 @@ def main() -> None:
     fig2.colorbar(cf, ax=ax2, label='CO$_2$ abatement cost [\\$/tCO$_2$]')  # escape $ so mathtext keeps the currency sign
     ax2.set_xlabel('Green NH$_3$ H$_2$ substitution ratio')
     ax2.set_ylabel('CCS portion')
-    fig2.savefig(os.path.join('Figure', 'pareto_abatement_contour.png'), dpi=150)
+    fig2.savefig(os.path.join('Figure', 'pareto_abatement_contour_compliance.png'), dpi=150)
 
     pd.set_option('display.width', 200, 'display.max_rows', 40)
     print(df.round(3).to_string(index=False))
