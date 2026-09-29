@@ -119,8 +119,8 @@ SA_RC = {
 }
 plt.rcParams.update(SA_RC)
 
-bar_colors_price = ['#1c5d8e', '#2986cc', '#69aadb']   # biomass price bars, one per price model
-line_colors = plt.cm.RdYlBu(np.linspace(0.1, 0.9, len(mjsp)))   # MJSP lines, one colour per H2 config
+bar_colors_price = ['#cfe0f1', '#93bfe0', '#4a90c7']   # pastel-blue gradient, one per price model
+line_colors = ['#70818A', '#369C0F', '#FF7B33']   # Base black; green/orange: Ammonia / CCS(60%) lines
 styles_price = ['-', '-.', ':']
 markers_model = ["o", "x", "^"]
 
@@ -143,7 +143,7 @@ for cfg_idx, (name, df) in enumerate(mjsp.items()):
     for price_idx, col in enumerate(df.columns):
         xs = [k + offset * (price_idx - 1) for k in range(len(df.index))]
         ax2.plot(xs, df[col], color=line_colors[cfg_idx], marker=markers_model[price_idx],
-                 linestyle=styles_price[price_idx],
+                 linestyle=styles_price[price_idx], linewidth=2, markersize=5,
                  label=name if price_idx == 0 else None)
 ax2.set_ylabel("MJSP [$/L SAF]")
 ax2.set_ylim(0, ax2.get_ylim()[1] * 1.2)
