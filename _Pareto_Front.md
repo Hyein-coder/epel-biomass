@@ -167,6 +167,30 @@ Bar = envelope (min…max) of the one-at-a-time swings. Table `Result/pareto_fro
 
 ## Log history
 
+### 2026-09-29 (update 5)
+
+**Discussion**
+- Reviewer follow-on: exact SHAP (Shapley) MJSP attribution for the same two points as update 4.
+  Chosen method = exact KernelSHAP on the TEA function (user pick over a surrogate or a no-dep
+  analytic Shapley). Feasible exactly because each point has ≤7 drivers → `nsamples=2**M`, `l1_reg=0`
+  enumerates all coalitions, so contributions sum exactly to the all-low→all-high MJSP swing.
+- Finding: feedstock H₂ price dominates both routes. Grey+CCS25 — Gray H₂ +\$1.26/L ≫ CAPEX +\$0.48,
+  Co-product −\$0.49; CO₂ T&S only +\$0.11 (minor lever). Green NH₃ 25% — H₂ bill splits Gray H₂
+  +\$0.94 + Ammonia +\$0.59, and it sits on a higher MJSP floor (base→worst \$1.20→\$2.19 vs
+  \$0.99→\$1.87/L for CCS25). SHAP "base" = cheapest-input corner, so it differs from the tornado
+  base (default inputs).
+
+**Code**
+- `tea_pareto_shap.py` — new. Reuses `tea_pareto_front.mix_row` + the §4.7 ranges (same MJSP model
+  as the tornado); `shap.KernelExplainer` per point, exact coalitions; writes
+  `Figure/shap_ccs25_vs_nh325.png` + `Result/shap_ccs25_vs_nh325.xlsx`. Self-check asserts
+  Σshap == f(hi)−f(lo). Added `shap` to the environment (pulls numba/llvmlite).
+
+**Open**
+- Subscript glyphs (₂/₃) missing from Helvetica Neue LT Pro → matplotlib falls back to DejaVu
+  (cosmetic warning, same as other project figures). `shap` not pinned in any tracked requirements
+  file (none exists in repo).
+
 ### 2026-09-29 (update 4)
 
 **Discussion**
