@@ -331,6 +331,12 @@ Same method, base scale (1×), sweeping capture rate. GHG per rate (LCA sheets `
   base_summary + mjsp.png). Dropped the stale 60%-CCS/Mix-ammonia inline deltas; caption relabeled
   "60% CCS" -> "full CCS" to match the current data.
 
+- `Manuscript/3. Results.md`: **deleted §3.2** (Green ammonia and CCS integration) on user request
+  ("now it's meaningless" after the §3.1 rewrite + full-CCS/full-ammonia data change). Also trimmed
+  the dangling "§3.2 examines..." forward-ref from §3.1's closing sentence. §3.2's GHG-intensity /
+  total-emissions table (base 87.6 / ammonia 49.5 / CCS-60% 60.3 g/MJ; totals 0.18->5.37 etc.) is
+  gone from the draft; recover from git (commit 58a9729 or earlier) if needed elsewhere.
+
 **Open**
 - None for this task.
 
