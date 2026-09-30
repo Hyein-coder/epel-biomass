@@ -211,7 +211,7 @@ def main() -> None:
     amm_colors = {s: cmap(x) for s, x in zip(AMM_SCALES, np.linspace(0.1, 0.9, len(AMM_SCALES)))}
     ccs_markers = dict(zip(CCS_RATES, ['o', 's', '^', 'D', 'P']))
 
-    fig, ax = plt.subplots(figsize=(7, 6))
+    fig, ax = plt.subplots(figsize=(5.5, 5))   # smaller canvas -> legend reads larger relative to axes
     for _, r in df.iterrows():
         ax.scatter(r['ghg'], r['mjsp'], s=70, color=amm_colors[r['amm_scale']],
                    marker=ccs_markers[r['ccs']], edgecolor='black', linewidth=0.6, zorder=3)
@@ -225,9 +225,7 @@ def main() -> None:
            for _, r in front.iterrows()]
     lo = [e[1] for e in err]
     hi = [e[2] for e in err]
-    # front is sorted by ghg, so fill_between reads left->right along the frontier
-    ax.fill_between(front['ghg'], lo, hi, color='#999999', alpha=0.25, lw=0,
-                    zorder=1, label='MJSP sensitivity (§4.7)')
+    # sensitivity envelope kept for export/print only; shaded band removed per request
     front = front.assign(mjsp_lo=lo, mjsp_hi=hi)
 
     ax.set_xlabel('WTWa GHG-100 [g CO$_2$e/MJ SAF]')
@@ -238,9 +236,7 @@ def main() -> None:
     ccs_h = [plt.Line2D([], [], marker=ccs_markers[c], ls='', color='0.6', mec='black',
                         label=f'CCS {int(c * 100)}%') for c in CCS_RATES]
     front_h = plt.Line2D([], [], color='#333333', lw=1.2, label='Pareto front')
-    err_h = plt.matplotlib.patches.Patch(facecolor='#999999', alpha=0.25, edgecolor='none',
-                                         label='MJSP sensitivity (§4.7)')
-    ax.legend(handles=amm_h + ccs_h + [front_h, err_h], ncol=2, loc='best')
+    ax.legend(handles=amm_h + ccs_h + [front_h], ncol=2, loc='best')
     # GHG basis stated on-plot to remove ambiguity (Korea grid mix, Allocation)
     ax.text(0.02, 0.02, 'WTWa GHG: Allocation, Korea grid mix', transform=ax.transAxes,
             ha='left', va='bottom', fontsize=8, color='#555555')
