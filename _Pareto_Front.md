@@ -177,7 +177,92 @@ front rows changes with the GHG axis.)
   grey/low-ammonia points rise ~0.06 $/L (e.g. grey-no-CCS 0.48 → 0.55, grey+CCS100 1.02 → 1.09).
   Highs are unchanged — the hydrogen price, not biomass, sets the top of every bar.
 
+## 7. CCS-only compliance: the CCS 60% point
+
+Revisits §3's finding that under the Korea grid **CCS-only cannot clear the CORSIA line**. CCS50
+(79.0 g/MJ) misses and CCS75 (69.4) clears, so the crossing lies between them. Sampling the
+midpoint shows **CCS 60% (0% green NH₃) is CORSIA-compliant** and is the cheapest compliant point
+on the whole grid:
+
+| Case | Green NH₃ | CCS | GHG [g CO₂e/MJ] | MJSP [\$/L] | CORSIA (≤75.93)? |
+|------|-----------|-----|-----------------|-------------|------------------|
+| **CCS 60% (CCS-only)** | 0%  | 60% | **75.14** | **0.977** | ✅ (margin 0.79) |
+| NH₃10% + CCS50 (old floor) | 10% | 50% | 75.18 | 1.098 | ✅ |
+| CCS75 (old CCS-only clear) | 0%  | 75% | 69.36 | 1.111 | ✅ |
+
+- **MJSP** — `economic_analysis` grey `Base` row at `ccs_portion=0.60` (continuous CCS cost, same
+  engine as the grid). **0.977 \$/L**.
+- **GHG** — **linear interpolation** between the CCS050 (78.99) and CCS075 (69.36) LCA sheets:
+  `75.14 g/MJ`. **Assumption**: no CCS060 GREET sheet exists (GREET is external, not runnable here),
+  and WTWa GHG is taken linear in capture fraction over 50→75% — the only unsampled point in the
+  report. The exact CORSIA crossing is ~CCS 58% (75.93 g/MJ); CCS60 is the round-number first
+  compliant CCS-only run.
+- **Implication.** CCS-only *does* clear CORSIA under KR mix, at CCS60 — and at **0.977 \$/L it is
+  0.12 \$/L cheaper than the NH₃10%+CCS50 floor and free of green ammonia**. This softens §3's
+  "the US-mix CCS-only compliance route no longer holds": it holds, but only from CCS≈58% up (vs
+  CCS25 under US mix), i.e. the mandate demands deeper CCS, not necessarily ammonia. CCS60 becomes
+  the cheapest CORSIA-compliant point; the §3/§5 compliance floor and abatement anchor are not
+  re-run here (interpolated point, not a native grid cell) — see Left-over action points.
+
+SHAP driver attribution for CCS60 vs the NH₃10%+CCS50 floor is in `_Tornado_Sensitivity.md`
+(`Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png`).
+
 ## Log history
+
+### 2026-09-30 (update 2)
+
+**Discussion**
+- User: "CCS only can achieve CORSIA regulation standard. The portion is CCS 60." Added CCS 60%
+  (0% NH₃) as a new §7 — the CCS-only compliant point that §3 (crossing between CCS50/CCS75) implied
+  but never sampled. Result: 75.14 g/MJ, 0.977 \$/L → **cheapest CORSIA-compliant point on the grid**,
+  0.12 \$/L below the NH₃10%+CCS50 floor. Partly reverses §3's "CCS-only route no longer holds": it
+  holds from CCS≈58% up.
+- GHG derived by **linear interpolation** of the CCS050/CCS075 KR-mix LCA sheets (no CCS060 GREET
+  sheet exists; GREET external). Flagged as the report's only interpolated point.
+- Did **not** rebase §3/§5 floor+abatement onto CCS60 (append-only + it is an interpolated, non-grid
+  point); left as an action point pending user decision.
+
+**Code**
+- `tea_pareto_shap.py` — added `'CCS 60%'` (a=0, c=0.60, 7 drivers, no Ammonia) to `POINTS` ahead of
+  the NH₃10%+CCS50 case so `main()` renders both as side-by-side beeswarm panels; outputs renamed
+  `Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png` + `Result/shap_ccs60_vs_nh10ccs50.xlsx`. Cache
+  self-invalidates (POINTS set changed) → full LHS resample of both points. (SHAP setting/results
+  logged in `_Tornado_Sensitivity.md` per this session's split target.)
+
+**Open**
+- CCS60 GHG is interpolated, not GREET-sampled; exact CORSIA crossing (~CCS58%) not sampled.
+- §3/§5 compliance floor + abatement anchor still reference NH₃10%+CCS50, not CCS60 — rebase pending
+  user OK.
+
+### 2026-09-30
+
+**Discussion**
+- Requested figure-only changes to `pareto_front.png`: drop the grey MJSP-sensitivity shade band
+  and shrink the canvas so the legend reads larger.
+- Chose to redraw from the recorded `Result/pareto_front.xlsx` instead of re-running the TEA grid
+  (the `economic_analysis` sweep takes >2 min per run and nothing on the GHG/MJSP axes changed).
+  The old shade came from a live tornado-envelope recompute; the xlsx never stored it, so plotting
+  from xlsx drops it for free.
+
+**Code**
+- `tea_pareto_front.py` — in `main()`: `figsize (7,6)→(5.5,5)`; removed `ax.fill_between` band and the
+  `err_h` legend patch; sensitivity `lo/hi` still computed and exported to `pareto_front_sensitivity.xlsx`.
+- `plot_pareto_from_xlsx.py` (new) — reads `Result/pareto_front.xlsx`, redraws `Figure/pareto_front.png`
+  (scatter + Pareto line, no shade, 5.5×5). Reuses `SA_RC/AMM_SCALES/CCS_RATES/MAIN_SCALE` from
+  `tea_pareto_front` (import safe, `main()` guarded). Regenerated: 30 points, 15 on front.
+- `plot_pareto_from_xlsx.py` — added a **mesh** overlay: iso-NH₃ and iso-CCS lines connecting the
+  6×5 sampling (grey, zorder 0, under markers) so the deformed grid reads in the (GHG, MJSP) plane.
+  Mesh lives only in the xlsx plotter, not `tea_pareto_front.py`.
+- `plot_pareto_from_xlsx.py` — removed the Pareto-front line + its legend handle (mesh now carries
+  the structure); `tea_pareto_front.py` still draws the front line.
+- `plot_pareto_from_xlsx.py` — enlarged legend markers (`legend(markerscale=1.8)`); added a dashed
+  vertical **CORSIA −10%** line at `0.9×` conventional jet WTWa GHG-100 = 75.93 g/MJ (computed via
+  `get_WTWa_conventional`, not hardcoded), with legend entry. Compliant region = left of the line.
+
+**Open**
+- `tea_pareto_front.py` regen not re-run to completion this session (stopped in favour of the xlsx
+  plotter); the two now diverge only in figsize/shade, which the xlsx plotter already reflects.
+- Not committed (awaiting approval).
 
 ### 2026-09-29 (update 7)
 

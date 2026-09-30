@@ -42,6 +42,10 @@ RANGES = {
 # Single case = the cheapest CORSIA-compliant point on the updated (KR-mix) pareto front:
 # Green NH3 10% (a=0.10) + CCS 50% (c=0.50). Has all three feedstock/CCS drivers active -> 8 drivers.
 POINTS = {
+    # CCS-only compliance route: CCS 60% (a=0) is the cheapest CORSIA-compliant point and clears the
+    # mandate with no ammonia -> no Ammonia driver (a=0), 7 drivers. Compared against the NH3 route below.
+    'CCS 60%': (0.0, 0.60,
+        ['Biomass', 'Gray H₂', 'CAPEX', 'CO₂ T&S', 'Electricity', 'Co-product', 'Capacity']),
     'Green NH₃ 10% + CCS 50%': (0.10, 0.50,
         ['Biomass', 'Gray H₂', 'Ammonia', 'CAPEX', 'CO₂ T&S', 'Electricity', 'Co-product', 'Capacity']),
 }
@@ -154,10 +158,10 @@ def main() -> None:
     cb = fig.colorbar(sc, ax=list(axes), fraction=0.03, pad=0.02)
     cb.set_ticks([0, 1]); cb.set_ticklabels(['low', 'high']); cb.set_label('driver value')
     os.makedirs('Figure', exist_ok=True)
-    fig.savefig(os.path.join('Figure', 'shap_beeswarm_nh10_ccs50.png'), dpi=150)
+    fig.savefig(os.path.join('Figure', 'shap_beeswarm_ccs60_vs_nh10ccs50.png'), dpi=150)
     os.makedirs('Result', exist_ok=True)
-    pd.DataFrame(records).round(4).to_excel(os.path.join('Result', 'shap_nh10_ccs50.xlsx'), index=False)
-    print('\nOK: surrogate R²>0.99; wrote Figure/shap_beeswarm_nh10_ccs50.png + Result xlsx')
+    pd.DataFrame(records).round(4).to_excel(os.path.join('Result', 'shap_ccs60_vs_nh10ccs50.xlsx'), index=False)
+    print('\nOK: surrogate R²>0.99; wrote Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png + Result xlsx')
 
 
 if __name__ == '__main__':

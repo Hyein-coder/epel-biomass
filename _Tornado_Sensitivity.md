@@ -73,6 +73,45 @@ ranking is contingent on the assumed ammonia price.
 
 ## Log history
 
+### 2026-09-30
+
+**Discussion**
+- User asked to SHAP the **CCS 60%** point (the CCS-only CORSIA-compliant point established in
+  `_Pareto_Front.md` §7) and show it **beside the previous SHAP run** (Green NH₃ 10% + CCS 50%) as
+  two subplots. Setting + results logged here per this session's split target (CCS60 TEA/LCA in
+  `_Pareto_Front.md`, SHAP here).
+- Purpose: contrast the driver structure of the two competing compliance routes — CCS-only (CCS60,
+  0.977 \$/L) vs the ammonia-blend floor (NH₃10%+CCS50, 1.098 \$/L).
+
+**Code**
+- `tea_pareto_shap.py` — `POINTS` gains `'CCS 60%'` (a=0, c=0.60) ahead of the NH₃10%+CCS50 case;
+  CCS60 has **7 drivers** (no Ammonia, since a=0). `main()` already n-panel — renders both as a
+  side-by-side beeswarm. Outputs renamed `Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png` +
+  `Result/shap_ccs60_vs_nh10ccs50.xlsx`. Cache (`Result/shap_samples.npz`) self-invalidated on the
+  POINTS-set change → full LHS resample (128 pts × 2 points).
+- **Result** (mean|SHAP| \$/L; both surrogate R² > 0.999, TEA near-additive):
+
+  | Driver | CCS 60% | NH₃10%+CCS50 |
+  |--------|---------|--------------|
+  | Gray H₂ | **0.310** | **0.274** |
+  | CAPEX | 0.104 | 0.102 |
+  | Co-product | 0.097 | 0.083 |
+  | Electricity | 0.052 | 0.055 |
+  | Ammonia | — (a=0) | 0.031 |
+  | CO₂ T&S | 0.025 | 0.023 |
+  | Capacity | 0.019 | 0.028 |
+  | Biomass | 0.003 | 0.002 |
+
+- **Reading**: Gray H₂ dominates both. CCS60 leans on it *harder* (0.310 vs 0.274 — 100% grey H₂ vs
+  90%), and its CO₂ T&S term is slightly larger (0.025 vs 0.023, deeper capture). The NH₃ route swaps
+  a slice of grey-H₂ exposure for an Ammonia driver (0.031). Mean SHAP ≈ 0 for every driver (symmetric
+  input ranges); high H₂ price (red) → +SHAP → raises MJSP. Same qualitative message as the tornado.
+
+**Open**
+- CCS60 GHG (the point's LCA basis) is interpolated, not GREET-sampled — see `_Pareto_Front.md` §7.
+- ₂/₃ render via `mlabel()` mathtext (fine); prior `shap_beeswarm_nh10_ccs50.*` outputs superseded by
+  the `_vs_` files (old files left in place). Uncommitted as of this entry.
+
 ### 2026-09-29 (update 2)
 
 **Discussion**
