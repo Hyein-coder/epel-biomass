@@ -1,5 +1,5 @@
-"""SHAP attribution of MJSP across the §4.7 drivers, for the two ~25%-decarbonization
-frontier points: grey-H2 + CCS 25% (a=0, c=0.25) and Green NH3 25% (a=0.25, c=0).
+"""SHAP attribution of MJSP across the §4.7 drivers, for the cheapest CORSIA-compliant
+point on the updated (KR-mix) pareto front: Green NH3 10% + CCS 50% (a=0.10, c=0.50).
 Distribution-based complement to tea_tornado (beeswarm over sampled inputs).
 
 MJSP model is the SAME one the whole pareto analysis uses (mix_row engine re-run
@@ -39,11 +39,11 @@ RANGES = {
 
 # per point: (ammonia_portion a, ccs_portion c, driver order). Gray H2 present when a<1,
 # ammonia when a>0, CO2 T&S when c>0 -> exactly the bars tea_tornado draws for each point.
+# Single case = the cheapest CORSIA-compliant point on the updated (KR-mix) pareto front:
+# Green NH3 10% (a=0.10) + CCS 50% (c=0.50). Has all three feedstock/CCS drivers active -> 8 drivers.
 POINTS = {
-    'Grey H₂ + CCS 25%': (0.0, 0.25,
-        ['Biomass', 'Gray H₂', 'CAPEX', 'CO₂ T&S', 'Electricity', 'Co-product', 'Capacity']),
-    'Green NH₃ 25%': (0.25, 0.0,
-        ['Biomass', 'Gray H₂', 'Ammonia', 'CAPEX', 'Electricity', 'Co-product', 'Capacity']),
+    'Green NH₃ 10% + CCS 50%': (0.10, 0.50,
+        ['Biomass', 'Gray H₂', 'Ammonia', 'CAPEX', 'CO₂ T&S', 'Electricity', 'Co-product', 'Capacity']),
 }
 
 # raw-material rates come from the APEA and do not depend on the perturbed knobs -> read once
@@ -89,6 +89,11 @@ def shap_sample(a: float, c: float, order: list[str], n: int = N_SAMPLES,
     return X, sv, float(surr.score(X, y))
 
 
+def mlabel(s: str) -> str:
+    """Render unicode subscripts via mathtext ($_2$) so fonts without the ₂/₃ glyphs don't tofu."""
+    return s.replace('₂', r'$_2$').replace('₃', r'$_3$')
+
+
 def beeswarm(ax, X: np.ndarray, sv: np.ndarray, order: list[str], title: str, seed: int = 0):
     """SHAP beeswarm: one row of n dots per driver, x = SHAP value, colour = driver value
     (blue low -> red high). Drivers ordered by mean|SHAP|, largest on top."""
@@ -104,10 +109,10 @@ def beeswarm(ax, X: np.ndarray, sv: np.ndarray, order: list[str], title: str, se
                         edgecolor='none', alpha=0.8, vmin=0, vmax=1)
     ax.axvline(0, color='k', lw=1)
     ax.set_yticks(range(len(order)))
-    ax.set_yticklabels([order[j] for j in rank])
+    ax.set_yticklabels([mlabel(order[j]) for j in rank])
     ax.set_xlabel('SHAP value [$/L SAF]')
     # title bottom-left: bottom-right collides with the right-side colorbar
-    ax.text(0.02, 0.04, title, transform=ax.transAxes, ha='left', va='bottom', fontsize='large')
+    ax.text(0.02, 0.04, mlabel(title), transform=ax.transAxes, ha='left', va='bottom', fontsize='large')
     return sc
 
 
@@ -116,19 +121,26 @@ def main() -> None:
     plt.rcParams.update(SA_RC)
     plt.rcParams['figure.autolayout'] = False   # let constrained_layout place the colorbar (autolayout fights it)
     os.makedirs('Result', exist_ok=True)
-    # cache the LHS samples + SHAP so cosmetic replots skip the ~13-min resample;
-    # delete Result/shap_samples.npz to force a fresh sample
+    # cache the LHS samples + SHAP so cosmetic replots skip the ~13-min resample; delete the npz
+    # (or change POINTS) to force a fresh sample. Keys must match POINTS or the cache is stale.
     cache = os.path.join('Result', 'shap_samples.npz')
+    data = None
     if os.path.exists(cache):
-        data = np.load(cache, allow_pickle=True)['data'].item()
-    else:
+        cached = np.load(cache, allow_pickle=True)['data'].item()
+        if set(cached) == set(POINTS):
+            data = cached
+    if data is None:
         data = {}
         for name, (a, c, order) in POINTS.items():
             X, sv, r2 = shap_sample(a, c, order)
             data[name] = {'X': X, 'sv': sv, 'r2': r2, 'order': order}
         np.savez(cache, data=np.array(data, dtype=object))
 
-    fig, axes = plt.subplots(1, 2, figsize=(9, 4.5), sharex=True, constrained_layout=True)
+    n = len(POINTS)
+    # single panel needs a landscape aspect (near-square looks cramped); multi-panel scales by count
+    fig, axes = plt.subplots(1, n, figsize=(7 if n == 1 else 5.5 * n, 4.5), sharex=True,
+                             constrained_layout=True, squeeze=False)
+    axes = axes.ravel()
     records, sc = [], None
     for ax, (name, d) in zip(axes, data.items()):
         X, sv, r2, order = d['X'], d['sv'], d['r2'], d['order']
@@ -142,10 +154,10 @@ def main() -> None:
     cb = fig.colorbar(sc, ax=list(axes), fraction=0.03, pad=0.02)
     cb.set_ticks([0, 1]); cb.set_ticklabels(['low', 'high']); cb.set_label('driver value')
     os.makedirs('Figure', exist_ok=True)
-    fig.savefig(os.path.join('Figure', 'shap_beeswarm_ccs25_vs_nh325.png'), dpi=150)
+    fig.savefig(os.path.join('Figure', 'shap_beeswarm_nh10_ccs50.png'), dpi=150)
     os.makedirs('Result', exist_ok=True)
-    pd.DataFrame(records).round(4).to_excel(os.path.join('Result', 'shap_ccs25_vs_nh325.xlsx'), index=False)
-    print('\nOK: surrogate R²>0.99; wrote Figure/shap_beeswarm_ccs25_vs_nh325.png + Result xlsx')
+    pd.DataFrame(records).round(4).to_excel(os.path.join('Result', 'shap_nh10_ccs50.xlsx'), index=False)
+    print('\nOK: surrogate R²>0.99; wrote Figure/shap_beeswarm_nh10_ccs50.png + Result xlsx')
 
 
 if __name__ == '__main__':

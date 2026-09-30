@@ -73,6 +73,32 @@ ranking is contingent on the assumed ammonia price.
 
 ## Log history
 
+### 2026-09-29 (update 2)
+
+**Discussion**
+- New `_Pareto_Front` version picks the compliance floor dynamically (cheapest-MJSP compliant point;
+  KR-mix threshold makes CCS25-alone non-compliant). User set the SHAP target to that new floor:
+  **Green NH₃ 10% + CCS 50%** (a=0.10, c=0.50), and asked for SHAP on this single case only.
+  The earlier CCS25-vs-NH₃25 comparison is dropped from the script (figure/xlsx stay committed).
+
+**Code**
+- `tea_pareto_shap.py` — `POINTS` reduced to the single a=0.10/c=0.50 case (8 drivers: all of
+  gray-H₂ + ammonia + CO₂ T&S active). `main()` generalized to n panels (squeeze=False + ravel);
+  cache now key-checks against `POINTS` so it self-invalidates when the case changes. New outputs
+  `Figure/shap_beeswarm_nh10_ccs50.png` + `Result/shap_nh10_ccs50.xlsx`.
+- Result (surrogate R²=0.9993): Gray H₂ dominates (mean|SHAP| 0.274 — 90% of H₂ still grey), then
+  CAPEX 0.102, Co-product 0.083, Electricity 0.055, Ammonia 0.031 (small 10% share), Capacity 0.028,
+  CO₂ T&S 0.023 (up from 0.010 at CCS25, as expected at CCS50), Biomass ~0.
+- figsize made panel-count aware: single panel 7×4.5 landscape (near-square looked cramped),
+  multi-panel 5.5×4.5 per panel.
+- Subscript tofu fixed: `mlabel()` helper rewrites ₂/₃ to mathtext (`$_2$`/`$_3$`) at render time
+  (y-labels + title), so H₂/CO₂/NH₃ show correctly without the SA_RC font glyphs. Render-only —
+  data keys/cache untouched. (Other project figures with unicode subscripts still tofu; not touched.)
+
+**Open**
+- New anchor taken from the user's instruction; not cross-checked against the regenerated
+  `Result/pareto_front.xlsx` dynamic floor. Single-case changes uncommitted as of this entry.
+
 ### 2026-09-29
 
 **Discussion**
