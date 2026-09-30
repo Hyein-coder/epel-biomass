@@ -296,7 +296,7 @@ Addresses Critical_Review §2 (fuel specification table). Base simulation:
 
 ### 2.1. Flash point — criterion dropped
 
-Reviewer flags the "max" label as wrong (flash point is a minimum, >38 °C) and the
+Reviewer flags the "max" label as wrong (flash point is a minimum, &gt;38 °C) and the
 reported 101 °C as implausibly high for C8–C16 kerosene. Rather than recompute via
 correlation, the flash-point row is removed from the spec table.
 
@@ -329,112 +329,168 @@ Sulfur content confirmed from the base simulation, replacing the "NA" entry.
 
 ## 4. TEA issues
 
-### 4.11. CO2 transport & storage cost on the CCS unit
+### 4.11. CO2 transport &amp; storage cost on the CCS unit
 
 The CCS unit previously carried only capture cost (CAPEX + Fuel/Electricity OPEX); CO2
-transport & storage (T&S) was not charged. Added an optional T&S cost applied to the
+transport &amp; storage (T&amp;S) was not charged. Added an optional T&amp;S cost applied to the
 sequestered CO2 stream (`co2_seq`), controlled by `TEA.co2_ts_usd_per_ton` ($/tCO2),
 default `0` so the base case is unchanged.
 
-Sensitivity at CCS 100% (`Scale0010`, `Base` H2 source), T&S over the literature range
+Sensitivity at CCS 100% (`Scale0010`, `Base` H2 source), T&amp;S over the literature range
 $4–45/tCO2:
 
-| T&S price | MJSP [$/L] | Δ vs. no T&S |
-|-----------|-----------|--------------|
-| $0/tCO2   | 2.207     | —            |
-| $4/tCO2   | 2.234     | +0.027       |
-| $45/tCO2  | 2.511     | +0.304       |
 
-MJSP rises linearly with the T&S price (Δ ratio 11.25 ≈ 45/4), i.e. ~$0.0068/L per
-$1/tCO2 at full capture. At the high end ($45/tCO2) T&S adds ~14% to MJSP.
+| T&amp;S price | MJSP [$/L] | Δ vs. no T&amp;S |
+| ------------- | ---------- | ---------------- |
+| $0/tCO2       | 2.207      | —                |
+| $4/tCO2       | 2.234      | +0.027           |
+| $45/tCO2      | 2.511      | +0.304           |
 
-T&S price-range reference: Smith et al., *The cost of CO2 transport and storage in
+
+MJSP rises linearly with the T&amp;S price (Δ ratio 11.25 ≈ 45/4), i.e. ~$0.0068/L per$1/tCO2 at full capture. At the high end ($45/tCO2) T&amp;S adds ~14% to MJSP.
+
+T&amp;S price-range reference: Smith et al., *The cost of CO2 transport and storage in
 global integrated assessment modeling*, IJGGC 2021
 (`D:\ObsidianVault\KAN\VibeCoding\References\biomass\IJGGC_2021_Smith_The cost of CO2 transport and storage in global integrated assessment modeling.pdf`).
 
 ## Log history
+
+### 2026-09-30
+
+**Discussion**
+
+- Session log target: `_Base_Revision.md`.
+- GHG anatomy of base SAF (grey H2, no green NH3, no post-CCS) requested. Confirmed the
+  `Base` sheet in `Pyrolysis_551_LCA_*.xlsx` already is this case (green NH3 = `Ammonia`
+  sheet, CCS = `CCS0xx` sheets, both excluded).
+- No unit-operation GHG split possible: GREET WTP result is aggregate, not per-block. Anatomy
+  reported by stage (WTP/PTWa), species (CO2/CH4/N2O), and fossil-vs-biogenic only.
+
+**Code**
+
+- No file changes. Read-only analysis via `funs_lca.get_WTWa_pyrolysis` / `get_WTWa_ftjet`.
+
+**Findings (base, gCO2e/MJ, GHG-100)**
+
+- Stage: WTP 87.34 (99.7%), PTWa 0.23 (0.3%) — combustion biogenic-neutral.
+- WTP species (Allocation): gross fossil CO2 +143.0, biogenic credit -62.4, net CO2 80.64
+  (92.3%), CH4 6.23 (7.1%), N2O 0.46 (0.5%).
+- Fossil driver: upstream Natural Gas 926.7 Btu/MJ + Coal 219.3 (grey-H2 SMR + grid);
+  Biomass 1152.5 Btu/MJ is the biogenic credit side.
+- Method spread WTWa: Allocation 87.57, Allocation_KRmix 100.83, Displacement 123.03,
+  Displacement_KRmix 124.63; mean 109.02 (= `ghg_with_ammonia(0)` center).
+
+**Open**
+
+- None for this task.
+
+### 2026-09-28
+
+**Discussion**
+
+- Session log target chosen: `_Base_Revision.md`.
+- Wrote manuscript Methods as a new file, framed into three subsections (process design /
+  TEA / LCA) per user request, plus a separate Supporting Information note for script-level
+  detail kept out of the main text. Methods content sourced from the engine scripts, not
+  re-derived. CCS reference stated correctly as Rao & Rubin 2002 (engine comment's "Rao 2022"
+  is a year typo, per §1.4).
+
+**Code**
+
+- `Manuscript/2. Methods.md` (new): §2.1 process design (main unit changes vs Jones 2013,
+  ammonia cracker, CCS), §2.2 TEA (feedstock price models, green ammonia/H2 supply, CCS cost,
+  sensitivity), §2.3 LCA (biogenic carbon, allocation rationale, CORSIA SAF criterion).
+- `Manuscript/SI. Supporting Information.md` (new): cost basis/financials, sub-unit
+  interpolation table, single-train limits, cracker/CCS/Bern-dynamic-LCA/allocation detail,
+  supply-availability context.
+
+**Open**
+
+- Feedstock price-model cases (FR Price / FR–Log Linear / Fixed Elasticity) still not added
+  as explicit scenarios in the Results section — flagged inline in §2.2.1 and to the user.
+- Methods citations are author-year placeholders (Byun 2020, Katebah 2022, Levasseur 2010,
+  Lan 2021, DOE 2024, IJHE 2024); need full reference entries + fact-check before submission.
 
 ### 2026-09-25
 
 **Open**
 
 - **TODO (future): NC component vs overall `90BIO` flow across scales.** To settle the
-  47.3 (`Scale0010`) vs 45.6 (scaled) base-feed gap, compare the biomass **NC-substream
-  (dry-solid) component flow** against the **overall `90BIO` mass flow** per scale
-  (`Scale0010`/`0100`/`0300`). Hypothesis: the gap is a moisture / NC-vs-total-mass basis
-  difference; the NC dry-solid per-unit may be constant even where overall flow is not.
-  `funs.get_atomic_flow_idx` already locates the `NC Substream` block. Recorded as a TODO
-  in §1.9; not yet executed.
+47.3 (`Scale0010`) vs 45.6 (scaled) base-feed gap, compare the biomass **NC-substream
+(dry-solid) component flow** against the **overall `90BIO` mass flow** per scale
+(`Scale0010`/`0100`/`0300`). Hypothesis: the gap is a moisture / NC-vs-total-mass basis
+difference; the NC dry-solid per-unit may be constant even where overall flow is not.
+`funs.get_atomic_flow_idx` already locates the `NC Substream` block. Recorded as a TODO
+in §1.9; not yet executed.
 
 ### 2026-09-26
 
 **Discussion**
 
-- **CO2 T&S cost added as an option (→ §4.11).** User asked to charge CO2 transport & storage
-  on the CCS unit, tested over $4–45/tCO2. Applied to the sequestered CO2 (`co2_seq`), default
-  off. Chose to lump T&S into the CCS unit's `utilities` line rather than a new OPEX category:
-  the MJSP breakdown pulls only the fixed APEA-derived `opex_names`, so a new key would be
-  counted in the MJSP total but dropped from the stack-bar. Break out separately only if the
-  figure needs T&S shown apart from Fuel/Electricity.
+- **CO2 T&amp;S cost added as an option (→ §4.11).** User asked to charge CO2 transport &amp; storage
+on the CCS unit, tested over $4–45/tCO2. Applied to the sequestered CO2 (`co2_seq`), default
+off. Chose to lump T&amp;S into the CCS unit's `utilities` line rather than a new OPEX category:
+the MJSP breakdown pulls only the fixed APEA-derived `opex_names`, so a new key would be
+counted in the MJSP total but dropped from the stack-bar. Break out separately only if the
+figure needs T&amp;S shown apart from Fuel/Electricity.
 - **Table 5 biomass feedstock revised (→ §1.15).** User decision: replace the 45.5 short-ton/hr ×
-  scale biomass row (the `90BIO` NC-substream dry-solid component) with the **overall `90BIO` stream
-  mass flow** per scale. Read from the 551 stream exports (Material sheet, `Mass Flows`): x1 47.33,
-  x2.5 115.59, x5 229.36, x7.5 343.12, x10 456.89, x20 911.96, x30 1,367.03 short-ton/hr. Overall
-  flow per-unit is not constant (47.33→45.57) because `90BIO` includes moisture over the ~45.5 dry
-  NC solid; only `Scale0010` carries the elevated 47.33. Executes the §1.9 TODO (NC vs overall basis).
+scale biomass row (the `90BIO` NC-substream dry-solid component) with the **overall `90BIO` stream
+mass flow** per scale. Read from the 551 stream exports (Material sheet, `Mass Flows`): x1 47.33,
+x2.5 115.59, x5 229.36, x7.5 343.12, x10 456.89, x20 911.96, x30 1,367.03 short-ton/hr. Overall
+flow per-unit is not constant (47.33→45.57) because `90BIO` includes moisture over the ~45.5 dry
+NC solid; only `Scale0010` carries the elevated 47.33. Executes the §1.9 TODO (NC vs overall basis).
 - §1.9 **closed**: appended a resolution paragraph at end of §1.9 summarizing the pyrolysis oil feed
-  claim (33.7 short-ton/hr; 75 t/hr unsupported) and folding in the §1.15 finding (47.3-vs-45.5 gap =
-  moisture basis). The 2026-09-25 NC-vs-overall TODO is now executed.
+claim (33.7 short-ton/hr; 75 t/hr unsupported) and folding in the §1.15 finding (47.3-vs-45.5 gap =
+moisture basis). The 2026-09-25 NC-vs-overall TODO is now executed.
 - §2 fuel spec: **dropped the missing-ASTM-specs action** (distillation curve, naphthalenes,
-  viscosity, D7566 caveat). Reason: the entire fuel-spec section is moving to SI later, so the
-  full ASTM D1655/D7566 buildout no longer matters here. Literal aromatic vol% / sulfur value
-  still pending — will come from the modified-version manuscript.
+viscosity, D7566 caveat). Reason: the entire fuel-spec section is moving to SI later, so the
+full ASTM D1655/D7566 buildout no longer matters here. Literal aromatic vol% / sulfur value
+still pending — will come from the modified-version manuscript.
 
 **Code**
 
 - `funs.py`: added `TEA.co2_ts_usd_per_ton` knob (default 0) and, in `calc_cost_CCS`, a
-  `ccs_now['CO2 T&S'] = co2_seq/2204.62 * operation_hr * co2_ts_usd_per_ton` term folded into
-  `annual OPEX` and `utilities`.
-- `test_co2_ts.py`: runs CCS 100% at T&S {0, 4, 45}/tCO2; asserts base unchanged and MJSP
-  linear in price. Result: 2.207 / 2.234 / 2.511 $/L, Δ ratio 11.25.
+`ccs_now['CO2 T&S'] = co2_seq/2204.62 * operation_hr * co2_ts_usd_per_ton` term folded into
+`annual OPEX` and `utilities`.
+- `test_co2_ts.py`: runs CCS 100% at T&amp;S {0, 4, 45}/tCO2; asserts base unchanged and MJSP
+linear in price. Result: 2.207 / 2.234 / 2.511 $/L, Δ ratio 11.25.
 
 ### 2026-09-24
 
 **Discussion**
 
 - Review **§2 fuel specification** worked. User decisions: **flash point criterion dropped**
-  (mislabelled "max"; 101 °C implausible for C8–C16 kerosene — removed rather than recomputed);
-  **specific gravity unit fixed to dimensionless** (the "(kg/m³)" was density mislabelled);
-  **LHV 44.8 MJ/kg, aromatic content, and sulfur content all verified from the base simulation**
-  (sulfur replaces the old "NA"). Aromatic value ties to §1.1 (stream `326SAF`). Report §2 written
-  with per-item status.
-
+(mislabelled "max"; 101 °C implausible for C8–C16 kerosene — removed rather than recomputed);
+**specific gravity unit fixed to dimensionless** (the "(kg/m³)" was density mislabelled);
+**LHV 44.8 MJ/kg, aromatic content, and sulfur content all verified from the base simulation**
+(sulfur replaces the old "NA"). Aromatic value ties to §1.1 (stream `326SAF`). Report §2 written
+with per-item status.
 - Review item **1.9 pyrolysis-oil feed rate verified** (the last §1.9 table row, *not* a
-  hydrogen-demand issue). Checked the base sim `Pyrolysis_551_Scale0010_Streams.xlsx`
-  (Material sheet, Mass Flows): biomass `90BIO` = 94,654.5 lb/hr (47.33 short-ton/hr); bio-oil
-  into hydrotreating `200`/`201` (liquid, ρ≈66 lb/cuft, area 200) = 67,320.8 lb/hr =
-  **30.5 metric t/hr (33.66 short-ton/hr)**, i.e. 71 wt% of biomass. Confirms the actual
-  hydroprocessing feed is ~30 t/hr and the manuscript's **75 t/hr is unsupported (~2.5× high)**.
-  Appended a verification note + stream table to §1.9 flagging it as a pyrolysis-oil-feed
-  issue distinct from H2 demand. Feed-basis reconciliation (64 vs 71 wt%, 45.5 vs 47.3 t/hr
-  biomass) still open before the manuscript correction.
-  **Decision:** manuscript will use **33.7 t/hr** for the pyrolysis oil feed, and declare
-  **short ton (2,000 lb)** as the material mass-unit basis throughout (so manuscript "t/hr"
-  = short-ton/hr; the same stream is 30.5 metric t/hr). Dropped stating the metric value to
-  avoid a mixed-unit basis.
+hydrogen-demand issue). Checked the base sim `Pyrolysis_551_Scale0010_Streams.xlsx`
+(Material sheet, Mass Flows): biomass `90BIO` = 94,654.5 lb/hr (47.33 short-ton/hr); bio-oil
+into hydrotreating `200`/`201` (liquid, ρ≈66 lb/cuft, area 200) = 67,320.8 lb/hr =
+**30.5 metric t/hr (33.66 short-ton/hr)**, i.e. 71 wt% of biomass. Confirms the actual
+hydroprocessing feed is ~30 t/hr and the manuscript's **75 t/hr is unsupported (~2.5× high)**.
+Appended a verification note + stream table to §1.9 flagging it as a pyrolysis-oil-feed
+issue distinct from H2 demand. Feed-basis reconciliation (64 vs 71 wt%, 45.5 vs 47.3 t/hr
+biomass) still open before the manuscript correction.
+**Decision:** manuscript will use **33.7 t/hr** for the pyrolysis oil feed, and declare
+**short ton (2,000 lb)** as the material mass-unit basis throughout (so manuscript "t/hr"
+= short-ton/hr; the same stream is 30.5 metric t/hr). Dropped stating the metric value to
+avoid a mixed-unit basis.
 - **Scale-up biomass feed checked** (`90BIO` across 551 scales). User premise: 47.3 base →
-  x30 = 1,416 ton/hr. Sim disagrees: x1 (`Scale0010`) = 47.33, x10 (`Scale0100`) = 456.89,
-  x30 (`Scale0300`) = **1,367.03 short-ton/hr** (2,734,060.5 lb/hr). Scaled cases run off a
-  **~45.5–45.6 base**, not 47.33 — so x30 is **1,367, not 1,416/1,419**. Only `Scale0010`
-  carries 47.3; same 45.5-vs-47.3 split still open. Appended scale table to §1.9.
+x30 = 1,416 ton/hr. Sim disagrees: x1 (`Scale0010`) = 47.33, x10 (`Scale0100`) = 456.89,
+x30 (`Scale0300`) = **1,367.03 short-ton/hr** (2,734,060.5 lb/hr). Scaled cases run off a
+**~45.5–45.6 base**, not 47.33 — so x30 is **1,367, not 1,416/1,419**. Only `Scale0010`
+carries 47.3; same 45.5-vs-47.3 split still open. Appended scale table to §1.9.
 - Review item **1.14 resolved** (user decision, manuscript fixed). User set the manuscript's
-  pyrolyzer sand-inlet temperature to the **pure sand stream value 1,190 °F** (stream 125XX,
-  the combustor-side hot-sand delivery), replacing the old **1,128 °F**. Now combustor
-  1,189 ≈ pyrolyzer-inlet 1,190, so the reviewer's 61 °F drop disappears. Dropped the
-  alternative of reporting the mixed pyrolyzer feed (**936 °F**, stream 101) — that value is
-  a blend of hot sand with cold recycle stream 100 (150 °F) and would present a larger
-  apparent drop. Manuscript-only fix (no code/data change); report §1.14 title → "resolved".
-  Origin of the paper's old 1,128 °F never identified — moot now.
+pyrolyzer sand-inlet temperature to the **pure sand stream value 1,190 °F** (stream 125XX,
+the combustor-side hot-sand delivery), replacing the old **1,128 °F**. Now combustor
+1,189 ≈ pyrolyzer-inlet 1,190, so the reviewer's 61 °F drop disappears. Dropped the
+alternative of reporting the mixed pyrolyzer feed (**936 °F**, stream 101) — that value is
+a blend of hot sand with cold recycle stream 100 (150 °F) and would present a larger
+apparent drop. Manuscript-only fix (no code/data change); report §1.14 title → "resolved".
+Origin of the paper's old 1,128 °F never identified — moot now.
 - Review item **1.14** (sand temperature → Critical_Review §1.14). Reviewer: sand heated
 to 1,189 °F in combustor, entering pyrolyzer at 1,128 °F — explain or correct the 61 °F
 drop. Traced the 551 sand loop (~1.32 M lb/hr `SAND`) in
@@ -532,10 +588,10 @@ loop or a more recent scrubber reference.
 **Code**
 
 - No script added. One-off `openpyxl` read of `Pyrolysis_551_Scale{0010,0025,0050,0075,0100,0200,0300}_Streams.xlsx`
-  Material sheet (`90BIO` column, `Mass Flows` row) to pull the overall `90BIO` mass flow per scale
-  for the §1.15 Table 5 biomass revision.
+Material sheet (`90BIO` column, `Mass Flows` row) to pull the overall `90BIO` mass flow per scale
+for the §1.15 Table 5 biomass revision.
 - No script added. Report §2 "Fuel specification" written in `_Base_Revision.md` (2.1 flash
-  point dropped, 2.2 specific gravity unit fixed, 2.3 LHV / 2.4 aromatic / 2.5 sulfur verified).
+point dropped, 2.2 specific gravity unit fixed, 2.3 LHV / 2.4 aromatic / 2.5 sulfur verified).
 - No script added. One-off `openpyxl` read of `Pyrolysis_Jones_551_into572_Streams.xlsx`
 Material sheet (`SAND` mass-flow row + Temperature row) to trace the sand loop
 combustor R-124 → pyrolyzer R-110 → combustor and locate the 1,128 °F claim (not present).
@@ -555,8 +611,8 @@ GREET `Emissions` block only). Generation ≈ consumption; net export ≈ 0.
 **Open**
 
 - §2 records LHV/aromatic/sulfur as "verified from simulation" without the literal numeric
-  values in the body (LHV 44.8 MJ/kg is the only figure written). Aromatic vol% and sulfur value
-  to be filled from the modified-version manuscript when available.
+values in the body (LHV 44.8 MJ/kg is the only figure written). Aromatic vol% and sulfur value
+to be filled from the modified-version manuscript when available.
 - §1.14 sand temperature — **closed** this session. Manuscript pyrolyzer-inlet set to the
 pure sand stream 1,190 °F; report §1.14 written and marked resolved. Residual (non-blocking):
 source of the paper's old 1,128 °F never traced.
