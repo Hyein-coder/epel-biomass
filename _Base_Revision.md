@@ -222,15 +222,20 @@ manuscript's 75 t/hr is unsupported (~2.5× high); manuscript feed set to **33.7
 (NC + moisture), read per scale from the 551 exports (see §1.15):
 
 
-| Scale | `90BIO` lb/hr | Biomass Feed Total [short-ton/hr] | metric t/hr | Biomass NC Components [short-ton/hr] |
-| ----- | ------------- | --------------------------------- | ----------- | ------------------------------------ |
-| x1.0  | 94,654.5      | 47.33                             | 42.93       | 45.5                                 |
-| x2.5  | 231,175.5     | 115.59                            | 104.86      | 113.75                               |
-| x5.0  | 458,710.5     | 229.36                            | 208.07      | 227.5                                |
-| x7.5  | 686,245.5     | 343.12                            | 311.28      | 341.25                               |
-| x10   | 913,780.5     | 456.89                            | 414.48      | 455                                  |
-| x20   | 1,823,920.5   | 911.96                            | 827.31      | 910                                  |
-| x30   | 2,734,060.5   | 1,367.03                          | 1,240.15    | 1,365                                |
+Flow rates reported as **MMt/yr** (million metric tonne per year), metric-tonne basis =
+stream rate × `operation_hr` (8000 h/yr, `funs.py:12`, ~91% on-stream) ÷ 1e6. SAF is stream
+`326SAF`, read from the same 551 exports as the biomass feed.
+
+
+| Scale | `90BIO` lb/hr | Biomass feed [MMt/yr] | Biomass NC [MMt/yr] | SAF `326SAF` [MMt/yr] |
+| ----- | ------------- | --------------------- | ------------------- | --------------------- |
+| x1.0  | 94,654.5      | 0.343                 | 0.330               | 0.041                 |
+| x2.5  | 231,175.5     | 0.839                 | 0.826               | 0.104                 |
+| x5.0  | 458,710.5     | 1.665                 | 1.651               | 0.207                 |
+| x7.5  | 686,245.5     | 2.490                 | 2.477               | 0.311                 |
+| x10   | 913,780.5     | 3.316                 | 3.302               | 0.414                 |
+| x20   | 1,823,920.5   | 6.618                 | 6.604               | 0.828                 |
+| x30   | 2,734,060.5   | 9.921                 | 9.906               | 1.243                 |
 
 
 Overall-flow per-unit is not constant (47.33 at x1 down to 45.57 at x30) because `90BIO` carries
@@ -354,6 +359,42 @@ global integrated assessment modeling*, IJGGC 2021
 (`D:\ObsidianVault\KAN\VibeCoding\References\biomass\IJGGC_2021_Smith_The cost of CO2 transport and storage in global integrated assessment modeling.pdf`).
 
 ## Log history
+
+### 2026-09-30
+
+**Discussion**
+
+- Session log target: `_Base_Revision.md`.
+- §1.9 biomass scale table converted from t/hr to **tpd**. User chose the **design basis
+  (×24 h/day**, nameplate stream flow) over TEA-effective (×8000/365 = ×21.92). Reason: a
+  stream flow rate is the instantaneous design value; the engine's `operation_hr = 8000` h/yr
+  (`funs.py:12`) only applies when annualizing (SAF/yr, feed/yr, OPEX/yr), not to a stream rate.
+- SAF production added to the **same** table as columns (chosen over a separate table).
+- **Correction (same session):** dropped tpd(×24); switched the table to **MMt/yr**
+  (million metric tonne per year), metric-tonne basis, annual = × `operation_hr` 8000 h/yr
+  ÷ 1e6. Reason: annual MMt/yr is the preferred plant-capacity reporting unit; uses the
+  engine's own annualization (`funs.py:12`) rather than a nameplate ×24. Short-ton/day
+  columns removed with it.
+
+**Code**
+
+- `_Base_Revision.md` §1.9 scale table: now **MMt/yr** (metric) columns — biomass feed,
+  biomass NC, SAF `326SAF` — replacing the short-ton/day + metric t/day (×24) version;
+  basis note updated. Superseded intermediate: ton/hr → tpd (×24).
+  SAF per scale read from `Pyrolysis_551_Scale00XX_Streams.xlsx` (Material sheet, `Mass Flows`
+  row, ×24/2000), same source as the biomass feed.
+
+**Findings**
+
+- `326SAF` per scale (short-ton/day, ×24): x1 137.0, x2.5 342.4, x5 684.8, x7.5 1,027.2,
+  x10 1,369.7, x20 2,739.3, x30 4,109.0. x1 = 11,413.9 lb/hr.
+- **Discrepancy:** §1.1 base `326SAF` = 114,139 lb/hr is the **×10** (Scale0100) case, not
+  x1 (Scale0010 = 11,413.9 lb/hr). §1.1 "base simulation" ≠ the scale-1 row. Not reconciled here.
+
+**Open**
+
+- §1.1 vs §1.9 base-scale mismatch: is the manuscript "base" the ×10 plant (114,139 lb/hr SAF)
+  or scale-1 (11,414 lb/hr)? Needs a decision before §1.1/§1.9 are cited together.
 
 ### 2026-09-30
 
