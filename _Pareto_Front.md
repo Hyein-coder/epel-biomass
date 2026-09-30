@@ -85,50 +85,53 @@ CCS50 plus ~10% green ammonia** — materially deeper decarbonization than the U
 - This is a first scatter at base green-ammonia price ($0.288/lb) and $10/tCO₂ T&S; both move
   the ammonia and CCS tails respectively (see `_Tornado_Sensitivity.md` ranges).
 
-## 5. CO₂ abatement cost (vs the CORSIA-compliance floor)
+## 5. CO₂ abatement cost (vs the CCS 60% compliance base)
 
-Marginal cost of decarbonizing **below the compliance floor** — **10% green NH₃ + CCS50** (§3), the
+Marginal cost of decarbonizing **below the compliance base** — **CCS 60% (0% green NH₃)** (§7), the
 cheapest CORSIA-compliant point under the Korea grid. Regulation forces a producer only as far as
-the floor; every reduction beyond it is voluntary, so the floor — not the dirty grey base — is the
-reference: `abatement = ΔMJSP / (ΔGHG · E) · 10⁶` [$/tCO₂], `E = 31.66 MJ/L SAF` (§3b), with ΔMJSP
-and ΔGHG taken against the floor (75.18 g/MJ, 1.098 $/L). Points at or above the floor are
-non-abating (n/a). The floor is selected dynamically as the cheapest compliant run (not hardcoded),
-so it tracks the LCA basis. Same formula as `tea_scale_up_abatement.py`. Full grid in
-`Result/pareto_front.xlsx` (`abatement` column, rebased).
+this base; every reduction beyond it is voluntary, so CCS 60% — not the dirty grey base — is the
+reference: `abatement = ΔMJSP / (ΔGHG · E) · 10⁶` [\$/tCO₂], `E = 31.66 MJ/L SAF` (§3b), with ΔMJSP
+and ΔGHG taken against CCS 60% (75.14 g/MJ, 0.977 \$/L). Points at or above the base GHG are
+non-abating (n/a). CCS 60% is an interpolated, non-grid point (§7): its MJSP is `economic_analysis`
+at `ccs_portion=0.60`, its GHG linear over CCS050→CCS075. Same formula as `tea_scale_up_abatement.py`.
+Full grid in `Result/pareto_front.xlsx` (`abatement` column, rebased onto CCS 60%).
 
-**Pareto-front points** — first row is the compliance floor (reference); the rest lie below it and
+**Pareto-front points** — first row is the CCS 60% base (reference); the rest lie below it and
 carry a marginal abatement cost:
 
-| Green NH₃ | CCS | GHG [g/MJ] | MJSP [$/L] | Abatement [$/tCO₂] |
+| Green NH₃ | CCS | GHG [g/MJ] | MJSP [\$/L] | Abatement [\$/tCO₂] |
 |-----------|-----|------------|------------|--------------------|
-| 10%  | 50%  | 75.18 | 1.098 | 0 (floor) |
-| 0%   | 75%  | 69.36 | 1.111 | 74 |
-| 10%  | 75%  | 65.55 | 1.296 | 649 |
-| 0%   | 100% | 59.96 | 1.334 | 490 |
-| 10%  | 100% | 56.15 | 1.518 | 698 |
-| 25%  | 100% | 50.44 | 1.782 | 873 |
-| 50%  | 75%  | 50.31 | 1.998 | 1144 |
-| 50%  | 100% | 40.91 | 2.221 | 1035 |
-| 75%  | 75%  | 40.78 | 2.435 | 1228 |
-| 75%  | 100% | 31.39 | 2.657 | 1125 |
-| 100% | 75%  | 31.26 | 2.863 | 1269 |
-| 100% | 100% | 21.86 | 3.085 | 1177 |
+| **0%**  | **60%**  | **75.14** | **0.977** | **0 (base)** |
+| 0%   | 75%  | 69.36 | 1.111 | 733 |
+| 10%  | 75%  | 65.55 | 1.296 | 1049 |
+| 0%   | 100% | 59.96 | 1.334 | 742 |
+| 10%  | 100% | 56.15 | 1.518 | 900 |
+| 25%  | 100% | 50.44 | 1.782 | 1029 |
+| 50%  | 75%  | 50.31 | 1.998 | 1299 |
+| 50%  | 100% | 40.91 | 2.221 | 1148 |
+| 75%  | 75%  | 40.78 | 2.435 | 1340 |
+| 75%  | 100% | 31.39 | 2.657 | 1213 |
+| 100% | 75%  | 31.26 | 2.863 | 1357 |
+| 100% | 100% | 21.86 | 3.085 | 1250 |
 
-- **Cheapest step below the floor = grey + CCS75 at 74 $/tCO₂** — deepen CCS on grey H₂. The next
-  grey-CCS step, CCS100 (60 g/MJ), costs 490 $/t (the last tonnes of capture cost most).
-- **Green ammonia is the expensive tail: ~650 → 1270 $/tCO₂** (10%→100% share, at CCS75/CCS100). It
-  only pays once grey+CCS100 (60 g/MJ) is exhausted and deeper cuts are still needed.
-- CCS on grey H₂ is the cheapest abatement lever near the floor; ammonia is always dearer per tonne.
-  The deepest option (full green NH₃ + CCS100) reaches 21.9 g/MJ at ~1180 $/t.
+- **Cheapest step below the base = grey + CCS75 at 733 \$/tCO₂**; grey + CCS100 (60 g/MJ) is close
+  behind at 742 \$/t. Deepening CCS on grey H₂ past 60% stays the cheapest lever.
+- The former **NH₃10%+CCS50 floor (75.18 g/MJ) now sits fractionally above the CCS 60% base → n/a**,
+  as do CCS50, CCS25 and the grey base. Only points cleaner than 75.14 g/MJ abate.
+- **Green ammonia is the expensive tail: ~900 → 1360 \$/tCO₂** (10%→100% share, on CCS75/CCS100).
+- Rebasing the reference from the old floor (1.098 \$/L) to CCS 60% (0.977 \$/L) **raises every
+  abatement cost** — grey+CCS75 goes 74 → 733 \$/t — because the base is now cheaper, so the premium
+  to cut further is larger. Message is unchanged: **CCS first, ammonia last.**
 
 ![Abatement cost contour](Figure/pareto_abatement_contour_compliance.png)
 
 Contour over the grid (x = green-NH₃ H₂ substitution ratio, y = CCS portion; dots = the 30 sampled
-points). The floor (10% NH₃ + CCS50) is coloured as the **0 $/tCO₂ reference**; cells *above* it
-(GHG > 75.18 g/MJ — the grey base and the low-CCS/low-NH₃ corner, now a larger blank region than
-under US mix) are non-abating. Below the floor the cheapest tonnes still lie toward the **CCS axis**
-— deepening CCS; cost climbs steeply as green ammonia is added. Same message as the table:
-**CCS first, ammonia last — but under KR mix the floor itself already sits at deep CCS.**
+points). The CCS 60% base is the **external 0 \$/tCO₂ reference** (an interpolated point, not a grid
+cell, so no cell is coloured zero); cells with GHG ≥ 75.14 g/MJ — the grey base, the low-CCS/low-NH₃
+corner, and the former NH₃10%+CCS50 floor — are non-abating and blank. Below the base the cheapest
+tonnes still lie toward the **CCS axis** — deepening CCS; cost climbs steeply as green ammonia is
+added. Same message as the table: **CCS first, ammonia last — the compliance base already sits at
+deep CCS under the KR mix.**
 
 ## 6. MJSP sensitivity on the frontier
 
@@ -201,13 +204,37 @@ on the whole grid:
   0.12 \$/L cheaper than the NH₃10%+CCS50 floor and free of green ammonia**. This softens §3's
   "the US-mix CCS-only compliance route no longer holds": it holds, but only from CCS≈58% up (vs
   CCS25 under US mix), i.e. the mandate demands deeper CCS, not necessarily ammonia. CCS60 becomes
-  the cheapest CORSIA-compliant point; the §3/§5 compliance floor and abatement anchor are not
-  re-run here (interpolated point, not a native grid cell) — see Left-over action points.
+  the cheapest CORSIA-compliant point and is now the **§5 abatement base** (rebased 2026-09-30
+  update 3). The §3 compliance-floor language still names the old NH₃10%+CCS50 floor.
 
 SHAP driver attribution for CCS60 vs the NH₃10%+CCS50 floor is in `_Tornado_Sensitivity.md`
 (`Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png`).
 
 ## Log history
+
+### 2026-09-30 (update 3)
+
+**Discussion**
+- User: rebase the carbon-abatement analysis onto **CCS 60% as the new base**. Scoped to the
+  **Pareto §5 anchor only** (user pick); `tea_scale_up_abatement.py` left on its zero-CCS base.
+  Resolves the "rebase pending" open item from update 2.
+- Effect: every abatement cost rises vs the old NH₃10%+CCS50 floor, because the base MJSP drops
+  1.098 → 0.977 \$/L (larger premium to cut further). Cheapest step below base = grey+CCS75 at
+  733 \$/t (was 74); grey+CCS100 742 \$/t; ammonia tail ~900–1360 \$/t. The old floor (75.18 g/MJ)
+  and all CCS<60 points now n/a — fractionally above the CCS60 base (75.14 g/MJ). Ranking unchanged:
+  CCS first, ammonia last.
+
+**Code**
+- `tea_pareto_front.py` — `main()` abatement block: replaced the dynamically-picked cheapest-compliant
+  floor with a **fixed CCS 60% base**. `anchor_ghg` = linear interp of `ghg_ccs[0.50]`/`ghg_ccs[0.75]`
+  at c=0.60 (75.14); `anchor_mjsp` = `mjsp(tea, 0.0, 0.60)` (0.977). Cells with `ghg >= anchor_ghg`
+  → NaN. Added a CORSIA self-check (`anchor_ghg <= 0.9×conventional`) and an anchor print line.
+  Re-ran: `Result/pareto_front*.xlsx` + `Figure/pareto_front.png` + `pareto_abatement_contour_compliance.png`.
+
+**Open**
+- CCS60 base GHG is still the report's one interpolated point (no CCS060 GREET sheet).
+- §3 compliance-floor prose + `tea_scale_up_abatement.py` still reference the old NH₃10%+CCS50 floor
+  (out of scope this session).
 
 ### 2026-09-30 (update 2)
 
