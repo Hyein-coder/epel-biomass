@@ -4,8 +4,8 @@ Addresses Critical Review §4.7 ("No sensitivity analysis"), reinforced by §4.5
 (ammonia price range) and §8. One-at-a-time MJSP sensitivity over the reviewer's
 seven parameters, on the 551 basis, for Base / Full-Ammonia / Full-CCS at scale
 ×1 and ×30. Driver: `tea_tornado.py` (reuses `funs.TEA`, no engine change).
-CO₂ T&S in the CCS unit is costed at a **$10/tCO₂ basis** (Full-CCS); the T&S bar
-sweeps 4–45 $/tCO₂ around it.
+CO₂ T&S in the CCS unit is costed at a **\$10/tCO₂ basis** (Full-CCS); the T&S bar
+sweeps 4–45 \$/tCO₂ around it.
 
 ## 1. Method
 
@@ -17,16 +17,16 @@ at base, and records MJSP. Two mechanisms:
 - **re-run** — a scalar knob is set on a fresh `TEA()` and `economic_analysis`
   recomputed (net or non-linear response).
 
-| Parameter | Range | Configs | Mechanism (knob / line) |
-|---|---|---|---|
-| Biomass price | ±50% | all | linear — APEA `90BIO` cost (`get_biomass_info`) |
-| Gray H₂ price | 1.0–4.0 $/kg | Base, CCS | linear — APEA H₂ raw-material cost (`hydrogen_feed_stream`) |
-| Ammonia price | 0.1225–0.4535 $/lb | Full-Ammonia | linear — feed offset 2.038 $/L × (p/0.288 − 1) |
-| Electricity | ±30% | all | re-run — `elec_price_usd_per_mmbtu` (+ `product_price_work['ELC-']`) |
-| Co-product | ±20% | all | re-run — `product_price_stream` (316GAS, 336DIES) |
-| CAPEX | ±30% | all | linear — `df_mjsp['capital investment']` |
-| Capacity factor | 85% / 91% | all | re-run — `operation_hr` (0.85/0.91 × 8760) |
-| CO₂ T&S | 4–45 $/tCO₂ | Full-CCS | re-run — `co2_ts_usd_per_ton`; **basis $10/tCO₂** in CCS |
+| Parameter | Tornado range | SHAP range (§3–4) | Configs | Mechanism (knob / line) |
+|---|---|---|---|---|
+| Biomass price | ±50% | 0.0487–0.0527 \$/lb | all | linear — APEA `90BIO` cost (`get_biomass_info`) |
+| Gray H₂ price | 1.0–4.0 \$/kg | 1.0–4.0 \$/kg | Base, CCS | linear — APEA H₂ raw-material cost (`hydrogen_feed_stream`) |
+| Ammonia price | 0.1225–0.4535 \$/lb | 0.1225–0.4535 \$/lb | Full-Ammonia | linear — feed offset 2.038 \$/L × (p/0.288 − 1) |
+| Electricity | ±30% | 13.3–24.8 \$/MMBtu | all | re-run — `elec_price_usd_per_mmbtu` (+ `product_price_work['ELC-']`) |
+| Co-product | ±20% | ×0.80–1.20 | all | re-run — `product_price_stream` (316GAS, 336DIES) |
+| CAPEX | ±30% | ×0.70–1.30 | all | linear — `df_mjsp['capital investment']` |
+| Capacity factor | 85% / 91% | 7446–7972 h/yr | all | re-run — `operation_hr` (0.85/0.91 × 8760) |
+| CO₂ T&S | 4–45 \$/tCO₂ | 4–45 \$/tCO₂ | Full-CCS | re-run — `co2_ts_usd_per_ton`; **basis \$10/tCO₂** in CCS |
 
 Configs map to `economic_analysis` as: Base = `['Base'], ccs=0`; Full-Ammonia =
 `['Base','Ammonia'], ccs=0` (Ammonia row); Full-CCS = `['Base'], ccs=1.0` (its
@@ -35,16 +35,21 @@ Configs map to `economic_analysis` as: Base = `['Base'], ccs=0`; Full-Ammonia =
 Scope notes (assumptions):
 - **Electricity ±30%** rescales the net electricity export revenue (ELC- work
   product) and CCS electricity only; the main-plant purchased-electricity cost
-  embedded in the APEA utility sheet is a fixed $ and is not re-priced.
+  embedded in the APEA utility sheet is a fixed \$ and is not re-priced.
 - **Co-product ±20%** covers the fuel co-products (gasoline, diesel); fertilizer
   co-product (Full-Ammonia, read from the NH₃ APEA) is not re-priced by this bar.
 - **Capacity factor**: base is 8000 h = 91.3%; both reviewer endpoints (85%, 91%)
   are below base, so the bar is one-sided (fewer hours → higher MJSP), matching
   the §4.9 concern that 8000 h is optimistic.
+- **Biomass range differs between the two analyses.** The tornado uses the reviewer's
+  ±50% stress; the SHAP samples the realistic FR-floor→supply-curve band
+  (0.0487–0.0527 \$/lb, ~±4%), which is why biomass is scale-robust in the tornado
+  but near-zero in the SHAP importance. All other SHAP ranges reuse the tornado
+  endpoints; the SHAP samples them jointly (LHS), not one-at-a-time.
 
 ## 2. Tornado results
 
-Base MJSP ($/L SAF):
+Base MJSP (\$/L SAF):
 
 | Config | ×1 | ×30 |
 |---|---|---|
@@ -54,28 +59,112 @@ Base MJSP ($/L SAF):
 
 Ranked drivers (figure: `Figure/tornado.png`; table: `Figure/tornado_sensitivity.xlsx`):
 
-- **Feedstock hydrogen dominates every case.** Gray H₂ price (1–4 $/kg) is the
-  single largest driver for Base and Full-CCS (span ≈ 1.26 $/L, scale-independent);
-  ammonia price (0.12–0.45 $/lb) dominates Full-Ammonia even more strongly (span
-  ≈ 2.34 $/L), confirming §4.5 that the ammonia-price assumption drives the ranking.
+- **Feedstock hydrogen dominates every case.** Gray H₂ price (1–4 \$/kg) is the
+  single largest driver for Base and Full-CCS (span ≈ 1.26 \$/L, scale-independent);
+  ammonia price (0.12–0.45 \$/lb) dominates Full-Ammonia even more strongly (span
+  ≈ 2.34 \$/L), confirming §4.5 that the ammonia-price assumption drives the ranking.
 - **CAPEX sensitivity collapses with scale.** CAPEX ±30% is the #2 driver at ×1
-  (0.69–0.80 $/L) but drops to ~0.42–0.49 $/L at ×30 (six-tenths scaling), falling
-  below biomass. Biomass ±50% is scale-robust (~0.62–0.65 $/L).
-- **Electricity and capacity factor are minor** (spans ≤ 0.36 $/L), so the
+  (0.69–0.80 \$/L) but drops to ~0.42–0.49 \$/L at ×30 (six-tenths scaling), falling
+  below biomass. Biomass ±50% is scale-robust (~0.62–0.65 \$/L).
+- **Electricity and capacity factor are minor** (spans ≤ 0.36 \$/L), so the
   optimistic 8000 h assumption is not a material MJSP risk on its own.
-- **CO₂ T&S** sits at a $10/tCO₂ basis (raising Full-CCS base MJSP by ~0.07 $/L
-  vs. no T&S); sweeping 4–45 $/tCO₂ moves MJSP within ~0.28 $/L (scale-invariant),
+- **CO₂ T&S** sits at a \$10/tCO₂ basis (raising Full-CCS base MJSP by ~0.07 \$/L
+  vs. no T&S); sweeping 4–45 \$/tCO₂ moves MJSP within ~0.28 \$/L (scale-invariant),
   below CAPEX and biomass — transport & storage price is not a dominant risk.
 
 Conclusion: MJSP uncertainty is governed by the hydrogen source price (gray H₂ or
 ammonia); at commercial scale, feedstock prices outweigh CAPEX. The Full-Ammonia
 ranking is contingent on the assumed ammonia price.
 
+## 3. SHAP method (compliance-route drivers)
+
+Distribution-based complement to the one-at-a-time tornado, run on the two competing
+CORSIA-compliant points from `_Pareto_Front.md` §7: **CCS 60%** (a=0, c=0.60; the
+cheapest CCS-only compliant point, 0.977 \$/L) vs **Green NH₃ 10% + CCS 50%**
+(a=0.10, c=0.50; the ammonia-blend compliance floor, 1.098 \$/L). Driver:
+`tea_pareto_shap.py` (reuses the `mix_row` MJSP model — same engine re-run + linear
+cost terms as the tornado; no engine change).
+
+Per point, over the driver ranges in §1 (SHAP-range column; same as the tornado
+except biomass, which uses the realistic supply-curve band rather than ±50%):
+Latin-hypercube sample N=128 inputs
+(128 real `TEA` calls), fit a gradient-boosted surrogate, then exact TreeSHAP on the
+surrogate. TEA is near-additive, so the surrogate tracks it (asserted R² > 0.99);
+the surrogate is the only approximation. CCS 60% has 7 drivers (no Ammonia, a=0);
+NH₃ 10% + CCS 50% has 8 (Ammonia active on the 10% share). CO₂ T&S sits on the same
+\$10/tCO₂ basis as the tornado.
+
+## 4. SHAP results
+
+Mean|SHAP| (\$/L SAF; both surrogate R² > 0.999). Figure:
+`Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png`; table: `Result/shap_ccs60_vs_nh10ccs50.xlsx`.
+
+![SHAP beeswarm — CCS 60% vs Green NH₃ 10% + CCS 50%, MJSP drivers over the §1 ranges](Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png)
+
+| Driver | CCS 60% | NH₃ 10% + CCS 50% |
+|--------|---------|-------------------|
+| Gray H₂ | **0.310** | **0.274** |
+| CAPEX | 0.104 | 0.102 |
+| Co-product | 0.097 | 0.083 |
+| Electricity | 0.052 | 0.055 |
+| Ammonia | — (a=0) | 0.031 |
+| CO₂ T&S | 0.025 | 0.023 |
+| Capacity | 0.019 | 0.028 |
+| Biomass | 0.003 | 0.002 |
+
+- **Gray H₂ dominates both routes**, consistent with the tornado. CCS 60% leans on
+  it harder (0.310 vs 0.274 — 100% grey H₂ vs 90%), and its CO₂ T&S term is slightly
+  larger (0.025 vs 0.023, deeper capture). The NH₃ route trades a slice of grey-H₂
+  exposure for an Ammonia driver (0.031).
+- CAPEX, co-product, and electricity rank next in both, near-identical between the two
+  routes. Capacity factor and biomass are negligible — biomass because its SHAP band is
+  the narrow supply-curve range (~±4%), not the tornado's ±50% stress (see §1).
+- Mean SHAP ≈ 0 for every driver (symmetric input ranges); high H₂ price → +SHAP →
+  higher MJSP. Same qualitative message as the tornado: the decarbonization route
+  choice does not change what governs MJSP uncertainty — the hydrogen source price.
+
+## 5. OAT tornado over the SHAP ranges (two compliance points)
+
+One-at-a-time complement to the §3–4 SHAP beeswarm: the same two compliance points
+(CCS 60%, a=0/c=0.60; Green NH₃ 10% + CCS 50%, a=0.10/c=0.50) and the **SHAP-range**
+column of §1 — i.e. biomass on the supply-curve band (0.0487–0.0527 \$/lb), every other
+driver at its §1 endpoint. Each bar moves one driver alone, base = all drivers nominal.
+Driver: `tea_tornado_shap.py` (reuses `tea_pareto_shap.mjsp_point` / `RANGES` / `POINTS`
+and `tea_tornado.tornado`; no engine change). Figure `Figure/tornado_shap_ccs60_vs_nh10ccs50.png`,
+table `Result/tornado_shap_ccs60_vs_nh10ccs50.xlsx`.
+
+![OAT tornado over the SHAP ranges — CCS 60% vs Green NH₃ 10% + CCS 50%, MJSP drivers one-at-a-time](Figure/tornado_shap_ccs60_vs_nh10ccs50.png)
+
+Base MJSP: CCS 60% = 0.977 \$/L; NH₃10%+CCS50 = 1.098 \$/L. Bar spans (\$/L SAF):
+
+| Driver | CCS 60% | NH₃10%+CCS50 |
+|--------|---------|--------------|
+| Gray H₂ | **1.258** | **1.133** |
+| Co-product | 0.494 | 0.494 |
+| CAPEX | 0.472 | 0.480 |
+| Electricity | 0.313 | 0.321 |
+| Ammonia | — | 0.234 |
+| Capacity | 0.188 | 0.205 |
+| CO₂ T&S | 0.187 | 0.165 |
+| Biomass | 0.052 | 0.052 |
+
+- **Same ranking as the SHAP importance** (§4): Gray H₂ dominates both, biomass negligible.
+  The OAT view confirms the beeswarm is not an artifact of joint LHS sampling — the hydrogen
+  price governs MJSP one-at-a-time too.
+- **Biomass and Capacity bars are one-sided.** Their nominals sit at a range end — biomass at the
+  FR floor (SHAP-band low), capacity at the 8000 h base (above both CF endpoints) — so those bars
+  extend only one way. Consistent with the §1 biomass-band note and the §4.9 capacity concern.
+
 ## Log history
 
 ### 2026-09-30
 
 **Discussion**
+- User asked to add an **OAT sensitivity over the SHAP ranges** (option **A**: replace the tornado's
+  biomass ±50% bar with the SHAP supply-curve band; every other SHAP range already equals the tornado
+  endpoint per §1), for the **two SHAP-analysis points** (CCS 60%, NH₃10%+CCS50), compared in subplots.
+  Option B (keep both biomass bars) dropped — user chose A. Purpose: a one-at-a-time cross-check of the
+  §4 SHAP importance on identical points/ranges, to show H₂-price dominance is not a joint-sampling artifact.
 - User asked to SHAP the **CCS 60%** point (the CCS-only CORSIA-compliant point established in
   `_Pareto_Front.md` §7) and show it **beside the previous SHAP run** (Green NH₃ 10% + CCS 50%) as
   two subplots. Setting + results logged here per this session's split target (CCS60 TEA/LCA in
@@ -84,11 +173,22 @@ ranking is contingent on the assumed ammonia price.
   0.977 \$/L) vs the ammonia-blend floor (NH₃10%+CCS50, 1.098 \$/L).
 
 **Code**
+- `tea_tornado_shap.py` (new) — OAT tornado for the two SHAP points over the SHAP ranges (§5). Reuses
+  `mjsp_point`/`RANGES`/`POINTS` from `tea_pareto_shap` and `tornado()` from `tea_tornado`; base =
+  drivers at nominal (`NOMINAL`, each nominal zeroes its term or is the engine default). Two subplots,
+  shared x → `Figure/tornado_shap_ccs60_vs_nh10ccs50.png` + `Result/…xlsx`. Ranking matches the beeswarm
+  (Gray H₂ span ~1.2 \$/L both; biomass ~0.05, one-sided). Self-checks: base>0, CAPEX monotone.
 - `tea_pareto_shap.py` — `POINTS` gains `'CCS 60%'` (a=0, c=0.60) ahead of the NH₃10%+CCS50 case;
   CCS60 has **7 drivers** (no Ammonia, since a=0). `main()` already n-panel — renders both as a
   side-by-side beeswarm. Outputs renamed `Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png` +
   `Result/shap_ccs60_vs_nh10ccs50.xlsx`. Cache (`Result/shap_samples.npz`) self-invalidated on the
   POINTS-set change → full LHS resample (128 pts × 2 points).
+- Report body: SHAP method + results promoted from log into new sections **§3 (SHAP method)** and
+  **§4 (SHAP results)** so the body holds current state (per CLAUDE.md); log keeps the process only.
+- §1 parameter table: added a **SHAP range** column (renamed Range→Tornado range). Surfaced that
+  SHAP biomass uses the FR-floor→supply-curve band 0.0487–0.0527 \$/lb (~±4%), not ±50% — corrects
+  the earlier "same ranges" wording and explains biomass's near-zero SHAP vs scale-robust tornado bar.
+  All other SHAP ranges match the tornado endpoints (sampled jointly by LHS). Body \$ escaping fixed.
 - **Result** (mean|SHAP| \$/L; both surrogate R² > 0.999, TEA near-additive):
 
   | Driver | CCS 60% | NH₃10%+CCS50 |
