@@ -1,4 +1,10 @@
-# Manuscript Revision Log
+# Handbook of Manuscript
+
+## Drafting rules
+
+1. Do not use quotation marks for emphasis. Carry the emphasis in the tone of the sentence, or set the word in *italic*.
+2. Do not state scale as a multiple of the base case (no "×" of base). Give the exact SAF production figure instead.
+3. Every SI subsection must be referenced in the related part of the main body. If no matching place is found, ask the user.
 
 ## Log history
 
