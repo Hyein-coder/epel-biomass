@@ -51,6 +51,30 @@ price 60 × 2.2 $/kg; R-225 molybdenum LHSV 0.22, price 15.5 × 2.2 $/kg (× cos
 - Compressor optimization (`opt_compressor.py`): inlet 50 bar → 365 bar target;
   gas-turbine firing-temperature sweep 1900–2400 °F (`opt_GT_temperature.py`).
 
+**Table S3-1. Per-unit single-train caps and replica counts** (source:
+`Scaling_Up_Study_ver551_organized.xlsx`). Number of parallel trains follows
+`n = ceil(total duty / cap)`; the cap equals the saturated per-replica load.
+
+| Unit | Service | Sizing metric | Single-train cap | Replicas [1, 2.5, 5, 7.5, 10, 20, 30]× |
+| ---- | ------- | ------------- | ---------------- | -------------------------------------- |
+| C-101 | Compressor | Volumetric flow | 15.81×10⁶ cuft/hr (2772 HP) | 1 / 1 / 1 / 1 / 1 / 2 / 3 |
+| C-110 | Compressor | Volumetric flow | 17.57×10⁶ cuft/hr | 1 / 1 / 1 / 2 / 2 / 3 / 5 |
+| C-147 | Compressor | Volumetric flow | 17.77×10⁶ cuft/hr | 1 / 1 / 1 / 2 / 2 / 4 / 6 |
+| C-401 | Compressor | Volumetric flow | 15.23×10⁶ cuft/hr (192,935 HP) | 1 / 1 / 1 / 1 / 1 / 2 / 3 |
+| MC-610 | Compressor | Volumetric flow | 17.38×10⁶ cuft/hr | 1 / 2 / 3 / 4 / 5 / 10 / 20 † |
+| C-231 | Expander | Volumetric flow | 24,981 cuft/hr (1944 HP) | 2 / 6 / 10 / 14 / 18 / 36 / 54 † |
+| R-110 | Combustion chamber (pyrolyzer) | Heat absorbed | 447.5 MMBtu/hr (base 44.75) | 1 / 1 / 1 / 1 / 1 / 2 / 3 |
+| E-616 | Heat exchanger | Heat duty | 955.4 MMBtu/hr | 1 / 1 / 1 / 1 / 1 / 2 / 3 |
+| GT-612 | Gas turbine | Power output | 441,073 hp | 1 / 1 / 2 / 2 / 2 / 4 / 6 |
+
+- The R-110 cap of 447.5 MMBtu/hr (10× the 44.75 MMBtu/hr base) supersedes the
+  700 MMBtu/hr figure listed above; `ceil(scale × 44.75 / 447.5)` reproduces its
+  1/1/1/1/1/2/3 pattern exactly.
+- † MC-610 and C-231 are **over-provisioned** relative to the strict `ceil(total/cap)`
+  rule: MC-610 carries 20 trains at 30× where the rule gives 15 (total/cap = 15.0 exactly),
+  and C-231 carries 6 and 10 trains at 2.5× and 5× where the rule gives 5 and 9. Every
+  other unit matches the rule exactly.
+
 ## S4. Ammonia cracker detail
 
 - Cracker scale index `n = main_h2_demand / 6570.40 lb/hr`; non-grid `n` linearly
