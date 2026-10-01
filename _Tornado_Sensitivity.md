@@ -157,6 +157,39 @@ Base MJSP: CCS 60% = 0.977 \$/L; NH₃10%+CCS50 = 1.098 \$/L. Bar spans (\$/L SA
 
 ## Log history
 
+### 2026-10-01
+
+**Discussion**
+- User asked for a **graph format** showing that as green-ammonia price falls, the ammonia route
+  beats the CCS-only route. Chose a **crossover line plot** (x = ammonia price, y = MJSP): CCS-only
+  is flat (no ammonia), the NH₃ route rises linearly, they cross. Metric = MJSP (not GHG/abatement).
+- Routes = the two CORSIA-compliant §5 points: **CCS 60%** (0.977 \$/L, flat) vs **Green NH₃ 10% +
+  CCS 50%** (1.098 \$/L at base price). No new TEA run — the NH₃-route MJSP is exactly linear in
+  ammonia price (offset = 10% × 2.038 \$/L × (p/0.288 − 1)), so anchors come straight from §5.
+- Result: **crossover ≈ 0.117 \$/lb = 258 \$/t NH₃**, just below the reviewer's price floor
+  (0.1225 \$/lb = 270 \$/t). So the ammonia blend undercuts CCS-only only at green-NH₃ prices below
+  the reviewer's low end — a narrow but real window.
+- **Reframed the figure (same day):** user asked to put **gray-H₂ price on the x-axis** (the dominant
+  driver, §4–5) and draw **one NH₃ line per green-ammonia price**. Keeps MJSP but makes the crossover
+  a 2-D story: CCS 60% is now a *sloped* line (100% grey, slope 0.419 \$/L per \$/kg from the §5 Gray-H₂
+  span 1.258/3) and the NH₃ route is shallower (90% grey, 0.378 from 1.133/3), so the two cross *within*
+  the 1–4 \$/kg range only when ammonia is cheap. Base grey-H₂ = **1.50 \$/kg** (APEA raw-material cost).
+  Crossover H₂ price falls as ammonia cheapens: **270 \$/t → 1.59 \$/kg**, 441 → 2.91 (both in-range),
+  635 (base) → 4.40, 1000 → 7.21 (both above range). Supersedes the flat-CCS / ammonia-x-axis framing above.
+
+**Code**
+- `plot_ammonia_crossover.py` (new) — crossover plot → `Figure/ammonia_crossover_mjsp.png`. Anchors from
+  §5 (base MJSPs + recorded Gray-H₂/Ammonia OAT spans → slopes; no re-run). **Revised same day** to
+  x = gray-H₂ price (1–4 \$/kg): CCS 60% one sloped reference line, NH₃ 10%+CCS50 one line per ammonia
+  price (270/441/635/1000 \$/t), green shades light→dark, dots marking in-range crossovers with CCS 60%,
+  base-H₂ marker. SA_RC applied, png only. Self-check: CCS slope > NH₃ slope, cheaper ammonia pulls the
+  crossover to lower H₂ price.
+
+**Open**
+- Crossover (258 \$/t) sits just under the reviewer range floor (270 \$/t); figure extends the x-axis
+  ~20% below the floor to show it. If a within-range story is wanted, would need a lower NH₃ share or a
+  deeper CCS pairing. Uncommitted as of this entry.
+
 ### 2026-09-30
 
 **Discussion**
