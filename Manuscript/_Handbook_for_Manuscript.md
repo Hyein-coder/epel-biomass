@@ -8,6 +8,20 @@
 
 ## Log history
 
+### 2026-10-02 (update 11)
+
+**Discussion**
+- The user asked §3.3 to introduce the crossover panel (composite panel b), to argue that green NH₃ price matters more than CO₂ T&S, and to state when the NH₃ route becomes worthwhile: when grey H₂ becomes expensive or the green-NH₃ price falls. The base NH₃ price is 0.288 \$/lb = 635 \$/t, and at the user's request it is now labelled (Base) in the legend.
+- Green NH₃ vs CO₂ T&S is argued from the one-at-a-time spans (0.234 vs 0.165–0.187 \$/L) and from how far each moves the crossover: about 5.6 \$/kg H₂ across the ammonia range, against ≤0.45 \$/kg H₂ for the T&S range. The ≤0.45 figure comes from the rejected three-panel T&S variant (`_Tornado_Sensitivity.md` log 2026-10-02), used here only as a number, not as a figure.
+
+**Code**
+- `plot_ammonia_crossover.py` `draw()`: the legend label for the line at `AMM_P_BASE` now ends in " (Base)". Re-ran it together with `plot_composite.py`, which regenerated `Figure/ammonia_crossover_mjsp.png` and `Figure/composite_pareto_crossover_shap.png`.
+- `Manuscript/3. Results.md` §3.3: added a paragraph, *When green NH₃ beats CCS-only*, with three bullets: the slopes (0.419 vs 0.378), the crossovers at each NH₃ price (1.59 / 2.91 / 4.40 / 7.21 \$/kg H₂), and the conditions under which the NH₃ route wins (expensive grey H₂, or green NH₃ below ~450 \$/t).
+
+**Open**
+- The crossover lines are analytic, built from the anchors hard-coded in `plot_ammonia_crossover.py`; no TEA was re-run.
+- Figure numbers are still placeholders (Figure Xb).
+
 ### 2026-10-02 (update 10)
 
 **Discussion**
@@ -32,6 +46,18 @@
 
 **Code**
 - `plotting.py` `plot_stack_bar`: the segment value labels on hatched bars use fontweight 400 instead of 200. Non-hatched callers keep 200.
+
+### 2026-10-02 (update 7)
+
+**Discussion**
+- The user asked §3.3 to explain the SHAP beeswarms (composite panels c, d): grey H₂ is the strongest lever, and CO₂ T&S and green NH₃ are named in each case as the factor specific to that route. The numbers come from `_Tornado_Sensitivity.md` §3–4 (mean |SHAP| table).
+
+**Code**
+- `Manuscript/3. Results.md` §3.3: added a *SHAP attribution at the two compliance points* paragraph with five bullets. Grey H₂ is the strongest driver (0.310 / 0.274 \$/L). CAPEX, co-product price and electricity come next, and capacity factor and biomass are negligible. CO₂ T&S is 0.025 vs 0.023 (larger at CCS 60% because it captures more CO₂). Green NH₃ (0.031) appears only in the NH₃ case. The closing bullet says the route choice does not change the main driver.
+
+**Open**
+- Methods §2.2.4 does not describe the SHAP method (LHS N = 128, surrogate, TreeSHAP); §3.3 states it only briefly.
+- Composite panel (b), the NH₃-vs-CCS crossover, still has no text.
 
 ### 2026-10-02 (update 6)
 
@@ -66,6 +92,68 @@
 
 **Open**
 - The two panels use different x-axis values: the upper panel is on a metric-tonne basis (0.042–1.252), the lower one is not (0.046–1.370). `scale_up_price_model_mjsp.xlsx` needs to be regenerated on the metric-tonne basis.
+
+### 2026-10-02 (update 3)
+
+**Discussion**
+- User asked for the sensitivity analysis to sit in its own section. §3.2 Step 4 is now §3.3; §3.2 keeps Steps 1–3.
+
+**Code**
+- `Manuscript/3. Results.md`: Step 4 became §3.3 *Sensitivity of the trade-off*, with a one-line lead. The text is unchanged, except that "Steps 1–3" now reads "§3.2".
+
+**Open**
+- The SHAP panels (c, d) may also belong in §3.3, but they still have no text.
+
+### 2026-10-02 (update 2)
+
+**Discussion**
+- Drafted Results §3.2 from `_Pareto_Front.md` (§3 grid, §5 abatement, §6 sensitivity, §7 CCS 60%). Its §4 was not used because it is stale: it still says CCS-only cannot reach CORSIA.
+- §3.2 is written around the composite figure (`composite_pareto_crossover_shap.png`), but only panel (a) has text so far.
+- Scale is given as 0.457 MMt/yr (drafting rule 2), the same figure §3.1 uses. CCS 60% points to SI §S7 for its interpolated GHG (drafting rule 3).
+
+**Code**
+- `Manuscript/3. Results.md`: appended §3.2 *Cost–emission trade-off of hydrogen source and CCS*, written in four steps: lever geometry, CORSIA compliance, abatement vs CCS 60%, and H₂-price sensitivity.
+
+**Open**
+- Panels (b–d) of the composite figure (NH₃-vs-CCS crossover, SHAP) are not yet described in §3.2.
+- Methods §2.2.4 gives the knee scale as 0.41 MMt/yr; §3.1 and §3.2 use 0.457. Methods also costs abatement against the grey-H₂ base, while §3.2 uses CCS 60%.
+- Methods §2.3.3 and SI §S7 quote U.S.-grid intensities (87.6 / 49.5 / 60.3 g CO₂e/MJ), but §3.2 uses the Korea grid mix (100.8 / 62.7 / 75.14).
+- The figure number in §3.2 is a placeholder (Figure Xa).
+
+### 2026-10-02
+
+**Discussion**
+- §3.1 final two figures unified: `scale_up_wo_price_model_base_summary.png` restyled to match `scale_up_price_model_mjsp.png` (SA_RC fonts, same figure size). Both shortened vertically 4.5 → 3.6 in (now 9 × 3.6 in). Base-summary x labels now 3 decimals like the price-model figure.
+- Combined `pareto_front.png` (a), `ammonia_crossover_mjsp.png` (b) and `shap_beeswarm_ccs60_vs_nh10ccs50.png` (c, d) into one 2×2 figure, laid out like the user's mock-up. The panels are redrawn from their data, not pasted in as images.
+
+**Code**
+- `plotting.py` `plot_stack_bar`: `fs=None` keeps SA_RC label/tick sizes (value labels sized off `font.size`); other callers unchanged (default `fs=15`). Added type hints.
+- `tea_scale_up.py`: base_summary call uses `figsize=(9, 3.6)`, `fs=None`, 3-decimal x labels; `saf_mmt` rounding 2 → 3 decimals.
+- `tea_scale_up_price_models.py`: both figures `figsize=(9, 4.5)` → `(9, 3.6)`. Both PNGs regenerated.
+- `plot_composite.py` (new): writes `Figure/composite_pareto_crossover_shap.png`. Reads `Result/pareto_front.xlsx` and `Result/shap_samples.npz` (cached LHS samples + SHAP values). No TEA re-run.
+- `plot_ammonia_crossover.py` and `plot_pareto_from_xlsx.py`: plotting moved into `draw(ax)` (with a `main()` wrapper) so the composite can reuse it. Standalone output is unchanged.
+- `_PLOTTING_STYLE.md`, `tea_pareto_front.py` and `plot_ammonia_crossover.py` (`SA_RC`): `ytick.labelsize` changed 10 → 12, so x and y tick labels are both 12 pt.
+- `plot_composite.py`: subfigures replaced with one 2×3 gridspec whose third column holds the colorbar. The upper plot boxes now match the lower ones in width; the top-right cell stays empty.
+- §3.1 figures now redrawn from data sheets (user request): `tea_scale_up.py` writes `Result/scale_up_base_summary.xlsx`, `tea_scale_up_price_models.py` writes `Result/scale_up_price_model_mjsp.xlsx` (sheets `biomass price`, `MJSP Base/Ammonia/CCS`). `plot_scale_up_from_xlsx.py` (new) redraws both PNGs with no TEA re-run: shared 9 × 3.6 in canvas, SA_RC with 12 pt ticks. The base-summary legend is now inside the box (`plot_stack_bar` got `legend_kw`, `ytop`; default stays outside for other callers). It had been left outside because `plot_stack_bar` hard-coded the outside legend and the first pass only changed size and fonts.
+- `plot_composite.py`: top and right spines dropped, so only the x and y axis lines remain (composite only; `SA_RC` unchanged). Canvas shrunk 13 × 10.5 → 11 × 9 in so the fonts read larger relative to the plots.
+- `plot_composite.py`: removed the in-panel text labels (the "WTWa GHG: Allocation, Korea grid mix" note and the beeswarm case labels "CCS 60% …" and "Green NH₃ 10% + CCS 50% …"). The beeswarms no longer say which case they show.
+- `plot_ammonia_crossover.py` `draw`: the "base H₂" annotation is replaced by a legend entry on the dotted line, "Base gray H₂ price (1.50 \$/kg)". This also changes the standalone figure.
+- `plot_composite.py`: canvas widened 11 × 9 → 14 × 9 in.
+- `plot_ammonia_crossover.py` `draw`: thicker lines and bigger markers. CCS line lw 1.4 → 2.2; NH₃ lines lw 0.7 → 1.6; line markers ms 3 → 6; crossover dots 4 → 7; base-H₂ dotted line lw 0.6 → 1.2. This also changes the standalone figure.
+- Committed `1d29e71` (composite, crossover, `_PLOTTING_STYLE.md`, PNG); the handbook was left out because it also holds another session's uncommitted entries. A concurrent session had already committed earlier parts of this work in `6fd65a9`.
+- `plot_composite.py`: trial canvas at 90%, 14 × 9 → 12.6 × 8.1 in (same aspect). Not committed.
+- Legend locations (user): pareto `loc='best'` → `'lower left'` (`plot_pareto_from_xlsx.py`); crossover `'upper left'` → `'lower right'` (`plot_ammonia_crossover.py`). Both are set inside `draw`, so the standalone figures change too.
+- Pareto legend split into 2 columns (`ncol=2`), with green NH₃ shares in the first column and CCS rates + CORSIA in the second. This clears the CCS 100% / Green NH₃ 50% point that the single-column legend covered.
+- `plot_ammonia_crossover.py` `draw`: the base-H₂ line now uses the CORSIA line style (`#333333`, `--`, lw 1.0; was gray dotted, lw 1.2). Crossover dots shrunk from ms 7 to 4.
+- Crossover legend relabeled (user): "CCS-only", "Green NH₃ \$270/t … \$1,000/t" and "Base gray H₂ price". The "(base)" tag and the "NH₃ 10% + CCS 50%" prefix were dropped (`plot_ammonia_crossover.py`).
+- Beeswarm driver "Ammonia" is now shown as "Green NH₃", renamed for display only in `plot_composite.py`. The `shap_samples.npz` cache keys keep 'Ammonia', so no re-sample was needed.
+
+**Open**
+- x-axis basis mismatch: base_summary uses metric MMt/yr (0.042 … 1.252), price-model figure uses short tons/1e6 (0.046 … 1.370) under the same "MMt/yr" label (`tea_scale_up_price_models.py:130`, no ×0.907185).
+- `tea_scale_up.py:319` crashes (`KeyError: [18.5]`) after the figures are saved; pre-existing, not touched.
+- Panel (b) has no Excel source. Its lines are analytic, built from the `_Tornado_Sensitivity.md` §5 constants hard-coded in `plot_ammonia_crossover.py`. The beeswarms need the per-sample `shap_samples.npz`; the xlsx holds only mean |SHAP| values.
+- The "WTWa GHG: Allocation, Korea grid mix" label was removed from `plot_pareto_from_xlsx.py` during this session by a concurrent edit. `plot_composite.py` re-adds it to panel (a) only.
+- Other inline `SA_RC` copies still have `ytick.labelsize: 10`: `tea_scale_up.py`, `tea_scale_up_price_models.py`, `plot_scale_up_mjsp_bar.py` and `plot_coproduct_crossover.py`. The two `tea_scale_up` files were being edited by a concurrent session.
 
 ### 2026-09-30
 
