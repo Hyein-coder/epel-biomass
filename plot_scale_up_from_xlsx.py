@@ -12,7 +12,7 @@ from plotting import plot_stack_bar
 SA_RC = {
     'figure.dpi': 150, 'figure.facecolor': 'white', 'figure.autolayout': True,
     'axes.facecolor': 'white', 'axes.edgecolor': '#444444', 'axes.linewidth': 0.8,
-    'axes.spines.top': True, 'axes.spines.right': True, 'axes.labelsize': 12,
+    'axes.spines.top': False, 'axes.spines.right': False, 'axes.labelsize': 12,   # axis lines only, no box
     'axes.labelcolor': 'black', 'axes.labelweight': '500', 'axes.grid': False,
     'xtick.labelsize': 12, 'xtick.color': 'black', 'ytick.labelsize': 12, 'ytick.color': 'black',
     'font.family': 'sans-serif',
@@ -41,8 +41,8 @@ df_base.index = xlabels
 stack_hatches = ['///', '\\\\\\', 'xxx', '...', 'ooo', '+++', '---', '|||', '**']   # one per cost column
 fig, (ax_top, ax) = plt.subplots(2, 1, figsize=FIGSIZE)
 # 10 legend entries in 2 rows across the top; ytop leaves headroom above the tallest stack
-# total bar pink = Base line color of the lower panel; alpha B3 (~0.7) on fill only, edge stays black
-plot_stack_bar(df_base, 'MJSP [$/L SAF]', ax=ax_top, hatches=stack_hatches, total_color='#D57F78B3',
+# total bar = Base line color of the lower panel; alpha CC (~0.8) on fill only, edge stays black
+plot_stack_bar(df_base, 'MJSP [$/L SAF]', ax=ax_top, hatches=stack_hatches, total_color='#E5534BCC',
                xlabel=XLABEL, fs=None, ytop=1.55,
                legend_kw=dict(loc='upper center', ncol=5, columnspacing=1.0))
 
@@ -51,7 +51,7 @@ mjsp = {name.removeprefix('MJSP '): df.drop(columns=X_COL) for name, df in sheet
 x = np.arange(len(df_price))
 
 bar_hatches = ['///', 'xxx', '...']   # color-free bars, one hatch per price model
-line_colors = ['#D57F78', '#D6AE5C', '#85B27C']   # base_summary palette, darkened: Base / Ammonia / CCS
+line_colors = ['#E5534B', '#F2B701', '#3FA34D']   # red / yellow / green: Base (= upper total bar) / Ammonia / CCS
 case_styles = ['-', '--', ':']
 case_markers = ['o', 's', '^']
 
@@ -65,6 +65,7 @@ ax.set_xticklabels(xlabels, rotation=0)
 ax.set_ylim(0, ax.get_ylim()[1] * 1.2)
 
 ax2 = ax.twinx()
+ax2.spines['right'].set_visible(True)   # twin MJSP axis keeps its line; only top is dropped
 for cfg_idx, (name, df) in enumerate(mjsp.items()):
     ax2.fill_between(x, df.min(axis=1), df.max(axis=1), color=line_colors[cfg_idx], alpha=0.25, linewidth=0)
     ax2.plot(x, df.mean(axis=1), color=line_colors[cfg_idx], linewidth=2,
