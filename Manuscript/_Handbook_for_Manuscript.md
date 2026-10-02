@@ -8,6 +8,18 @@
 
 ## Log history
 
+### 2026-10-02 (update 19)
+
+**Discussion**
+- The user decided that numbers in the text must match those printed in the figure. Only the numbers in §3.1 were changed. The wording, the derived percentages (~11%, ~3%, ~90%, ~6%), and the x10 phrasing were left as they were.
+
+**Code**
+- `Manuscript/3. Results.md` §3.1: SAF production values 0.04, 0.42, 0.457, 0.913, and 1.25 MMt/yr were changed to the figure's axis labels, 0.05, 0.46, 0.46, 0.91, and 1.37 MMt/yr. The smallest-scale MJSP \$1.46 was changed to \$1.48/L, the value printed in panel (a). This closes the update 16 open item.
+
+**Open**
+- The axis of panel (a) is labelled with the price-model scales (0.046–1.370 MMt/yr, Table S9-2), but Table S9-1 lists its data at 0.042–1.252 MMt/yr. The text now follows the figure. Table S9-1 and the derived percentages, which were computed on the 0.042 basis, have not been updated.
+- §3.2 onward still writes 0.457 MMt/yr (for example in the §3.2 opening sentence), not 0.46 as printed in the figure. This was left alone because the user's instruction covered only §3.1.
+
 ### 2026-10-02 (update 18)
 
 **Discussion**
