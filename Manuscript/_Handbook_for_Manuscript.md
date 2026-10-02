@@ -8,6 +8,22 @@
 
 ## Log history
 
+### 2026-10-02 (update 10)
+
+**Discussion**
+- The user asked for the yellow Total Sum bars to be slightly transparent.
+
+**Code**
+- `plot_scale_up_from_xlsx.py`: `total_color` is now `#D6AE5CB3`, an 8-digit hex with alpha ≈ 0.7. Only the fill is transparent; the black edge stays opaque. Figure regenerated.
+
+### 2026-10-02 (update 9)
+
+**Discussion**
+- The user asked for the upper panel's Total Sum bars to use the lower panel's Base yellow instead of the raw-materials red, so that the base-case total and the Base MJSP line share one color.
+
+**Code**
+- `plot_scale_up_from_xlsx.py`: changed `total_color` from `#F0B1AC` to `#D6AE5C` and regenerated `Figure/composite_scale_up_mjsp.png`.
+
 ### 2026-10-02 (update 8)
 
 **Discussion**
