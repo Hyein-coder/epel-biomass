@@ -8,6 +8,49 @@
 
 ## Log history
 
+### 2026-10-02 (update 8)
+
+**Discussion**
+- The upper panel still looked lighter than the lower one. The user put this down to the segment value labels being too thin and asked for a heavier font.
+- The user approved committing the scale-up composite work.
+
+**Code**
+- `plotting.py` `plot_stack_bar`: the segment value labels on hatched bars use fontweight 400 instead of 200. Non-hatched callers keep 200.
+
+### 2026-10-02 (update 6)
+
+**Discussion**
+- The user asked for opaque bars in the upper panel. Asked to choose between three options (color fill under the hatch, a stronger red total, or both), they answered "hatch without a fill". This was read as: keep the white fill and change the faded gray hatch and edge lines to black, to match the lower panel. No color fill was added.
+- The upper x-axis now uses the lower panel's numbers. The SAF production axes of both panels show at most 2 decimals.
+
+**Code**
+- `plotting.py` `plot_stack_bar`: when hatches are used, bar edges and hatch lines are black instead of `#808080`, including the Total Sum bars.
+- `plot_scale_up_from_xlsx.py`: the price-model sheet is read before the upper panel is drawn. Its x values (`.2f`) become `df_base.index`, so both panels show 0.05–1.37.
+
+**Open**
+- The upper panel's tick labels come from the price-model sheet, but its bar values are still on the metric-tonne basis (0.042–1.252). They line up only if both sheets list the same 7 cases in the same row order.
+
+### 2026-10-02 (update 5)
+
+**Discussion**
+- User asked for the combined scale-up figure's file name to start with `composite_`, to match `composite_pareto_crossover_shap.png`.
+
+**Code**
+- `plot_scale_up_from_xlsx.py`: the output is now `Figure/composite_scale_up_mjsp.png`, replacing `scale_up_combined_mjsp.png`, which was deleted.
+
+### 2026-10-02 (update 4)
+
+**Discussion**
+- User asked for the two §3.1 scale-up figures to be merged into one figure: the base MJSP breakdown on top and the price-model MJSP on the bottom. Both panels are redrawn from their xlsx data sheets.
+- In the upper panel, the cost stacks now use hatches instead of fill colors. The Total Sum bars are solid red (`#F0B1AC`, the old raw-materials color).
+
+**Code**
+- `plotting.py` `plot_stack_bar`: new `ax`, `hatches` and `total_color` arguments. When `ax` is given, the function draws into that axes and does not save the figure. When hatches are used, segment labels get a white box so they stay readable. Existing callers behave as before.
+- `plot_scale_up_from_xlsx.py`: builds a 2×1 figure from `Result/scale_up_base_summary.xlsx` and `Result/scale_up_price_model_mjsp.xlsx` and writes `Figure/scale_up_combined_mjsp.png`. It no longer writes the two separate PNGs.
+
+**Open**
+- The two panels use different x-axis values: the upper panel is on a metric-tonne basis (0.042–1.252), the lower one is not (0.046–1.370). `scale_up_price_model_mjsp.xlsx` needs to be regenerated on the metric-tonne basis.
+
 ### 2026-09-30
 
 **Discussion**
