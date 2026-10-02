@@ -155,7 +155,72 @@ Base MJSP: CCS 60% = 0.977 \$/L; NH₃10%+CCS50 = 1.098 \$/L. Bar spans (\$/L SA
   FR floor (SHAP-band low), capacity at the 8000 h base (above both CF endpoints) — so those bars
   extend only one way. Consistent with the §1 biomass-band note and the §4.9 capacity concern.
 
+## 6. Gray-H₂ price crossover of the two compliance routes
+
+![Gray-H₂ price vs MJSP for CCS 60% and the Green NH₃ 10% + CCS 50% route at four green-ammonia prices](Figure/ammonia_crossover_mjsp.png)
+
+MJSP of the two CORSIA-compliant routes against gray-H₂ price (1–4 \$/kg, the §4–5 dominant
+driver; base H₂ = 1.50 \$/kg). **CCS 60%** (CCS-only, 100% grey H₂) is the steeper line
+(slope **0.419** \$/L per \$/kg, from the §5 Gray-H₂ span 1.258 / 3); **Green NH₃ 10% + CCS 50%**
+(90% grey) is shallower (**0.378**, 1.133 / 3) and drawn once per green-ammonia price
+(270 / 441 / 635 / 1000 \$/t NH₃). Every MJSP term is linear in its driver (near-additive TEA),
+so the lines come straight from the §5 base MJSPs + OAT spans — no re-run.
+
+- The routes cross because they load grey H₂ **differently** (100% vs 90%): the less-exposed NH₃
+  route wins at high H₂ price. Crossover H₂ price rises with ammonia price — **1.59 \$/kg** (270 \$/t),
+  **2.91** (441), 4.40 (635, base), 7.21 (1000) — so only the two cheapest ammonia cases cross
+  inside the 1–4 \$/kg band (dots).
+- At base ammonia (635 \$/t) CCS 60% is cheaper across the whole plotted range; the NH₃ blend needs
+  green ammonia below ~450 \$/t to undercut CCS 60% within range.
+- Grey H₂ is the **only** driver giving an in-range crossover: co-product and CAPEX load both routes
+  near-equally (§5 spans ≈ equal), so on those axes the lines are near-parallel and do not cross.
+
+## 7. Literature: breakeven-price claims and their plots
+
+Precedents for "A is costlier, but competitive when price X < (or carbon price >) threshold".
+DOIs, numbers and citation counts were checked by a separate fact-checker agent (OpenAlex `cited_by_count`, 2026-10-01).
+
+| ID | Paper | Threshold claim | Supporting plot | Cites |
+|----|-------|-----------------|-----------------|-------|
+| A1 | Deng 2024, Int. J. Green Energy, 10.1080/15435075.2024.2386066 | NH₃ co-firing breaks even with CCS at \$202/t NH₃ (20% CO₂ cut) and \$189/t (80% cut), at India's 42% capacity factor | Breakeven NH₃ price vs capacity factor (Fig 10); LCOE sensitivity bars (Figs 11–12) | 21 |
+| A2 | Cesaro 2021, Appl. Energy, 10.1016/j.apenergy.2020.116009 | Below 25% capacity factor, tipping point at about 400 USD/t NH₃ vs gas, coal or bio-energy with CCS | LCOE bars at 25% capacity factor (Fig 7a); LCOE vs capacity factor (Fig 7b); tornado (Fig 8) | 339 |
+| A3 | Fasihi 2021, Appl. Energy, 10.1016/j.apenergy.2020.116170 | Green NH₃ 440–630 €/t (2020), 345–420 €/t (2030) vs fossil 300–350 €/t; gas-price drop offset by about 75 €/tCO₂ by 2040 | Not checked | 473 |
+| A4 | Egerer 2023, Appl. Energy, 10.1016/j.apenergy.2023.120662 | Green reaches parity with gray NH₃ at moderate gas prices if the CO₂ price is high enough; cracking back to H₂ adds 45% | Not checked | 127 |
+| A5 | Bachorz 2025, Nat. Commun., 10.1038/s41467-025-59277-1 | Steel breakeven H₂ cost €50/MWh (retrofit, incomplete mitigation), €150/MWh (retrofit, full mitigation), €230/MWh (new plant); aviation €300–1000/tCO₂ | 2-D least-cost map, H₂ cost × non-fossil CO₂ feedstock cost (Fig 3); MAC curve (Fig 6) | 29 |
+| C1 | Ueckerdt 2021, Nat. Clim. Change, 10.1038/s41558-021-01032-7 | E-fuel breakeven CO₂ price 800 €/t (e-gasoline) and 1200 €/t (e-methane) for 2020–25; 280–1200 €/t over 2020–2030; about 20–270 €/t by 2050 | Fuel cost vs CO₂ price, crossovers circled (Fig 4c); breakeven over time vs scenario price paths (Fig 4d) | 704 |
+| C2 | Parkinson 2019, Energy Environ. Sci., 10.1039/c8ee02079e | Mitigation cost vs SMR: about \$70/tCO₂ (methane pyrolysis), about \$140/tCO₂ (coal gasification + CCS); electrolysis needs H₂ below \$2.5–3/kg | Mitigation-cost dot chart with error bars (Fig 4) | 585 |
+| C3 | Sanchez 2018, PNAS, 10.1073/pnas.1719695115 | \$60/t sequestration credit gives 30 Mt CO₂ stored and 6,900 km of pipeline; \$90/t abatement credit gives 38 Mt | Supply curves at stepped credit levels (Fig 2) | 169 |
+| C4 | Lu 2019, PNAS, 10.1073/pnas.1812239116 | Coal–biomass gasification with CCS (CBECCS) competitive above \$52/t CO₂ vs pulverized coal and \$42/t vs coal IGCC | LCOE vs carbon price lines (Fig 3A); breakeven contour map, biomass price × mixing ratio (Fig 3C) | 138 |
+| C5 | Freire Ordóñez 2022, Sustain. Energy Fuels, 10.1039/d2se00757f | E-jet needs a carbon tax of at least 1125 USD/t CO₂-eq | Carbon-tax chart (Fig 8) | 33 |
+| C6 | Rojas Michaga 2022, Energy Convers. Manage., 10.1016/j.enconman.2022.115346 | BECCS jet: MJSP 3.03→3.27 £/kg with CCS; breaks even with RTFO certificates (0.20 £) plus a carbon price of 246.64 £/tCO₂ | Not checked | 100 |
+| C7 | Becattini 2021, Ind. Eng. Chem. Res., 10.1021/acs.iecr.0c05392 | Fossil jet + biogenic point-source CCS cost-competitive with fossil jet + carbon tax today (abstract only) | Not checked | 153 |
+| C8 | Gautam 2023, PNAS, 10.1073/pnas.2312667120 | Soil-carbon credit of \$185/tCO₂ makes Miscanthus biojet competitive on 66% of US cropland at \$0.74/L (16% without the credit) | Grid of US maps, credit level × jet price (Fig 2) | 26 |
+| C9 | Langholtz 2026, iScience, 10.1016/j.isci.2026.115956 | Biomass value for carbon removal (BiCRS) rises above about \$200/tCO₂; SAF cost \$2.48–2.91/L, quoted from another source | Two panels shaded by biomass value, fuel price × carbon price (Fig 2) | 1 |
+
+Plot types used for this kind of claim, most to least common:
+1. Cost vs price line plot with a crossover marker against the baseline (C1 Fig 4c, C4 Fig 3A, A2 Fig 7b). Same form as `plot_ammonia_crossover.py`.
+2. Two-price contour or heatmap with breakeven lines or least-cost regions (C4 Fig 3C, A5 Fig 3, C9 Fig 2).
+3. Breakeven price plotted against a third driver, such as capacity factor or year (A1 Fig 10, C1 Fig 4d).
+4. Tornado or Monte Carlo as supporting evidence; these rarely show the threshold themselves.
+5. MAC or supply curves, for \$/tCO₂ claims across technologies (A5 Fig 6, C3 Fig 2, C2 Fig 4).
+
+None of these papers gives an ammonia-price threshold for H₂ used in SAF or hydrotreating.
+
 ## Log history
+
+### 2026-10-01 (update 2)
+
+**Discussion**
+- User asked for reference papers that conclude "A is expensive but becomes cheaper when X price drops below a threshold", and for the plot types they use. Scope chosen: ammonia-price and carbon-price/CCS thresholds. Results are in §6.
+- One survey agent found 14 papers; a separate fact-checker agent then checked them against OpenAlex and the full texts. All DOIs and numbers were confirmed and none were wrong. Fixes taken from the check: A5 has three breakeven cases and its Fig 3 axis is non-fossil CO₂ cost; C1's 280–1200 range covers 2020–2030; C9's SAF cost is quoted from another source; A2 and C2 are cited by issue year (2021, 2019).
+- Dropped as having no confirmed breakeven: Emenike 2021, Schreuder 2025, Kim 2020, Brown 2011, Makhloufi 2021.
+
+**Code**
+- None.
+
+**Open**
+- Plot types not checked for A3, A4, C6, C7 (publisher blocked access); C7 checked against abstract only.
+- No ammonia-price threshold for SAF/hydrotreating H₂ found in the literature; Google Scholar not searched.
 
 ### 2026-10-01
 
@@ -177,13 +242,35 @@ Base MJSP: CCS 60% = 0.977 \$/L; NH₃10%+CCS50 = 1.098 \$/L. Bar spans (\$/L SA
   Crossover H₂ price falls as ammonia cheapens: **270 \$/t → 1.59 \$/kg**, 441 → 2.91 (both in-range),
   635 (base) → 4.40, 1000 → 7.21 (both above range). Supersedes the flat-CCS / ammonia-x-axis framing above.
 
+- **Co-product x-axis tried, dropped as a crossover view (same day):** user felt the gray-H₂ lines looked
+  "too linear" and asked to try **co-product price on the x-axis**. Result: the §5 co-product OAT span is
+  **identical for both routes (0.494 \$/L** — shared co-product streams + same SAF output), so both lines
+  have the *same* slope → CCS 60% and every NH₃ line are **parallel and never cross**. Whether an NH₃ line
+  beats CCS 60% is set only by ammonia price (the fixed 0.121 \$/L base gap → ammonia below ~258 \$/t),
+  independent of co-product. So co-product does **not** yield a crossover story and is still linear.
+  Root cause of "too linear": the TEA is near-additive — every driver enters MJSP linearly, so no single-
+  driver x-axis curves. Only a driver the two routes load *differently* crosses: gray H₂ (slopes 0.419 vs
+  0.378) and ammonia (NH₃ has it, CCS does not). Co-product is shared, hence parallel. Kept the gray-H₂
+  figure as the crossover view.
+- Promoted the gray-H₂ crossover figure into the report body as a new **§6** (conclusion-level: model,
+  crossover H₂ prices, the "only grey H₂ crosses in-range" reading). The **Literature** section moved
+  **§6 → §7**. The "update 2" line above ("Results are in §6") now refers to **§7** (left unedited per
+  the no-edit-old-entries rule). Also added line markers (distinct shape per series) to the figure on
+  user request. CAPEX x-axis evaluated analytically (slopes 0.787 vs 0.800, gap 0.013 → crossover
+  off-scale except the 270 \$/t line grazing the band edge at ×0.71) and **not** plotted — same
+  near-parallel outcome as co-product.
+
 **Code**
-- `plot_ammonia_crossover.py` (new) — crossover plot → `Figure/ammonia_crossover_mjsp.png`. Anchors from
-  §5 (base MJSPs + recorded Gray-H₂/Ammonia OAT spans → slopes; no re-run). **Revised same day** to
+- `plot_ammonia_crossover.py` (new, committed `7226981`) — crossover plot → `Figure/ammonia_crossover_mjsp.png`.
+  Anchors from §5 (base MJSPs + recorded Gray-H₂/Ammonia OAT spans → slopes; no re-run). **Revised same day** to
   x = gray-H₂ price (1–4 \$/kg): CCS 60% one sloped reference line, NH₃ 10%+CCS50 one line per ammonia
   price (270/441/635/1000 \$/t), green shades light→dark, dots marking in-range crossovers with CCS 60%,
   base-H₂ marker. SA_RC applied, png only. Self-check: CCS slope > NH₃ slope, cheaper ammonia pulls the
   crossover to lower H₂ price.
+- `plot_coproduct_crossover.py` (new, uncommitted) — co-product-price variant → `Figure/coproduct_crossover_mjsp.png`.
+  Same anchors; co-product enters as a revenue credit (slope −1.235 \$/L per ×, same both routes). Shows the
+  parallel/no-crossover result above; caveat documented in the module docstring. Self-check: NH₃-vs-CCS
+  ordering constant across the co-product sweep (parallel ⇒ no crossover).
 
 **Open**
 - Crossover (258 \$/t) sits just under the reviewer range floor (270 \$/t); figure extends the x-axis

@@ -60,13 +60,16 @@ h = np.linspace(H2_RANGE[0], H2_RANGE[1], 200)
 
 fig, ax = plt.subplots(figsize=(7.5, 5))
 # CCS-only reference line (no ammonia; steeper in grey H2)
-ax.plot(h, mjsp_ccs(h), color='#ed7d31', lw=1.4, label='CCS 60% (CCS-only)')
+ax.plot(h, mjsp_ccs(h), color='#ed7d31', lw=1.4, marker='s', markevery=25,
+        label='CCS 60% (CCS-only)')
 
-# one NH3 line per ammonia price; green shades go light (cheap) -> dark (dear)
+# one NH3 line per ammonia price; green shades go light (cheap) -> dark (dear),
+# a distinct marker shape per line so series read apart from colour alone
 greens = plt.cm.Greens(np.linspace(0.45, 0.9, len(AMM_LINES)))
-for pa, col in zip(AMM_LINES, greens):
+nh3_markers = ('o', '^', 'D', 'v')   # one per AMM_LINES entry
+for pa, col, mk in zip(AMM_LINES, greens, nh3_markers):
     tag = ' (base)' if abs(pa - AMM_P_BASE) < 1e-9 else ''
-    ax.plot(h, mjsp_nh3(h, pa), color=col,
+    ax.plot(h, mjsp_nh3(h, pa), color=col, marker=mk, markevery=25,
             label=f'NH$_3$ 10% + CCS 50%, {pa * LB_TO_T:.0f} \\$/t{tag}')
     # mark the crossover with CCS 60% when it falls inside the plotted H2 range
     hc = h_cross(pa)

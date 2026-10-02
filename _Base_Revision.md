@@ -383,6 +383,10 @@ global integrated assessment modeling*, IJGGC 2021
   basis note updated. Superseded intermediate: ton/hr → tpd (×24).
   SAF per scale read from `Pyrolysis_551_Scale00XX_Streams.xlsx` (Material sheet, `Mass Flows`
   row, ×24/2000), same source as the biomass feed.
+- `Manuscript/2. Methods.md` base-case sentence: added base SAF **0.041 MMt/yr** (stream
+  `326SAF`, x1). Rest of Methods already on MMt/yr and matched the table (feed 0.343, bio-oil
+  0.244, H2 0.0238, demand=scale×0.330). L44 `≈0.42 MMt/yr SAF` left as scale-up limit (Results).
+  User: Methods base = x1; scale varies in Results.
 
 **Findings**
 

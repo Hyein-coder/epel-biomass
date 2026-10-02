@@ -54,7 +54,8 @@ def galik_elasticity_fixed(supply, elasticity=0.3):
 scale = [1, 2.5, 5, 7.5, 8.6, 10, 18.5, 20, 30]
 biomass_demand = [s * 91014 for s in scale]
 
-unit_MTy = 1/2000/1e6*8000
+# mass basis: metric tonne (2204.62 lb/t); was 1/2000 (short ton), inconsistent with the metric MMt/yr headline axis
+unit_MTy = 1/2204.62/1e6*8000
 
 price = {
     "scale": scale,
