@@ -39,7 +39,7 @@ def draw(ax: plt.Axes) -> pd.DataFrame:
     ccs_h = [plt.Line2D([], [], marker=ccs_markers[c], ls='', color='0.6', mec='black',
                         label=f'CCS {int(c * 100)}%') for c in CCS_RATES]
     corsia_h = plt.Line2D([], [], color='#333333', ls='--', lw=1.0, label='CORSIA Standard')
-    ax.legend(handles=amm_h + ccs_h + [corsia_h], ncol=1, loc='best', markerscale=1.8)
+    ax.legend(handles=amm_h + ccs_h + [corsia_h], ncol=2, loc='lower left', markerscale=1.8)
     ax.set_ylim(0, 4)
     # SA_RC sets ytick 10 vs xtick 12; both axes are numeric here, so match y to x
     ax.tick_params(axis='y', labelsize=plt.rcParams['xtick.labelsize'])

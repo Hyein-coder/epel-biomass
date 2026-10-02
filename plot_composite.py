@@ -18,7 +18,7 @@ def main() -> None:
 
     # one 2x3 grid (3rd column = colorbar) so constrained_layout aligns each column -> upper
     # boxes take the same width as the lower ones; the top-right colorbar cell stays empty
-    fig = plt.figure(figsize=(14, 9), constrained_layout=True)
+    fig = plt.figure(figsize=(12.6, 8.1), constrained_layout=True)
     gs = fig.add_gridspec(2, 3, width_ratios=[1, 1, 0.04], height_ratios=[1, 1.05])
     ax_p, ax_c = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
     ax_s = [fig.add_subplot(gs[1, 0])]
@@ -30,7 +30,8 @@ def main() -> None:
 
     sc = None
     for ax, d in zip(ax_s, data.values()):
-        sc = beeswarm(ax, d['X'], d['sv'], d['order'], '')   # in-panel case label dropped
+        order = [k.replace('Ammonia', 'Green NH₃') for k in d['order']]   # display name only; cache keeps 'Ammonia'
+        sc = beeswarm(ax, d['X'], d['sv'], order, '')   # in-panel case label dropped
     cb = fig.colorbar(sc, cax=cax)
     cb.set_ticks([0, 1]); cb.set_ticklabels(['low', 'high']); cb.set_label('driver value')
 
