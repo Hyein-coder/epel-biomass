@@ -35,6 +35,21 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-03 (update 5)
+
+**Discussion**
+- The user revised `2. Methods.md`: dropped the Tornado and NH₃-vs-CCS crossover bullets (sensitivity treatments now three: Pareto front, CO₂ abatement cost, SHAP), moved the driver ranges into the SHAP bullet, removed the results-reminder note, the `ammonia_portion` ≈0.655 optimum, the dynamic-GWP-only clause, and the displacement-bracket sentence.
+- The user's edit had stripped every `\$` (e.g. `65.0/MWh`, `/L SAF`) and added bare `$ 635`. All money signs were restored as `\$` before commit.
+- The user asked for a Methods `.tex` from the markdown, following `main-sc.tex` (fragment starts at `\subsection`).
+
+**Code**
+- `Manuscript/2. Methods.md`: committed with the user's edits plus restored `\$` escapes.
+- `Manuscript/2 Methods.tex`: new fragment, §2.1–2.3 as `\subsection`/`\subsubsection` with `sec:methods-*` labels; `§` cross-refs become `\ref`, SI refs point to `sec:S1`–`sec:S8` and `tab:S3-1`, `tab:S9-1`…`tab:S9-7`; MJSP and GHG(a, c) set as equations. Only `jones2013process` is a real key; `rao2002`, `galik`, `katebah2022`, `ijhe2024cracker`, `greet`, `levasseur2010`, `lan2021` are placeholders.
+
+**Open**
+- The Pareto bullet still says the band is drawn from the tornado drivers and contrasts with the ±50% tornado range, though the Tornado bullet was removed. Introduction ¶6 also still names a tornado analysis and the crossover.
+- `main-sc.bib` is still missing; the fragment has not been compiled (`3 Results.tex`, `4 Conclusion.tex` absent).
+
 ### 2026-10-03 (update 4)
 
 **Discussion**
