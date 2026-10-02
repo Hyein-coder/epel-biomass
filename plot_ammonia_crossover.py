@@ -65,11 +65,11 @@ def draw(ax: plt.Axes) -> None:
     ax.plot(h, mjsp_ccs(h), color='#ed7d31', lw=2.2, marker='s', ms=6, markevery=25,
             label='CCS-only')
 
-    # one NH3 line per ammonia price; green shades go light (cheap) -> dark (dear),
+    # one NH3 line per ammonia price; blue shades go light (cheap) -> dark (dear),
     # a distinct marker shape per line so series read apart from colour alone
-    greens = plt.cm.Greens(np.linspace(0.45, 0.9, len(AMM_LINES)))
+    blues = plt.cm.Blues(np.linspace(0.45, 0.9, len(AMM_LINES)))
     nh3_markers = ('o', '^', 'D', 'v')   # one per AMM_LINES entry
-    for pa, col, mk in zip(AMM_LINES, greens, nh3_markers):
+    for pa, col, mk in zip(AMM_LINES, blues, nh3_markers):
         ax.plot(h, mjsp_nh3(h, pa), color=col, lw=1.6, marker=mk, ms=6, markevery=25,
                 label=f'Green NH$_3$ \\${pa * LB_TO_T:,.0f}/t')
         # mark the crossover with CCS 60% when it falls inside the plotted H2 range
