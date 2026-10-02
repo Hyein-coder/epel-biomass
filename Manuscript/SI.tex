@@ -1,0 +1,419 @@
+% Supporting Information, converted from "SI. Supporting Information.md".
+% Table labels follow tab:S<section>-<n> (e.g. \ref{tab:S9-1} -> S9-1).
+% Main text cross-reference: \usepackage{xr} and \externaldocument{SI} in the main .tex.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{chngcntr}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\COtwo}{CO\textsubscript{2}}
+\newcommand{\COtwoe}{CO\textsubscript{2}e}
+\newcommand{\Htwo}{H\textsubscript{2}}
+\newcommand{\NHthree}{NH\textsubscript{3}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\renewcommand{\thesection}{S\arabic{section}}
+\counterwithin{table}{section}
+\renewcommand{\thetable}{\thesection-\arabic{table}}
+
+\title{Supporting Information}
+\date{}
+
+\begin{document}
+\maketitle
+
+Detail extracted from the analysis scripts (\code{funs.py}, \code{funs\_lca.py},
+\code{Dynamic\_LCA/}, and the \code{tea\_*} / \code{lca\_*} drivers) that supports the
+Methods but is too granular for the main text. Constants are quoted as implemented in code.
+
+%% ------------------------------------------------------------------
+\section{Cost basis and financial parameters}\label{sec:S1}
+
+\begin{itemize}
+  \item Cost-year indices: \code{cost\_idx\_1Q2022 = 3230}, \code{cost\_idx\_Jones = 2250};
+    Jones-era source costs escalated $\times(3230/2250)$ to 1Q-2022 USD. Katebah SMR uses its own index 2340.
+  \item The standalone Jones base-case validation script (\code{tea\_base\_JonesBaseCaseScale.py})
+    instead deflates 1Q-2022 $\rightarrow$ 2011 by \code{bi\_22to11} $= 2250/3230 \approx 0.697$; this factor is
+    \textbf{not} applied in the production engine \code{funs.py}, which works in 1Q-2022 USD.
+  \item Financial: economic period 30 yr; IRR/discount 10\%; tax 35\%; salvage 0; straight-line
+    depreciation; 8000 operating hours/yr ($\approx$91.3\% capacity factor).
+  \item MJSP (annuity form):
+    \begin{align*}
+      \text{annuity} &= \frac{(1+\text{irr})^{-1}\,\bigl(1-(1+\text{irr})^{-n}\bigr)}{1-(1+\text{irr})^{-1}},\\
+      \text{capital investment/yr} &= \frac{\text{CAPEX} - \text{annuity}\cdot\text{tax}\cdot\text{depreciation}}{\text{annuity}\,(1-\text{tax})},\\
+      \text{MJSP} &= \frac{\text{min revenue} - \text{co-product sales}}{\text{annual SAF volume}}.
+    \end{align*}
+  \item SAF annual volume = stream 326SAF volumetric flow $\times$ 8000 h $\times$ 28.3168 L/cuft.
+  \item Product/utility prices: 326SAF = 0 (the priced product); 316GAS (naphtha) 0.75757 \$/lb;
+    336DIES (diesel) 0.6 \$/lb; electricity 19.05 \$/MMBtu; natural gas / fuel 14.38 \$/MMBtu.
+  \item LHV is read per stream (``LHV at 15\,\textdegree C [Btu/lb]'') and corrected to 25\,\textdegree C via
+    $\text{lhv}_{25\text{C}} = \text{lhv}_{15\text{C}} + \text{heat capacity}\cdot\Delta T$, $\Delta T = (25-15)\cdot 5/9$\,\textdegree F.
+    The 44.8 MJ/kg SAF LHV in the main text is a reporting basis, not a hardcoded engine constant.
+\end{itemize}
+
+%% ------------------------------------------------------------------
+\section{Sub-unit cost interpolation}\label{sec:S2}
+
+All five bolt-on sub-units use \code{unit\_cost\_interpolation} with the same law
+($r$ = stream/base stream): \textbf{CAPEX $\times r^{0.6}$} (six-tenths), \textbf{OPEX $\times r^{0.7}$},
+stream and utility rates linear ($\times r$). Literature base cases are listed in Table~\ref{tab:S2-1}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Literature base cases of the bolt-on sub-units.}
+  \label{tab:S2-1}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{@{}llrrl@{}}
+    \toprule
+    Sub-unit & Reference & Base stream & Base CAPEX & Notes \\
+    \midrule
+    CCS (amine) & Rao \& Rubin 2002 & 862,853 lb/hr \COtwo & \$297.93 M & heat 3,315 MMBtu/hr; elec = 14\% of heat \\
+    PSA \Htwo{} recovery & Byun 2020 & 700 m\textsuperscript{3}/hr & \$780,993 & OPEX \$5,078/yr; $\sim$68\% of OPEX = adsorbent/reactant \\
+    R-510 hydrocracking & Jones 2013 & 9,600 lb/hr & \$5.27 M & driven by recycle stream 340 \\
+    Off-gas reformer & Jones 2013 & (8846+995)/0.91 lb \Htwo & \$69.14 M (2011) & escalated $\times$3230/2250 \\
+    SMR (+CCS) & Katebah 2022 & 45,922 & \$424 M / OPEX \$147 M & idx 2340; NG feed 156,136; \COtwo{} 55,107 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+Hydrotreating catalyst charging (\code{calc\_cost\_HTcat}): R-202/R-220 ruthenium LHSV 0.5,
+price $60 \times 2.2$ \$/kg; R-225 molybdenum LHSV 0.22, price $15.5 \times 2.2$ \$/kg ($\times$ cost index).
+
+%% ------------------------------------------------------------------
+\section{Scale-up and single-train limits}\label{sec:S3}
+
+\begin{itemize}
+  \item Scale set: [1, 2.5, 5, 7.5, 10, 20, 30]$\times$; main plant read from per-scale APEA files
+    \code{Pyrolysis\_551\_Scale0010\ldots1000\_APEA.xlsm}.
+  \item Pyrolyzer (R-110) single-train cap 700 MMBtu/hr = 10$\times$ base duty (70 MMBtu/hr at
+    45.5 t/hr biomass); train count = ceil(base duty $\times$ scale / cap) $\rightarrow$ 1/1/1/1/1/2/3 across
+    the scale set. Gas turbines, compressors, and expanders follow the same numbering-up.
+  \item Ammonia-cracker reactor single-train cap 172 MMBtu/hr (distinct unit).
+  \item Compressor optimization (\code{opt\_compressor.py}): inlet 50 bar $\rightarrow$ 365 bar target;
+    gas-turbine firing-temperature sweep 1900--2400\,\textdegree F (\code{opt\_GT\_temperature.py}).
+\end{itemize}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Per-unit single-train caps and replica counts (source:
+    \code{Scaling\_Up\_Study\_ver551\_organized.xlsx}). Number of parallel trains follows
+    $n = \mathrm{ceil}(\text{total duty}/\text{cap})$; the cap equals the saturated per-replica load.}
+  \label{tab:S3-1}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{@{}lllll@{}}
+    \toprule
+    Unit & Service & Sizing metric & Single-train cap & Replicas [1, 2.5, 5, 7.5, 10, 20, 30]$\times$ \\
+    \midrule
+    C-101 & Compressor & Volumetric flow & 15.81$\times$10\textsuperscript{6} cuft/hr (2772 HP) & 1 / 1 / 1 / 1 / 1 / 2 / 3 \\
+    C-110 & Compressor & Volumetric flow & 17.57$\times$10\textsuperscript{6} cuft/hr & 1 / 1 / 1 / 2 / 2 / 3 / 5 \\
+    C-147 & Compressor & Volumetric flow & 17.77$\times$10\textsuperscript{6} cuft/hr & 1 / 1 / 1 / 2 / 2 / 4 / 6 \\
+    C-401 & Compressor & Volumetric flow & 15.23$\times$10\textsuperscript{6} cuft/hr (192,935 HP) & 1 / 1 / 1 / 1 / 1 / 2 / 3 \\
+    MC-610 & Compressor & Volumetric flow & 17.38$\times$10\textsuperscript{6} cuft/hr & 1 / 2 / 3 / 4 / 5 / 10 / 20 $\dagger$ \\
+    C-231 & Expander & Volumetric flow & 24,981 cuft/hr (1944 HP) & 2 / 6 / 10 / 14 / 18 / 36 / 54 $\dagger$ \\
+    R-110 & Combustion chamber (pyrolyzer) & Heat absorbed & 447.5 MMBtu/hr (base 44.75) & 1 / 1 / 1 / 1 / 1 / 2 / 3 \\
+    E-616 & Heat exchanger & Heat duty & 955.4 MMBtu/hr & 1 / 1 / 1 / 1 / 1 / 2 / 3 \\
+    GT-612 & Gas turbine & Power output & 441,073 hp & 1 / 1 / 2 / 2 / 2 / 4 / 6 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+\begin{itemize}
+  \item The R-110 cap of 447.5 MMBtu/hr (10$\times$ the 44.75 MMBtu/hr base) supersedes the
+    700 MMBtu/hr figure listed above; $\mathrm{ceil}(\text{scale} \times 44.75 / 447.5)$ reproduces its
+    1/1/1/1/1/2/3 pattern exactly.
+  \item $\dagger$ MC-610 and C-231 are \textbf{over-provisioned} relative to the strict
+    $\mathrm{ceil}(\text{total}/\text{cap})$ rule: MC-610 carries 20 trains at 30$\times$ where the rule gives 15
+    (total/cap = 15.0 exactly), and C-231 carries 6 and 10 trains at 2.5$\times$ and 5$\times$ where the rule
+    gives 5 and 9. Every other unit matches the rule exactly.
+\end{itemize}
+
+%% ------------------------------------------------------------------
+\section{Ammonia cracker detail}\label{sec:S4}
+
+\begin{itemize}
+  \item Cracker scale index $n$ = main \Htwo{} demand / 6570.40 lb/hr; non-grid $n$ linearly
+    interpolated between bracketing APEA runs \code{NH3\_Cracking\_130\_scale\{NNNN\}\_APEAresult.xlsm}.
+  \item Base cost structure from \code{NH3\_Cracking\_126\_FinalComp\_APEAresult.xlsm}.
+  \item Utilities = electricity; raw material = ammonia; fertilizer credited from the Product
+    Summary sheet. Conversion / \Htwo-recovery ratios live inside the Aspen model (APEA export
+    gives \NHthree-in vs \Htwo-out); GHSV/kinetics source: \code{ghsv\_IJHE\_2024.py} (Int.\ J.\ Hydrogen
+    Energy 2024).
+  \item Grey-\Htwo{} benchmark 0.68 \$/lb \Htwo. SMR calc uses NG price 0.092306 \$/lb (US), escalated.
+  \item PEM alternative: 40 kWh/kg \Htwo, 70\% efficiency, 2000 \$/kW (DOE 2024, 2022 USD),
+    0.5 capacity factor (Korean PV).
+\end{itemize}
+
+%% ------------------------------------------------------------------
+\section{CCS detail}\label{sec:S5}
+
+\begin{itemize}
+  \item Sequestered mass $\text{co2}_\text{seq} = \text{co2}_\text{left}(\text{623CO2})\cdot\text{ccs portion} + \text{co2}_\text{EGR}(\text{622X})$;
+    622X captured at 100\%, 623CO2 at ccs portion.
+  \item Capture OPEX: Fuel $= \max(\text{heat} - \text{plant heat gen}, 0)\cdot 14.38\cdot 8000$;
+    Electricity $= \text{elec}\cdot 19.05\cdot 8000$; T\&S $= \text{co2}_\text{seq}/2204.62\cdot 8000\cdot\text{co2 ts usd per ton}$.
+  \item \COtwo{} T\&S price: default 0 (off) in base runs; literature range 4--45 \$/t; manuscript basis
+    10 \$/t (\code{tea\_tornado.py}, \code{tea\_pareto\_front.py}). T\&S adder verified linear in price
+    (\code{test\_co2\_ts.py}, \code{tea\_scale\_up\_co2ts.py}).
+  \item ccs portion sweeps: \{0, 0.25, 0.5, 0.75, 1.0\} (\code{tea\_ccs.py}); 0--0.9 in 0.1 steps
+    (\code{tea\_co2\_portion.py}); scale-up scenario fixed at 0.60.
+  \item \textbf{Open caveat (from \code{\_Base\_Revision.md}).} The Rao \& Rubin base case implies a specific
+    reboiler duty of $\sim$8.9 GJ/t \COtwo{} (3315 MMBtu/hr $\div$ 862,853 lb/hr), roughly 2$\times$ the
+    conventional 30 wt\% MEA benchmark of 3.5--4.2 GJ/t. The absolute duty and base \COtwo{} stream
+    are not traceable to the ES\&T 2002 letter's own tables. Flagged for correction; not yet resolved.
+\end{itemize}
+
+%% ------------------------------------------------------------------
+\section{Dynamic LCA (Bern model)}\label{sec:S6}
+
+Used only for the dynamic-GWP illustration (\code{Dynamic\_LCA/}), not the headline intensities.
+
+\begin{itemize}
+  \item Bern impulse-response function (Levasseur 2010; IPCC 2007, 378 ppm background):
+    $a_0=0.217$, $a_1=0.259$, $a_2=0.338$, $a_3=0.186$; $\tau_1=172.9$, $\tau_2=18.51$, $\tau_3=1.186$ yr;
+    $\tau_{\mathrm{CH_4}}=12$ yr, $\tau_{\mathrm{N_2O}}=114$ yr.
+  \item Radiative efficiencies: \COtwo{} $1.759\times10^{-15}$, CH\textsubscript{4} $7.54\times10^{-14}$,
+    N\textsubscript{2}O $3.7\times10^{-13}$.
+  \item Time-varying characterization factor $\mathrm{dGWP}_X(t) = \mathrm{aGWP}_X(T-t)/\mathrm{aGWP}_X(T)$.
+  \item Sequestration entered as negative flux over its duration; net trajectory = emission +
+    sequestration (+ construction). CCS trajectory in the green-CCS illustration uses a
+    10-yr capture window. Sequestration profile data: \code{Dynamic\_LCA/Sequestration\_Traj/}
+    (Lan 2021).
+\end{itemize}
+
+%% ------------------------------------------------------------------
+\section{LCA inventories, allocation, and SAF criterion}\label{sec:S7}
+
+\begin{itemize}
+  \item Numeric LCA results are read from GREET-derived Excel workbooks
+    (\code{Process\_Data/WTWa\_LCA.xlsx}, \code{Process\_Data/Pyrolysis\_551\_LCA\_<method>.xlsx}); the
+    Python only orchestrates, thresholds, averages, and plots. The energy/mass/market
+    allocation basis itself is implemented inside GREET/the workbooks, one sheet per method.
+  \item Four LCA method variants computed: Allocation, Displacement, Allocation\_KRmix,
+    Displacement\_KRmix (U.S.\ vs Korea grid mix). Reported central value = Allocation; spread
+    = (Allocation, Displacement) range, per config.
+  \item WTWa = WTP + PTWa; PTWa (combustion) for every pyrolysis case taken from the FT-jet
+    reference. \code{wBio} toggle selects the with-/without-biogenic combustion sheet
+    (\code{WTWa\_ftjet} vs \code{WTWa\_ftjet\_woBio}), driven by the \code{woBiogenic} case name.
+  \item SAF threshold = 0.9 $\times$ conventional-jet WTWa GHG-100 (CORSIA $-10$\%); conventional baseline
+    read from the \code{WTWa\_conventional} sheet, not hardcoded. The SAF-comparison figure draws a
+    75.9 g \COtwoe/MJ CORSIA line; its scatter points are flagged in code as visualization dummies.
+  \item 60\% CCS intensity is a linear interpolation between the simulated CCS-50\% and CCS-75\%
+    WTWa points (\code{lca\_ccs.py}); base and full-ammonia intensities are read directly.
+  \item Abatement-cost energy density $E$ = 31.66 MJ/L SAF.
+\end{itemize}
+
+%% ------------------------------------------------------------------
+\section{Supply-availability context}\label{sec:S8}
+
+Domestic feedstock ceilings used to convert plant scale to a share of aviation-fuel demand
+(\code{tea\_scale\_up\_price\_models.py}): forest residue 3,127,378 t/yr; log (2,843,071 + 3,274,200)
+t/yr. Critical scale multiples where each supply tier is exhausted: forest residue $\approx$8.6$\times$,
+forest residue + log $\approx$18.5$\times$.
+
+%% ------------------------------------------------------------------
+\section{Data tables for the Results figures}\label{sec:S9}
+
+Numeric values behind the main-text Results figures, read from the \code{Result/} workbooks.
+MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, Korea grid mix).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Base-case (grey \Htwo, flat forest-residue price) MJSP breakdown vs SAF production
+    (\S3.1, base-case breakdown figure; source: \code{Result/scale\_up\_base\_summary.xlsx}).
+    Components in \$/L SAF; MJSP = sum of components.}
+  \label{tab:S9-1}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{@{}rrrrrrrrrrr@{}}
+    \toprule
+    \shortstack{SAF production\\{[MMt/yr]}} & \shortstack{Capital\\investment} & \shortstack{Raw\\materials} & Utilities &
+    \shortstack{Operating\\labor} & Maintenance & \shortstack{Operating\\charges} & \shortstack{Plant\\overhead} & G\&A &
+    \shortstack{Co-product\\sales} & MJSP \\
+    \midrule
+    0.042 & 1.040 & 1.286 & 0.578 & 0.049 & 0.095 & 0.012 & 0.072 & 0.165 & $-1.817$ & 1.479 \\
+    0.104 & 0.755 & 1.270 & 0.536 & 0.020 & 0.074 & 0.005 & 0.047 & 0.154 & $-1.817$ & 1.044 \\
+    0.209 & 0.671 & 1.262 & 0.516 & 0.010 & 0.066 & 0.002 & 0.038 & 0.149 & $-1.816$ & 0.899 \\
+    0.313 & 0.646 & 1.263 & 0.485 & 0.007 & 0.067 & 0.002 & 0.037 & 0.147 & $-1.817$ & 0.836 \\
+    0.417 & 0.623 & 1.262 & 0.444 & 0.005 & 0.064 & 0.001 & 0.035 & 0.143 & $-1.817$ & 0.760 \\
+    0.835 & 0.589 & 1.261 & 0.366 & 0.002 & 0.063 & 0.001 & 0.033 & 0.136 & $-1.817$ & 0.633 \\
+    1.252 & 0.543 & 1.261 & 0.328 & 0.002 & 0.061 & 0.000 & 0.031 & 0.132 & $-1.817$ & 0.541 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Biomass price and grey-\Htwo{} base MJSP under three biomass price models
+    (\S3.1, price-model figure; source: \code{Result/scale\_up\_price\_model\_mjsp.xlsx}). MJSP in \$/L SAF.}
+  \label{tab:S9-2}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{@{}rrrrrrr@{}}
+    \toprule
+    & \multicolumn{3}{c}{Biomass price [\$/lb]} & \multicolumn{3}{c}{MJSP grey \Htwo{} [\$/L]} \\
+    \cmidrule(lr){2-4}\cmidrule(l){5-7}
+    SAF production [MMt/yr] & FR Price & FR-Log Linear & Fixed Elasticity & FR Price & FR-Log Linear & Fixed Elasticity \\
+    \midrule
+    0.046 & 0.0486 & 0.0486 & 0.0486 & 1.638 & 1.638 & 1.638 \\
+    0.114 & 0.0486 & 0.0486 & 0.0486 & 1.258 & 1.258 & 1.258 \\
+    0.228 & 0.0486 & 0.0486 & 0.0486 & 1.015 & 1.015 & 1.015 \\
+    0.342 & 0.0486 & 0.0486 & 0.0486 & 0.884 & 0.884 & 0.884 \\
+    0.457 & 0.0486 & 0.0527 & 0.0527 & 0.780 & 0.836 & 0.836 \\
+    0.913 & 0.0486 & 0.0903 & 0.1064 & 0.701 & 1.278 & 1.502 \\
+    1.370 & 0.0486 & 0.1278 & 0.2360 & 0.664 & 1.761 & 3.259 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{MJSP of the full green-\NHthree{} and full-CCS configurations under three biomass price models
+    (\S3.1, price-model figure; source: \code{Result/scale\_up\_price\_model\_mjsp.xlsx}, sheets
+    \code{MJSP Ammonia} = 100\% green-\NHthree{} hydrogen, \code{MJSP CCS} = CCS portion 1.0). MJSP in \$/L SAF.}
+  \label{tab:S9-3}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{@{}rrrrrrr@{}}
+    \toprule
+    & \multicolumn{3}{c}{MJSP full green \NHthree{} [\$/L]} & \multicolumn{3}{c}{MJSP full CCS [\$/L]} \\
+    \cmidrule(lr){2-4}\cmidrule(l){5-7}
+    SAF production [MMt/yr] & FR Price & FR-Log Linear & Fixed Elasticity & FR Price & FR-Log Linear & Fixed Elasticity \\
+    \midrule
+    0.046 & 3.483 & 3.483 & 3.483 & 2.207 & 2.207 & 2.207 \\
+    0.114 & 3.049 & 3.049 & 3.049 & 1.785 & 1.785 & 1.785 \\
+    0.228 & 2.789 & 2.789 & 2.789 & 1.519 & 1.519 & 1.519 \\
+    0.342 & 2.649 & 2.649 & 2.649 & 1.377 & 1.377 & 1.377 \\
+    0.457 & 2.531 & 2.587 & 2.587 & 1.266 & 1.322 & 1.322 \\
+    0.913 & 2.431 & 3.007 & 3.231 & 1.174 & 1.751 & 1.975 \\
+    1.370 & 2.389 & 3.486 & 4.984 & 1.131 & 2.228 & 3.726 \\
+    \bottomrule
+  \end{tabular}}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{MJSP, GHG, Pareto status, sensitivity band, and abatement cost of the 30 green-\NHthree{} share
+    $\times$ CCS portion configurations at 0.457 MMt/yr SAF (\S3.2, Figure Xa; sources:
+    \code{Result/pareto\_front.xlsx}, \code{Result/pareto\_front\_sensitivity.xlsx}). MJSP low/high =
+    tornado-driver band (\S2.2.4), computed for Pareto points only (\S3.3). Abatement cost =
+    $\Delta\text{MJSP}\cdot10^6/(\Delta\text{GHG}\cdot E)$, $E$ = 31.66 MJ/L, relative to CCS 60\%
+    (75.14 g \COtwoe/MJ, \$0.977/L); -- where GHG is not below CCS 60\%.}
+  \label{tab:S9-4}
+  \small
+  \begin{tabular}{@{}rrrrcrrr@{}}
+    \toprule
+    \shortstack{Green \NHthree\\share [\%]} & \shortstack{CCS\\portion [\%]} & \shortstack{MJSP\\{[\$/L]}} &
+    \shortstack{GHG\\{[g \COtwoe/MJ]}} & Pareto & \shortstack{MJSP low\\{[\$/L]}} & \shortstack{MJSP high\\{[\$/L]}} &
+    \shortstack{Abatement cost\\{[\$/t \COtwo]}} \\
+    \midrule
+    0 & 0 & 0.792 & 100.83 & yes & 0.546 & 1.841 & -- \\
+    0 & 25 & 0.855 & 89.93 & yes & 0.608 & 1.903 & -- \\
+    0 & 50 & 0.913 & 78.99 & yes & 0.666 & 1.962 & -- \\
+    0 & 75 & 1.111 & 69.36 & yes & 0.864 & 2.160 & 733 \\
+    0 & 100 & 1.334 & 59.96 & yes & 1.087 & 2.382 & 742 \\
+    10 & 0 & 0.977 & 97.02 & no & -- & -- & -- \\
+    10 & 25 & 1.039 & 86.12 & no & -- & -- & -- \\
+    10 & 50 & 1.098 & 75.18 & yes & 0.851 & 2.042 & -- \\
+    10 & 75 & 1.296 & 65.55 & yes & 1.049 & 2.240 & 1,049 \\
+    10 & 100 & 1.518 & 56.15 & yes & 1.271 & 2.462 & 900 \\
+    25 & 0 & 1.240 & 91.31 & no & -- & -- & -- \\
+    25 & 25 & 1.302 & 80.40 & no & -- & -- & -- \\
+    25 & 50 & 1.361 & 69.46 & no & -- & -- & 2,138 \\
+    25 & 75 & 1.559 & 59.83 & no & -- & -- & 1,201 \\
+    25 & 100 & 1.782 & 50.44 & yes & 1.489 & 2.568 & 1,029 \\
+    50 & 0 & 1.680 & 81.78 & no & -- & -- & -- \\
+    50 & 25 & 1.742 & 70.88 & no & -- & -- & 5,671 \\
+    50 & 50 & 1.800 & 59.94 & no & -- & -- & 1,711 \\
+    50 & 75 & 1.998 & 50.31 & yes & 1.413 & 2.584 & 1,299 \\
+    50 & 100 & 2.221 & 40.91 & yes & 1.635 & 2.806 & 1,148 \\
+    75 & 0 & 2.116 & 72.26 & no & -- & -- & 12,511 \\
+    75 & 25 & 2.178 & 61.35 & no & -- & -- & 2,752 \\
+    75 & 50 & 2.236 & 50.41 & no & -- & -- & 1,609 \\
+    75 & 75 & 2.434 & 40.78 & yes & 1.556 & 3.313 & 1,340 \\
+    75 & 100 & 2.657 & 31.39 & yes & 1.779 & 3.535 & 1,213 \\
+    100 & 0 & 2.544 & 62.74 & no & -- & -- & 3,991 \\
+    100 & 25 & 2.606 & 51.83 & no & -- & -- & 2,207 \\
+    100 & 50 & 2.665 & 40.89 & no & -- & -- & 1,556 \\
+    100 & 75 & 2.862 & 31.26 & yes & 1.691 & 4.034 & 1,357 \\
+    100 & 100 & 3.085 & 21.86 & yes & 1.914 & 4.256 & 1,250 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Grey-\Htwo{} price at which Green \NHthree{} 10\% + CCS 50\% matches CCS 60\%
+    (\S3.3, Figure Xb; source: \code{plot\_ammonia\_crossover.py}). Both routes are linear in grey-\Htwo{}
+    price $h$ [\$/kg]: CCS 60\% $= 0.977 + 0.419\,(h - 1.50)$ \$/L; Green \NHthree{} 10\% + CCS 50\%
+    $= 1.098 + 0.378\,(h - 1.50) + 0.2038\,(p_{\mathrm{NH_3}}/635 - 1)$ \$/L. Slopes are the one-at-a-time
+    grey-\Htwo{} spans (Table~\ref{tab:S9-7}) divided by the 3 \$/kg range width.}
+  \label{tab:S9-5}
+  \small
+  \begin{tabular}{@{}rrrc@{}}
+    \toprule
+    Green \NHthree{} price [\$/t] & Crossover grey-\Htwo{} price [\$/kg] & MJSP at crossover [\$/L] & Inside 1--4 \$/kg range \\
+    \midrule
+    270 & 1.59 & 1.016 & yes \\
+    441 & 2.91 & 1.568 & yes \\
+    635 (base) & 4.40 & 2.195 & no \\
+    1,000 & 7.21 & 3.373 & no \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Mean $|$SHAP$|$ of MJSP drivers at the two cheapest compliant points (\S3.3, Figure Xc, d;
+    source: \code{Result/shap\_ccs60\_vs\_nh10ccs50.xlsx}). \$/L SAF; 128 Latin-hypercube TEA runs per point,
+    gradient-boosted surrogate ($R^2 > 0.999$); -- = driver not sampled.}
+  \label{tab:S9-6}
+  \small
+  \begin{tabular}{@{}lrr@{}}
+    \toprule
+    Driver & CCS 60\% & Green \NHthree{} 10\% + CCS 50\% \\
+    \midrule
+    Grey \Htwo & 0.310 & 0.274 \\
+    CAPEX & 0.103 & 0.102 \\
+    Co-product & 0.097 & 0.083 \\
+    Electricity & 0.052 & 0.055 \\
+    Green \NHthree & -- & 0.031 \\
+    \COtwo{} T\&S & 0.025 & 0.023 \\
+    Capacity & 0.019 & 0.028 \\
+    Biomass & 0.003 & 0.002 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{One-at-a-time MJSP spans at the two cheapest compliant points (\S3.3; source:
+    \code{Result/tornado\_shap\_ccs60\_vs\_nh10ccs50.xlsx}). \$/L SAF; input ranges as in \S2.2.4.}
+  \label{tab:S9-7}
+  \small
+  \begin{tabular}{@{}llrrrr@{}}
+    \toprule
+    Point & Driver & Base MJSP & MJSP at low input & MJSP at high input & Span \\
+    \midrule
+    CCS 60\% & Grey \Htwo & 0.977 & 0.767 & 2.026 & 1.258 \\
+    CCS 60\% & Co-product & 0.977 & 1.224 & 0.730 & 0.494 \\
+    CCS 60\% & CAPEX & 0.977 & 0.741 & 1.213 & 0.472 \\
+    CCS 60\% & Electricity & 0.977 & 1.134 & 0.820 & 0.313 \\
+    CCS 60\% & Capacity & 0.977 & 1.174 & 0.987 & 0.188 \\
+    CCS 60\% & \COtwo{} T\&S & 0.977 & 0.950 & 1.137 & 0.187 \\
+    CCS 60\% & Biomass & 0.977 & 0.977 & 1.029 & 0.052 \\
+    \midrule
+    Green \NHthree{} 10\% + CCS 50\% & Grey \Htwo & 1.098 & 0.909 & 2.042 & 1.133 \\
+    Green \NHthree{} 10\% + CCS 50\% & Co-product & 1.098 & 1.344 & 0.851 & 0.494 \\
+    Green \NHthree{} 10\% + CCS 50\% & CAPEX & 1.098 & 0.858 & 1.337 & 0.480 \\
+    Green \NHthree{} 10\% + CCS 50\% & Electricity & 1.098 & 1.258 & 0.937 & 0.321 \\
+    Green \NHthree{} 10\% + CCS 50\% & Green \NHthree & 1.098 & 0.980 & 1.215 & 0.234 \\
+    Green \NHthree{} 10\% + CCS 50\% & Capacity & 1.098 & 1.313 & 1.108 & 0.205 \\
+    Green \NHthree{} 10\% + CCS 50\% & \COtwo{} T\&S & 1.098 & 1.073 & 1.238 & 0.165 \\
+    Green \NHthree{} 10\% + CCS 50\% & Biomass & 1.098 & 1.098 & 1.149 & 0.052 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\end{document}
