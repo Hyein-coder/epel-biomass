@@ -41,8 +41,8 @@ df_base.index = xlabels
 stack_hatches = ['///', '\\\\\\', 'xxx', '...', 'ooo', '+++', '---', '|||', '**']   # one per cost column
 fig, (ax_top, ax) = plt.subplots(2, 1, figsize=FIGSIZE)
 # 10 legend entries in 2 rows across the top; ytop leaves headroom above the tallest stack
-# total bar yellow = Base line color of the lower panel; alpha B3 (~0.7) on fill only, edge stays black
-plot_stack_bar(df_base, 'MJSP [$/L SAF]', ax=ax_top, hatches=stack_hatches, total_color='#D6AE5CB3',
+# total bar pink = Base line color of the lower panel; alpha B3 (~0.7) on fill only, edge stays black
+plot_stack_bar(df_base, 'MJSP [$/L SAF]', ax=ax_top, hatches=stack_hatches, total_color='#D57F78B3',
                xlabel=XLABEL, fs=None, ytop=1.55,
                legend_kw=dict(loc='upper center', ncol=5, columnspacing=1.0))
 
@@ -51,7 +51,7 @@ mjsp = {name.removeprefix('MJSP '): df.drop(columns=X_COL) for name, df in sheet
 x = np.arange(len(df_price))
 
 bar_hatches = ['///', 'xxx', '...']   # color-free bars, one hatch per price model
-line_colors = ['#D6AE5C', '#D57F78', '#85B27C']   # base_summary palette, darkened: Base / Ammonia / CCS
+line_colors = ['#D57F78', '#D6AE5C', '#85B27C']   # base_summary palette, darkened: Base / Ammonia / CCS
 case_styles = ['-', '--', ':']
 case_markers = ['o', 's', '^']
 

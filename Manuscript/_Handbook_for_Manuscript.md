@@ -8,6 +8,15 @@
 
 ## Log history
 
+### 2026-10-02 (update 12)
+
+**Discussion**
+- Updates 9–10 (yellow Total Sum bars at ~0.7 alpha) were committed in `53ee42b` with the user's approval.
+- The user then asked to try swapping the Base and Ammonia colors in the lower panel (Base pink, Ammonia yellow), with the upper Total Sum bars in pink. After seeing the trial figure, the user approved it and asked for a commit.
+
+**Code**
+- `plot_scale_up_from_xlsx.py`: `line_colors` changed to `['#D57F78', '#D6AE5C', '#85B27C']` (Base / Ammonia / CCS), and `total_color` to `#D57F78B3` (pink, alpha ≈ 0.7). Figure regenerated.
+
 ### 2026-10-02 (update 11)
 
 **Discussion**
