@@ -145,3 +145,120 @@ Domestic feedstock ceilings used to convert plant scale to a share of aviation-f
 (`tea_scale_up_price_models.py`): forest residue 3,127,378 t/yr; log (2,843,071 + 3,274,200)
 t/yr. Critical scale multiples where each supply tier is exhausted: forest residue ≈8.6×,
 forest residue + log ≈18.5×.
+
+## S9. Data tables for the Results figures
+
+Numeric values behind the main-text Results figures, read from the `Result/` workbooks. MJSP in \$/L SAF (1Q-2022 USD); GHG in g CO₂e/MJ (WTWa GHG-100, Allocation, Korea grid mix).
+
+**Table S9-1. Base-case (grey H₂, flat forest-residue price) MJSP breakdown vs SAF production** (§3.1, base-case breakdown figure; source: `Result/scale_up_base_summary.xlsx`). Components in \$/L SAF; MJSP = sum of components.
+
+| SAF production [MMt/yr] | Capital investment | Raw materials | Utilities | Operating labor | Maintenance | Operating charges | Plant overhead | G&A | Co-product sales | MJSP |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.042 | 1.040 | 1.286 | 0.578 | 0.049 | 0.095 | 0.012 | 0.072 | 0.165 | -1.817 | 1.479 |
+| 0.104 | 0.755 | 1.270 | 0.536 | 0.020 | 0.074 | 0.005 | 0.047 | 0.154 | -1.817 | 1.044 |
+| 0.209 | 0.671 | 1.262 | 0.516 | 0.010 | 0.066 | 0.002 | 0.038 | 0.149 | -1.816 | 0.899 |
+| 0.313 | 0.646 | 1.263 | 0.485 | 0.007 | 0.067 | 0.002 | 0.037 | 0.147 | -1.817 | 0.836 |
+| 0.417 | 0.623 | 1.262 | 0.444 | 0.005 | 0.064 | 0.001 | 0.035 | 0.143 | -1.817 | 0.760 |
+| 0.835 | 0.589 | 1.261 | 0.366 | 0.002 | 0.063 | 0.001 | 0.033 | 0.136 | -1.817 | 0.633 |
+| 1.252 | 0.543 | 1.261 | 0.328 | 0.002 | 0.061 | 0.000 | 0.031 | 0.132 | -1.817 | 0.541 |
+
+**Table S9-2. Biomass price and grey-H₂ base MJSP under three biomass price models** (§3.1, price-model figure; source: `Result/scale_up_price_model_mjsp.xlsx`). MJSP in \$/L SAF.
+
+| SAF production [MMt/yr] | Biomass, FR Price [\$/lb] | Biomass, FR-Log Linear [\$/lb] | Biomass, Fixed Elasticity [\$/lb] | MJSP grey H₂, FR Price | MJSP grey H₂, FR-Log Linear | MJSP grey H₂, Fixed Elasticity |
+|---|---:|---:|---:|---:|---:|---:|
+| 0.046 | 0.0486 | 0.0486 | 0.0486 | 1.638 | 1.638 | 1.638 |
+| 0.114 | 0.0486 | 0.0486 | 0.0486 | 1.258 | 1.258 | 1.258 |
+| 0.228 | 0.0486 | 0.0486 | 0.0486 | 1.015 | 1.015 | 1.015 |
+| 0.342 | 0.0486 | 0.0486 | 0.0486 | 0.884 | 0.884 | 0.884 |
+| 0.457 | 0.0486 | 0.0527 | 0.0527 | 0.780 | 0.836 | 0.836 |
+| 0.913 | 0.0486 | 0.0903 | 0.1064 | 0.701 | 1.278 | 1.502 |
+| 1.370 | 0.0486 | 0.1278 | 0.2360 | 0.664 | 1.761 | 3.259 |
+
+**Table S9-3. MJSP of the full green-NH₃ and full-CCS configurations under three biomass price models** (§3.1, price-model figure; source: `Result/scale_up_price_model_mjsp.xlsx`, sheets `MJSP Ammonia` = 100% green-NH₃ hydrogen, `MJSP CCS` = CCS portion 1.0). MJSP in \$/L SAF.
+
+| SAF production [MMt/yr] | MJSP full green NH₃, FR Price | MJSP full green NH₃, FR-Log Linear | MJSP full green NH₃, Fixed Elasticity | MJSP full CCS, FR Price | MJSP full CCS, FR-Log Linear | MJSP full CCS, Fixed Elasticity |
+|---|---:|---:|---:|---:|---:|---:|
+| 0.046 | 3.483 | 3.483 | 3.483 | 2.207 | 2.207 | 2.207 |
+| 0.114 | 3.049 | 3.049 | 3.049 | 1.785 | 1.785 | 1.785 |
+| 0.228 | 2.789 | 2.789 | 2.789 | 1.519 | 1.519 | 1.519 |
+| 0.342 | 2.649 | 2.649 | 2.649 | 1.377 | 1.377 | 1.377 |
+| 0.457 | 2.531 | 2.587 | 2.587 | 1.266 | 1.322 | 1.322 |
+| 0.913 | 2.431 | 3.007 | 3.231 | 1.174 | 1.751 | 1.975 |
+| 1.370 | 2.389 | 3.486 | 4.984 | 1.131 | 2.228 | 3.726 |
+
+**Table S9-4. MJSP, GHG, Pareto status, sensitivity band, and abatement cost of the 30 green-NH₃ share × CCS portion configurations at 0.457 MMt/yr SAF** (§3.2, Figure Xa; sources: `Result/pareto_front.xlsx`, `Result/pareto_front_sensitivity.xlsx`). MJSP low/high = tornado-driver band (§2.2.4), computed for Pareto points only (§3.3). Abatement cost = ΔMJSP·10⁶/(ΔGHG·E), E = 31.66 MJ/L, relative to CCS 60% (75.14 g CO₂e/MJ, \$0.977/L); – where GHG is not below CCS 60%.
+
+| Green NH₃ share [%] | CCS portion [%] | MJSP [\$/L] | GHG [g CO₂e/MJ] | Pareto | MJSP low [\$/L] | MJSP high [\$/L] | Abatement cost [\$/t CO₂] |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 0 | 0.792 | 100.83 | yes | 0.546 | 1.841 | – |
+| 0 | 25 | 0.855 | 89.93 | yes | 0.608 | 1.903 | – |
+| 0 | 50 | 0.913 | 78.99 | yes | 0.666 | 1.962 | – |
+| 0 | 75 | 1.111 | 69.36 | yes | 0.864 | 2.160 | 733 |
+| 0 | 100 | 1.334 | 59.96 | yes | 1.087 | 2.382 | 742 |
+| 10 | 0 | 0.977 | 97.02 | no | – | – | – |
+| 10 | 25 | 1.039 | 86.12 | no | – | – | – |
+| 10 | 50 | 1.098 | 75.18 | yes | 0.851 | 2.042 | – |
+| 10 | 75 | 1.296 | 65.55 | yes | 1.049 | 2.240 | 1,049 |
+| 10 | 100 | 1.518 | 56.15 | yes | 1.271 | 2.462 | 900 |
+| 25 | 0 | 1.240 | 91.31 | no | – | – | – |
+| 25 | 25 | 1.302 | 80.40 | no | – | – | – |
+| 25 | 50 | 1.361 | 69.46 | no | – | – | 2,138 |
+| 25 | 75 | 1.559 | 59.83 | no | – | – | 1,201 |
+| 25 | 100 | 1.782 | 50.44 | yes | 1.489 | 2.568 | 1,029 |
+| 50 | 0 | 1.680 | 81.78 | no | – | – | – |
+| 50 | 25 | 1.742 | 70.88 | no | – | – | 5,671 |
+| 50 | 50 | 1.800 | 59.94 | no | – | – | 1,711 |
+| 50 | 75 | 1.998 | 50.31 | yes | 1.413 | 2.584 | 1,299 |
+| 50 | 100 | 2.221 | 40.91 | yes | 1.635 | 2.806 | 1,148 |
+| 75 | 0 | 2.116 | 72.26 | no | – | – | 12,511 |
+| 75 | 25 | 2.178 | 61.35 | no | – | – | 2,752 |
+| 75 | 50 | 2.236 | 50.41 | no | – | – | 1,609 |
+| 75 | 75 | 2.434 | 40.78 | yes | 1.556 | 3.313 | 1,340 |
+| 75 | 100 | 2.657 | 31.39 | yes | 1.779 | 3.535 | 1,213 |
+| 100 | 0 | 2.544 | 62.74 | no | – | – | 3,991 |
+| 100 | 25 | 2.606 | 51.83 | no | – | – | 2,207 |
+| 100 | 50 | 2.665 | 40.89 | no | – | – | 1,556 |
+| 100 | 75 | 2.862 | 31.26 | yes | 1.691 | 4.034 | 1,357 |
+| 100 | 100 | 3.085 | 21.86 | yes | 1.914 | 4.256 | 1,250 |
+
+**Table S9-5. Grey-H₂ price at which Green NH₃ 10% + CCS 50% matches CCS 60%** (§3.3, Figure Xb; source: `plot_ammonia_crossover.py`). Both routes are linear in grey-H₂ price h [\$/kg]: CCS 60% = 0.977 + 0.419·(h − 1.50) \$/L; Green NH₃ 10% + CCS 50% = 1.098 + 0.378·(h − 1.50) + 0.2038·(p_NH₃/635 − 1) \$/L. Slopes are the one-at-a-time grey-H₂ spans (Table S9-7) divided by the 3 \$/kg range width.
+
+| Green NH₃ price [\$/t] | Crossover grey-H₂ price [\$/kg] | MJSP at crossover [\$/L] | Inside 1–4 \$/kg range |
+|---|---:|---:|---:|
+| 270 | 1.59 | 1.016 | yes |
+| 441 | 2.91 | 1.568 | yes |
+| 635 (base) | 4.40 | 2.195 | no |
+| 1,000 | 7.21 | 3.373 | no |
+
+**Table S9-6. Mean |SHAP| of MJSP drivers at the two cheapest compliant points** (§3.3, Figure Xc, d; source: `Result/shap_ccs60_vs_nh10ccs50.xlsx`). \$/L SAF; 128 Latin-hypercube TEA runs per point, gradient-boosted surrogate (R² > 0.999); – = driver not sampled.
+
+| Driver | CCS 60% | Green NH₃ 10% + CCS 50% |
+|---|---:|---:|
+| Grey H₂ | 0.310 | 0.274 |
+| CAPEX | 0.103 | 0.102 |
+| Co-product | 0.097 | 0.083 |
+| Electricity | 0.052 | 0.055 |
+| Green NH₃ | – | 0.031 |
+| CO₂ T&S | 0.025 | 0.023 |
+| Capacity | 0.019 | 0.028 |
+| Biomass | 0.003 | 0.002 |
+
+**Table S9-7. One-at-a-time MJSP spans at the two cheapest compliant points** (§3.3; source: `Result/tornado_shap_ccs60_vs_nh10ccs50.xlsx`). \$/L SAF; input ranges as in §2.2.4.
+
+| Point | Driver | Base MJSP | MJSP at low input | MJSP at high input | Span |
+|---|---|---:|---:|---:|---:|
+| CCS 60% | Grey H₂ | 0.977 | 0.767 | 2.026 | 1.258 |
+| CCS 60% | Co-product | 0.977 | 1.224 | 0.730 | 0.494 |
+| CCS 60% | CAPEX | 0.977 | 0.741 | 1.213 | 0.472 |
+| CCS 60% | Electricity | 0.977 | 1.134 | 0.820 | 0.313 |
+| CCS 60% | Capacity | 0.977 | 1.174 | 0.987 | 0.188 |
+| CCS 60% | CO₂ T&S | 0.977 | 0.950 | 1.137 | 0.187 |
+| CCS 60% | Biomass | 0.977 | 0.977 | 1.029 | 0.052 |
+| Green NH₃ 10% + CCS 50% | Grey H₂ | 1.098 | 0.909 | 2.042 | 1.133 |
+| Green NH₃ 10% + CCS 50% | Co-product | 1.098 | 1.344 | 0.851 | 0.494 |
+| Green NH₃ 10% + CCS 50% | CAPEX | 1.098 | 0.858 | 1.337 | 0.480 |
+| Green NH₃ 10% + CCS 50% | Electricity | 1.098 | 1.258 | 0.937 | 0.321 |
+| Green NH₃ 10% + CCS 50% | Green NH₃ | 1.098 | 0.980 | 1.215 | 0.234 |
+| Green NH₃ 10% + CCS 50% | Capacity | 1.098 | 1.313 | 1.108 | 0.205 |
+| Green NH₃ 10% + CCS 50% | CO₂ T&S | 1.098 | 1.073 | 1.238 | 0.165 |
+| Green NH₃ 10% + CCS 50% | Biomass | 1.098 | 1.098 | 1.149 | 0.052 |

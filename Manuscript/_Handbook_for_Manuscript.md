@@ -8,6 +8,43 @@
 
 ## Log history
 
+### 2026-10-02 (update 15)
+
+**Discussion**
+- The user asked for the data tables behind the Results figures to go into the SI. They went in as a new section, SI §S9, with one table per figure panel plus the one-at-a-time spans cited in §3.3. Scale is given as SAF production, not as a multiple of the base case (Drafting rule 2).
+
+**Code**
+- `Manuscript/SI. Supporting Information.md`: appended §S9 with Tables S9-1 to S9-7: base MJSP breakdown, biomass price and MJSP under the three price models (grey H₂, full NH₃, full CCS), the 30-configuration grid with Pareto status, band and abatement cost, the NH₃-vs-CCS crossover points, mean |SHAP|, and the OAT spans. The tables were generated from the `Result/*.xlsx` files and `plot_ammonia_crossover.py` by a scratchpad script; no TEA re-run.
+- `Manuscript/3. Results.md`: added six parenthetical SI Table S9-x references (Drafting rule 3). The existing wording is unchanged.
+
+**Open**
+- The §3.1 text gives the smallest-scale MJSP as \$1.46/L, but the components in `scale_up_base_summary.xlsx` sum to \$1.479/L (Table S9-1). This has not been reconciled.
+- §3.1 Step 1 uses the `scale_up_base_summary` production basis (0.042–1.252 MMt/yr). Step 2 uses the price-model basis (0.046–1.370 MMt/yr). Tables S9-1 and S9-2 therefore list different SAF production values for the same scale.
+
+### 2026-10-02 (update 14)
+
+**Discussion**
+- The user asked for all manuscript markdown files on one artifact page, with a home page that links to each. Published privately as https://claude.ai/artifact/Sn7c348D632rDr1KiP7bBp: a home page with one card per file, a tab bar, and a reader view with a section list. The three §3 figures are uploaded alongside it.
+
+**Code**
+- Scratchpad `build_site.py` + `site_template.html` (not in the repo): embed the five `Manuscript/*.md` files in one HTML page, rendered in the browser with marked.js. `../Figure/` paths are rewritten to the uploaded `Figure/` copies.
+
+**Open**
+- The page is a snapshot. Later edits to the manuscript files need a rebuild and republish. The build scripts sit in the session scratchpad, so they are lost after this session unless moved into the repo.
+
+### 2026-10-02 (update 13)
+
+**Discussion**
+- Session opened for the Introduction. The user asked for an overall flow, built from the old introduction (`Biomass_LCA_ACS (2).pdf`, p2–5) and consistent with Results §3.1–3.3, with two arms: scale and biomass supply capacity, and hydrogen economy and sustainability.
+- Haulage cost (the focus of old intro ref 8) is reframed as the feedstock supply curve, because §3.1 excludes haulage. SMR+CCS and PEM are dropped as separate pathways; the H₂ options follow the Results grid (grey H₂ vs green-NH₃ share, plus CCS portion).
+
+**Code**
+- `Manuscript/1. Introduction.md` (new): paragraph-level outline ¶1–¶7, each with role, kept old-intro content and refs, changes, and the Results section it sets up.
+
+**Open**
+- New claims need citations: 0.6-exponent / flat-price TEA practice, biomass supply curves (Galik), single-train limits, Korea NH₃ import strategy.
+- The old abstract quotes base-scale numbers (\$2.82/L, \$1.74/L) that conflict with §3.2 at 0.457 MMt/yr; abstract to be rewritten.
+
 ### 2026-10-02 (update 12)
 
 **Discussion**
