@@ -113,6 +113,45 @@ Consistent.
 (Fig 8 Ammonia = Mix) or axis (portion-nonlinearity vs scale-invariance), not
 numeric disagreement.
 
+### 1.3. `tea_scale_up.py` on the 551 Simulation Model
+
+**Issue.** The two §3.1 composite panels (SI Tables S9-1 / S9-2) did not agree. They differed
+in SAF scale and in MJSP at the same flat FR price. There were two causes:
+
+1. **Process model.** `tea_scale_up.py` (panel a, S9-1) read the `Pyrolysis_Jones_572_2MC_*`
+   files. `tea_scale_up_price_models.py` (panel b, S9-2) and `tea_pareto_front.py` read
+   `Pyrolysis_551_Scale*`, which is the report and manuscript basis.
+2. **Axis unit.** `get_annual_prod_saf_ton` returns short tons. Panel a converted to metric
+   tonnes (×0.907185); panel b did not, so its "MMt/yr" axis was really million short tons.
+
+**Fix.** `tea_scale_up.py` now reads the 551 files, and `tea_scale_up_price_models.py` converts
+to metric tonnes. All §3.1 and Pareto results now use one model at one unit.
+
+| Scale (×) | SAF [MMt/yr] | Base MJSP, 572_2MC (old a) | Base MJSP, 551 (new a = b, FR Price) |
+|----------:|-------------:|---------------------------:|-------------------------------------:|
+| 1         | 0.041        | 1.479                      | 1.638                                |
+| 2.5       | 0.104        | 1.044                      | 1.258                                |
+| 5         | 0.207        | 0.899                      | 1.015                                |
+| 7.5       | 0.311        | 0.836                      | 0.884                                |
+| 10        | 0.414        | 0.760                      | 0.780                                |
+| 20        | 0.828        | 0.633                      | 0.701                                |
+| 30        | 1.243        | 0.541                      | 0.664                                |
+
+MJSP in \$/L SAF. The SAF column is the 551 model in metric tonnes and matches in both panels.
+The old 572_2MC SAF was 0.042–1.252 MMt/yr; old panel b showed 0.046–1.370 because of the
+short-ton unit.
+
+**Effect.**
+- Panel a's breakdown total now equals panel b's FR-Price Base line at every scale.
+- With the 551 model, base-case MJSP falls 1.638 → 0.664 \$/L (−59 %). The old model gave
+  1.479 → 0.541.
+- The x10 knee holds: 0.780 at x10 vs 0.664 at x30.
+- Main-text numbers quoted from the old Table S9-1 (\$1.48 → \$0.54/L, 0.05–1.37 MMt/yr) are now
+  stale.
+
+Data: `Result/scale_up_base_summary.xlsx`, `Result/scale_up_price_model_mjsp.xlsx`. Figure:
+`Figure/composite_scale_up_mjsp.png`.
+
 ## 2. Six-Tenths Cost Model & CO2 T&S — Updated MJSP
 
 §1 / §1.2 above report the **original** numbers (linear sub-unit CAPEX), which match the
@@ -302,6 +341,38 @@ Same method, base scale (1×), sweeping capture rate. GHG per rate (LCA sheets `
 - **Displacement ≈ 3× cheaper than allocation** at every rate.
 
 ## Log history
+
+### 2026-10-02
+
+**Discussion**
+- SI Fig/Table S9-1 vs S9-2 mismatch traced to two causes: a different process model
+  (572_2MC vs 551) and a different SAF unit (metric vs short ton). See §1.3.
+- User chose metric tonnes for both panels, and the 551 model for `tea_scale_up.py`, to match
+  `tea_scale_up_price_models.py` and `tea_pareto_front.py`. Keeping 572_2MC was dropped:
+  `pareto_front.png` and the price-model figure already use 551.
+
+**Code**
+- `tea_scale_up_price_models.py`: `saf_mmt` now applies `× 0.907185` (short ton → metric tonne).
+  Cause of the bug: `get_annual_prod_saf_ton` (`funs.py:139`) returns short tons, and the script
+  labeled them MMt.
+- `tea_scale_up.py`: input files switched from `Pyrolysis_Jones_572_2MC_*` to
+  `Pyrolysis_551_Scale*` (main loop and `saf_mmt`).
+- Re-ran both scripts and `plot_scale_up_from_xlsx.py`. This regenerated
+  `composite_scale_up_mjsp.png`, `scale_up_price_model_mjsp(_base).png`,
+  `scale_up_wo_price_model_*` and both `Result/` xlsx files.
+- `tea_scale_up.py` still exits 1 at line 321 (`KeyError: [18.5]`, a hard-coded scale that is
+  not in `case_scale`). The crash happens after all exports, so the outputs are complete. The bug
+  predates this change.
+- `Manuscript/SI.tex` and `Manuscript/SI. Supporting Information.md`:
+  - Table S9-1 rebuilt from the new `Result/scale_up_base_summary.xlsx` (551 model). MJSP is now
+    1.638 → 0.664, replacing 1.479 → 0.541.
+  - Tables S9-2 and S9-3: only the SAF column remapped to metric tonnes
+    (0.046…1.370 → 0.041…1.243). The MJSP and price cells were already on 551 and are unchanged.
+  - Table S9-4 caption: 0.457 → 0.414 MMt/yr.
+
+**Open**
+- `Manuscript/3. Results.md` §3.1 numbers are not yet updated to the 551 / metric values.
+- The `tea_scale_up_co2ts.py` docstring still says `tea_scale_up.py` reads Jones_572_2MC.
 
 ### 2026-09-29
 

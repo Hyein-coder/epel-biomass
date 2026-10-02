@@ -127,14 +127,20 @@ markers_model = ['o', 'x', '^']      # one marker per price model
 # x-axis = SAF production [MMt/yr] (scale-only; identical across price models and H2 configs)
 m0 = unique_cats[0]
 saf_mmt = (cost_base_all[cost_base_all['case price model'] == m0]
-           .set_index('case scale').loc[case_scale, 'saf production'] / 1e6)
+           .set_index('case scale').loc[case_scale, 'saf production'] * 0.907185 / 1e6)   # short ton -> metric tonne
 xlabels = [f'{v:.3f}' for v in saf_mmt]
 
 x = np.arange(len(case_scale))
 
+# data sheet for plot_scale_up_from_xlsx.py: one sheet per quantity, rows = case scale
+with pd.ExcelWriter(os.path.join('Result', 'scale_up_price_model_mjsp.xlsx')) as xw:
+    df_price.assign(**{'saf production [MMt/yr]': saf_mmt.values}).to_excel(xw, sheet_name='biomass price')
+    for name, df in mjsp.items():
+        df.assign(**{'saf production [MMt/yr]': saf_mmt.values}).to_excel(xw, sheet_name=f'MJSP {name}')
+
 # --- Figure 1 (_base): bar = MJSP of Base plant per price model; line = biomass price ---
 mjsp_bar = mjsp['Base']
-fig, ax = plt.subplots(figsize=(9, 4.5))
+fig, ax = plt.subplots(figsize=(9, 3.6))
 mjsp_bar.plot(kind='bar', color=bar_colors, edgecolor='black', ax=ax, width=0.7)   # MJSP bars, one color per price model
 ax.set_ylabel("MJSP [$/L SAF]")
 ax.set_xlabel("SAF production [MMt/yr]")
@@ -159,7 +165,7 @@ line_colors = ['#D6AE5C', '#D57F78', '#85B27C']   # base_summary palette, darken
 case_styles = ['-', '--', ':']       # one linestyle per case
 case_markers = ['o', 's', '^']       # one marker per case
 
-fig, ax = plt.subplots(figsize=(9, 4.5))
+fig, ax = plt.subplots(figsize=(9, 3.6))
 df_price.plot(kind='bar', color='white', edgecolor='black', ax=ax, width=0.7)
 for container, hatch in zip(ax.containers, bar_hatches):   # one hatch per price model
     for bar in container:

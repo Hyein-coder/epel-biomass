@@ -38,8 +38,9 @@ case_data = {'cost summary': [], 'Ammonia summary': [], 'Ammonia price': [], 'Ut
              'Mix summary': [],
              'CCS summary': [], 'CCS mjsp': []}
 for n in case_scale:
-    file_stream = f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_Streams.xlsx'
-    file_apea = f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_APEAresults.xlsm'  # Fixed Biomass Price
+    # 551 model: same simulation as tea_scale_up_price_models.py / tea_pareto_front.py
+    file_stream = f'Process_Data\\Pyrolysis_551_Scale{int(n * 10):04d}_Streams.xlsx'
+    file_apea = f'Process_Data\\Pyrolysis_551_Scale{int(n * 10):04d}_APEA.xlsm'  # Fixed Biomass Price
     df_mjsp, energy_production, annual_prod_saf, main_h2_demand, opex_names, data_all, name_h2_source_new = \
         tea.economic_analysis(file_stream, file_apea, name_h2_source, ccs_portion=0., ammonia_portion=0.655)
 
@@ -181,7 +182,7 @@ plt.show()
 #%% MJSP Breakdown
 # x-axis in SAF production scale [MMt/yr]; short ton (2000 lb) -> metric tonne x0.907185
 saf_mmt = [round(tea.get_annual_prod_saf_ton(
-    f'Process_Data\\Pyrolysis_Jones_572_2MC_{int(n * 10):04d}_Streams.xlsx') * 0.907185 / 1e6, 2)
+    f'Process_Data\\Pyrolysis_551_Scale{int(n * 10):04d}_Streams.xlsx') * 0.907185 / 1e6, 3)
     for n in case_scale]
 mjsp_all = {case: pd.DataFrame([case_data['mjsp'][idx].loc[case] for idx in range(len(case_data['mjsp']))],
                                index=saf_mmt)
@@ -221,9 +222,11 @@ plot_stack_bar(mjsp_all['Mix'], 'MJSP [$/L SAF]', colors_stack_bar,
 plot_stack_bar(mjsp_ccs['Base'], 'MJSP [$/L SAF]', colors_stack_bar,
                save_name=os.path.join(fig_folder, f'scale_up_{fig_tag}_ccs_summary'), figsize=(10,5),
                xlabel='SAF production [MMt/yr]', fs=13)
-plot_stack_bar(mjsp_base, 'MJSP [$/L SAF]', colors_stack_bar,
-               save_name=os.path.join(fig_folder, f'scale_up_{fig_tag}_base_summary'), figsize=(10,5),
-               xlabel='SAF production [MMt/yr]', fs=13)
+mjsp_base.rename_axis('saf production [MMt/yr]').to_excel(os.path.join('Result', 'scale_up_base_summary.xlsx'))   # data sheet for plot_scale_up_from_xlsx.py
+# §3.1 figure: same size/fonts as scale_up_price_model_mjsp (SA_RC, 3-decimal x labels)
+plot_stack_bar(mjsp_base.set_axis([f'{v:.3f}' for v in mjsp_base.index]), 'MJSP [$/L SAF]', colors_stack_bar,
+               save_name=os.path.join(fig_folder, f'scale_up_{fig_tag}_base_summary'), figsize=(9, 3.6),
+               xlabel='SAF production [MMt/yr]', fs=None)
 
 #%%
 ratio_mjsp_to_capex = {

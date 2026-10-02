@@ -154,39 +154,39 @@ Numeric values behind the main-text Results figures, read from the `Result/` wor
 
 | SAF production [MMt/yr] | Capital investment | Raw materials | Utilities | Operating labor | Maintenance | Operating charges | Plant overhead | G&A | Co-product sales | MJSP |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0.042 | 1.040 | 1.286 | 0.578 | 0.049 | 0.095 | 0.012 | 0.072 | 0.165 | -1.817 | 1.479 |
-| 0.104 | 0.755 | 1.270 | 0.536 | 0.020 | 0.074 | 0.005 | 0.047 | 0.154 | -1.817 | 1.044 |
-| 0.209 | 0.671 | 1.262 | 0.516 | 0.010 | 0.066 | 0.002 | 0.038 | 0.149 | -1.816 | 0.899 |
-| 0.313 | 0.646 | 1.263 | 0.485 | 0.007 | 0.067 | 0.002 | 0.037 | 0.147 | -1.817 | 0.836 |
-| 0.417 | 0.623 | 1.262 | 0.444 | 0.005 | 0.064 | 0.001 | 0.035 | 0.143 | -1.817 | 0.760 |
-| 0.835 | 0.589 | 1.261 | 0.366 | 0.002 | 0.063 | 0.001 | 0.033 | 0.136 | -1.817 | 0.633 |
-| 1.252 | 0.543 | 1.261 | 0.328 | 0.002 | 0.061 | 0.000 | 0.031 | 0.132 | -1.817 | 0.541 |
+| 0.041 | 1.152 | 1.284 | 0.664 | 0.036 | 0.110 | 0.009 | 0.073 | 0.172 | -1.860 | 1.638 |
+| 0.104 | 0.936 | 1.269 | 0.590 | 0.014 | 0.093 | 0.004 | 0.054 | 0.160 | -1.860 | 1.258 |
+| 0.207 | 0.857 | 1.263 | 0.467 | 0.007 | 0.086 | 0.002 | 0.046 | 0.147 | -1.860 | 1.015 |
+| 0.311 | 0.801 | 1.262 | 0.406 | 0.005 | 0.083 | 0.001 | 0.044 | 0.142 | -1.860 | 0.884 |
+| 0.414 | 0.750 | 1.261 | 0.368 | 0.004 | 0.078 | 0.001 | 0.041 | 0.138 | -1.860 | 0.780 |
+| 0.828 | 0.719 | 1.260 | 0.327 | 0.003 | 0.077 | 0.001 | 0.040 | 0.134 | -1.860 | 0.701 |
+| 1.243 | 0.700 | 1.259 | 0.311 | 0.002 | 0.079 | 0.000 | 0.040 | 0.133 | -1.860 | 0.664 |
 
 **Table S9-2. Biomass price and grey-H₂ base MJSP under three biomass price models** (§3.1, price-model figure; source: `Result/scale_up_price_model_mjsp.xlsx`). MJSP in \$/L SAF.
 
 | SAF production [MMt/yr] | Biomass, FR Price [\$/lb] | Biomass, FR-Log Linear [\$/lb] | Biomass, Fixed Elasticity [\$/lb] | MJSP grey H₂, FR Price | MJSP grey H₂, FR-Log Linear | MJSP grey H₂, Fixed Elasticity |
 |---|---:|---:|---:|---:|---:|---:|
-| 0.046 | 0.0486 | 0.0486 | 0.0486 | 1.638 | 1.638 | 1.638 |
-| 0.114 | 0.0486 | 0.0486 | 0.0486 | 1.258 | 1.258 | 1.258 |
-| 0.228 | 0.0486 | 0.0486 | 0.0486 | 1.015 | 1.015 | 1.015 |
-| 0.342 | 0.0486 | 0.0486 | 0.0486 | 0.884 | 0.884 | 0.884 |
-| 0.457 | 0.0486 | 0.0527 | 0.0527 | 0.780 | 0.836 | 0.836 |
-| 0.913 | 0.0486 | 0.0903 | 0.1064 | 0.701 | 1.278 | 1.502 |
-| 1.370 | 0.0486 | 0.1278 | 0.2360 | 0.664 | 1.761 | 3.259 |
+| 0.041 | 0.0486 | 0.0486 | 0.0486 | 1.638 | 1.638 | 1.638 |
+| 0.104 | 0.0486 | 0.0486 | 0.0486 | 1.258 | 1.258 | 1.258 |
+| 0.207 | 0.0486 | 0.0486 | 0.0486 | 1.015 | 1.015 | 1.015 |
+| 0.311 | 0.0486 | 0.0486 | 0.0486 | 0.884 | 0.884 | 0.884 |
+| 0.414 | 0.0486 | 0.0527 | 0.0527 | 0.780 | 0.836 | 0.836 |
+| 0.828 | 0.0486 | 0.0903 | 0.1064 | 0.701 | 1.278 | 1.502 |
+| 1.243 | 0.0486 | 0.1278 | 0.2360 | 0.664 | 1.761 | 3.259 |
 
 **Table S9-3. MJSP of the full green-NH₃ and full-CCS configurations under three biomass price models** (§3.1, price-model figure; source: `Result/scale_up_price_model_mjsp.xlsx`, sheets `MJSP Ammonia` = 100% green-NH₃ hydrogen, `MJSP CCS` = CCS portion 1.0). MJSP in \$/L SAF.
 
 | SAF production [MMt/yr] | MJSP full green NH₃, FR Price | MJSP full green NH₃, FR-Log Linear | MJSP full green NH₃, Fixed Elasticity | MJSP full CCS, FR Price | MJSP full CCS, FR-Log Linear | MJSP full CCS, Fixed Elasticity |
 |---|---:|---:|---:|---:|---:|---:|
-| 0.046 | 3.483 | 3.483 | 3.483 | 2.207 | 2.207 | 2.207 |
-| 0.114 | 3.049 | 3.049 | 3.049 | 1.785 | 1.785 | 1.785 |
-| 0.228 | 2.789 | 2.789 | 2.789 | 1.519 | 1.519 | 1.519 |
-| 0.342 | 2.649 | 2.649 | 2.649 | 1.377 | 1.377 | 1.377 |
-| 0.457 | 2.531 | 2.587 | 2.587 | 1.266 | 1.322 | 1.322 |
-| 0.913 | 2.431 | 3.007 | 3.231 | 1.174 | 1.751 | 1.975 |
-| 1.370 | 2.389 | 3.486 | 4.984 | 1.131 | 2.228 | 3.726 |
+| 0.041 | 3.483 | 3.483 | 3.483 | 2.207 | 2.207 | 2.207 |
+| 0.104 | 3.049 | 3.049 | 3.049 | 1.785 | 1.785 | 1.785 |
+| 0.207 | 2.789 | 2.789 | 2.789 | 1.519 | 1.519 | 1.519 |
+| 0.311 | 2.649 | 2.649 | 2.649 | 1.377 | 1.377 | 1.377 |
+| 0.414 | 2.531 | 2.587 | 2.587 | 1.266 | 1.322 | 1.322 |
+| 0.828 | 2.431 | 3.007 | 3.231 | 1.174 | 1.751 | 1.975 |
+| 1.243 | 2.389 | 3.486 | 4.984 | 1.131 | 2.228 | 3.726 |
 
-**Table S9-4. MJSP, GHG, Pareto status, sensitivity band, and abatement cost of the 30 green-NH₃ share × CCS portion configurations at 0.457 MMt/yr SAF** (§3.2, Figure Xa; sources: `Result/pareto_front.xlsx`, `Result/pareto_front_sensitivity.xlsx`). MJSP low/high = tornado-driver band (§2.2.4), computed for Pareto points only (§3.3). Abatement cost = ΔMJSP·10⁶/(ΔGHG·E), E = 31.66 MJ/L, relative to CCS 60% (75.14 g CO₂e/MJ, \$0.977/L); – where GHG is not below CCS 60%.
+**Table S9-4. MJSP, GHG, Pareto status, sensitivity band, and abatement cost of the 30 green-NH₃ share × CCS portion configurations at 0.414 MMt/yr SAF** (§3.2, Figure Xa; sources: `Result/pareto_front.xlsx`, `Result/pareto_front_sensitivity.xlsx`). MJSP low/high = tornado-driver band (§2.2.4), computed for Pareto points only (§3.3). Abatement cost = ΔMJSP·10⁶/(ΔGHG·E), E = 31.66 MJ/L, relative to CCS 60% (75.14 g CO₂e/MJ, \$0.977/L); – where GHG is not below CCS 60%.
 
 | Green NH₃ share [%] | CCS portion [%] | MJSP [\$/L] | GHG [g CO₂e/MJ] | Pareto | MJSP low [\$/L] | MJSP high [\$/L] | Abatement cost [\$/t CO₂] |
 |---|---:|---:|---:|---:|---:|---:|---:|
