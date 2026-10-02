@@ -24,7 +24,7 @@ SA_RC = {
     'xtick.labelsize': 12,
     'xtick.color': 'black',
     'xtick.direction': 'out',
-    'ytick.labelsize': 10,
+    'ytick.labelsize': 12,
     'ytick.color': 'black',
     'ytick.direction': 'out',
     # Font

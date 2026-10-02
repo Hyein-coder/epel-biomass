@@ -62,7 +62,7 @@ h = np.linspace(H2_RANGE[0], H2_RANGE[1], 200)
 def draw(ax: plt.Axes) -> None:
     """Draw the crossover panel on ax (shared by this script and plot_composite.py)."""
     # CCS-only reference line (no ammonia; steeper in grey H2)
-    ax.plot(h, mjsp_ccs(h), color='#ed7d31', lw=1.4, marker='s', markevery=25,
+    ax.plot(h, mjsp_ccs(h), color='#ed7d31', lw=2.2, marker='s', ms=6, markevery=25,
             label='CCS 60% (CCS-only)')
 
     # one NH3 line per ammonia price; green shades go light (cheap) -> dark (dear),
@@ -71,17 +71,15 @@ def draw(ax: plt.Axes) -> None:
     nh3_markers = ('o', '^', 'D', 'v')   # one per AMM_LINES entry
     for pa, col, mk in zip(AMM_LINES, greens, nh3_markers):
         tag = ' (base)' if abs(pa - AMM_P_BASE) < 1e-9 else ''
-        ax.plot(h, mjsp_nh3(h, pa), color=col, marker=mk, markevery=25,
+        ax.plot(h, mjsp_nh3(h, pa), color=col, lw=1.6, marker=mk, ms=6, markevery=25,
                 label=f'NH$_3$ 10% + CCS 50%, {pa * LB_TO_T:.0f} \\$/t{tag}')
         # mark the crossover with CCS 60% when it falls inside the plotted H2 range
         hc = h_cross(pa)
         if H2_RANGE[0] <= hc <= H2_RANGE[1]:
-            ax.plot(hc, mjsp_ccs(hc), 'o', color='#444444', markersize=4)
+            ax.plot(hc, mjsp_ccs(hc), 'o', color='#444444', markersize=7)
 
-    ax.axvline(H2_BASE, color='#888888', lw=0.6, ls=':')
-    # anchor the base-H2 tag at the bottom so it clears the top-left legend
-    ax.annotate('base H$_2$', (H2_BASE, ax.get_ylim()[0]),
-                textcoords='offset points', xytext=(3, 6), fontsize=8, color='#888888')
+    ax.axvline(H2_BASE, color='#888888', lw=1.2, ls=':',
+               label=f'Base gray H$_2$ price ({H2_BASE:.2f} \\$/kg)')
 
     ax.set_xlabel('Gray hydrogen price [\\$/kg H$_2$]')
     ax.set_ylabel('MJSP [\\$/L SAF]')
