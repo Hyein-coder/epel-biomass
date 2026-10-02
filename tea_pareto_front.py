@@ -32,6 +32,10 @@ SA_RC = {
     'legend.edgecolor': '#444444', 'lines.linewidth': 0.7, 'lines.markersize': 3,
     'savefig.dpi': 150, 'savefig.bbox': 'tight', 'savefig.facecolor': 'white',
 }
+# muted diverging map (low blue -> cream -> high pink), toned to the scale-up palette
+# (#D6AE5C / #D57F78) so composite_pareto_crossover_shap matches composite_scale_up_mjsp
+MUTED_DIV = plt.matplotlib.colors.LinearSegmentedColormap.from_list(
+    'muted_div', ['#5B7BA0', '#A3B8CC', '#F1ECDD', '#D6AE5C', '#D57F78'])
 
 MAIN_SCALE = 10                 # main SAF unit fixed at knee-point x10
 AMM_SCALES = [0, 1, 2.5, 5, 7.5, 10]   # ammonia cracker scale

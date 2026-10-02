@@ -21,7 +21,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from funs import TEA
 
 # reuse the analysis' single source of truth for files, style, MJSP model, ranges
-from tea_pareto_front import FS, FA, SA_RC, mix_row, BIO_PRICE_FR
+from tea_pareto_front import FS, FA, SA_RC, MUTED_DIV, mix_row, BIO_PRICE_FR
 from tea_tornado import (H2_RANGE, ELEC_F, COPROD_F, CAPEX_PM, CF_HOURS, TS_RANGE,
                          TS_BASE, AMM_FEED_USD_L, AMM_P_BASE, AMM_PRICE, LB2KG, raw_costs)
 
@@ -109,7 +109,7 @@ def beeswarm(ax, X: np.ndarray, sv: np.ndarray, order: list[str], title: str, se
         span = f.max() - f.min()
         fn = (f - f.min()) / span if span else np.zeros_like(f)   # normalise value to 0..1 for colour
         jit = (rng.random(len(f)) - 0.5) * 0.7            # vertical jitter so dots don't stack
-        sc = ax.scatter(sv[:, j], row + jit, c=fn, cmap='RdYlBu_r', s=10,
+        sc = ax.scatter(sv[:, j], row + jit, c=fn, cmap=MUTED_DIV, s=10,
                         edgecolor='none', alpha=0.8, vmin=0, vmax=1)
     ax.axvline(0, color='k', lw=1)
     ax.set_yticks(range(len(order)))

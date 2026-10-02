@@ -6,13 +6,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from funs_lca import get_WTWa_conventional
-from tea_pareto_front import SA_RC, AMM_SCALES, CCS_RATES, MAIN_SCALE, FILE_WTWA
+from tea_pareto_front import SA_RC, MUTED_DIV, AMM_SCALES, CCS_RATES, MAIN_SCALE, FILE_WTWA
 
 
 def draw(ax: plt.Axes) -> pd.DataFrame:
     """Draw the GHG-MJSP mesh panel on ax (shared with plot_composite.py); returns the grid."""
     df = pd.read_excel(os.path.join('Result', 'pareto_front.xlsx'))
-    cmap = plt.get_cmap('RdYlBu')
+    cmap = MUTED_DIV.reversed()   # 0% NH3 = pink end, 100% = blue end (was RdYlBu)
     amm_colors = {s: cmap(x) for s, x in zip(AMM_SCALES, np.linspace(0.1, 0.9, len(AMM_SCALES)))}
     ccs_markers = dict(zip(CCS_RATES, ['o', 's', '^', 'D', 'P']))
 
