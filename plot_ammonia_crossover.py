@@ -62,14 +62,12 @@ h = np.linspace(H2_RANGE[0], H2_RANGE[1], 200)
 def draw(ax: plt.Axes) -> None:
     """Draw the crossover panel on ax (shared by this script and plot_composite.py)."""
     # CCS-only reference line (no ammonia; steeper in grey H2)
-    ax.plot(h, mjsp_ccs(h), color='#D57F78', lw=2.2, marker='s', ms=6, markevery=25, zorder=3,
+    ax.plot(h, mjsp_ccs(h), color='#ed7d31', lw=2.2, marker='s', ms=6, markevery=25, zorder=3,
             label='CCS-only')
 
     # one NH3 line per ammonia price; blue shades go light (cheap) -> dark (dear),
     # a distinct marker shape per line so series read apart from colour alone
-    # muted slate blues (toned to the scale-up palette) instead of plt.cm.Blues
-    blues = plt.matplotlib.colors.LinearSegmentedColormap.from_list(
-        'slate', ['#A3B8CC', '#3F5F86'])(np.linspace(0, 1, len(AMM_LINES)))
+    blues = plt.cm.Blues(np.linspace(0.45, 0.9, len(AMM_LINES)))
     nh3_markers = ('o', '^', 'D', 'v')   # one per AMM_LINES entry
     for pa, col, mk in zip(AMM_LINES, blues, nh3_markers):
         ax.plot(h, mjsp_nh3(h, pa), color=col, lw=1.6, marker=mk, ms=6, markevery=25,
