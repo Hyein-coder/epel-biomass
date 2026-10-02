@@ -23,7 +23,7 @@ SA_RC = {
     'axes.facecolor': 'white', 'axes.edgecolor': '#444444', 'axes.linewidth': 0.8,
     'axes.spines.top': True, 'axes.spines.right': True, 'axes.labelsize': 12,
     'axes.labelcolor': 'black', 'axes.labelweight': '500', 'axes.grid': False,
-    'xtick.labelsize': 12, 'xtick.color': 'black', 'ytick.labelsize': 10, 'ytick.color': 'black',
+    'xtick.labelsize': 12, 'xtick.color': 'black', 'ytick.labelsize': 12, 'ytick.color': 'black',
     'font.family': 'sans-serif',
     'font.sans-serif': ['Helvetica Neue LT Pro', 'Helvetica Neue', 'Arial', 'DejaVu Sans'],
     'font.size': 10, 'font.weight': '300', 'text.color': 'black',

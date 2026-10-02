@@ -18,7 +18,7 @@ SA_RC = {
     'axes.facecolor': 'white', 'axes.edgecolor': '#444444', 'axes.linewidth': 0.8,
     'axes.spines.top': True, 'axes.spines.right': True, 'axes.labelsize': 12,
     'axes.labelcolor': 'black', 'axes.labelweight': '500', 'axes.grid': False,
-    'xtick.labelsize': 12, 'xtick.color': 'black', 'ytick.labelsize': 10, 'ytick.color': 'black',
+    'xtick.labelsize': 12, 'xtick.color': 'black', 'ytick.labelsize': 12, 'ytick.color': 'black',
     'font.family': 'sans-serif',
     'font.sans-serif': ['Helvetica Neue LT Pro', 'Helvetica Neue', 'Arial', 'DejaVu Sans'],
     'font.size': 10, 'font.weight': '300', 'text.color': 'black',
@@ -58,40 +58,50 @@ AMM_LINES: tuple[float, ...] = (AMM_RANGE_LBS[0], 0.20, AMM_P_BASE, AMM_RANGE_LB
 
 h = np.linspace(H2_RANGE[0], H2_RANGE[1], 200)
 
-fig, ax = plt.subplots(figsize=(7.5, 5))
-# CCS-only reference line (no ammonia; steeper in grey H2)
-ax.plot(h, mjsp_ccs(h), color='#ed7d31', lw=1.4, marker='s', markevery=25,
-        label='CCS 60% (CCS-only)')
 
-# one NH3 line per ammonia price; green shades go light (cheap) -> dark (dear),
-# a distinct marker shape per line so series read apart from colour alone
-greens = plt.cm.Greens(np.linspace(0.45, 0.9, len(AMM_LINES)))
-nh3_markers = ('o', '^', 'D', 'v')   # one per AMM_LINES entry
-for pa, col, mk in zip(AMM_LINES, greens, nh3_markers):
-    tag = ' (base)' if abs(pa - AMM_P_BASE) < 1e-9 else ''
-    ax.plot(h, mjsp_nh3(h, pa), color=col, marker=mk, markevery=25,
-            label=f'NH$_3$ 10% + CCS 50%, {pa * LB_TO_T:.0f} \\$/t{tag}')
-    # mark the crossover with CCS 60% when it falls inside the plotted H2 range
-    hc = h_cross(pa)
-    if H2_RANGE[0] <= hc <= H2_RANGE[1]:
-        ax.plot(hc, mjsp_ccs(hc), 'o', color='#444444', markersize=4)
+def draw(ax: plt.Axes) -> None:
+    """Draw the crossover panel on ax (shared by this script and plot_composite.py)."""
+    # CCS-only reference line (no ammonia; steeper in grey H2)
+    ax.plot(h, mjsp_ccs(h), color='#ed7d31', lw=1.4, marker='s', markevery=25,
+            label='CCS 60% (CCS-only)')
 
-ax.axvline(H2_BASE, color='#888888', lw=0.6, ls=':')
-# anchor the base-H2 tag at the bottom so it clears the top-left legend
-ax.annotate('base H$_2$', (H2_BASE, ax.get_ylim()[0]),
-            textcoords='offset points', xytext=(3, 6), fontsize=8, color='#888888')
+    # one NH3 line per ammonia price; green shades go light (cheap) -> dark (dear),
+    # a distinct marker shape per line so series read apart from colour alone
+    greens = plt.cm.Greens(np.linspace(0.45, 0.9, len(AMM_LINES)))
+    nh3_markers = ('o', '^', 'D', 'v')   # one per AMM_LINES entry
+    for pa, col, mk in zip(AMM_LINES, greens, nh3_markers):
+        tag = ' (base)' if abs(pa - AMM_P_BASE) < 1e-9 else ''
+        ax.plot(h, mjsp_nh3(h, pa), color=col, marker=mk, markevery=25,
+                label=f'NH$_3$ 10% + CCS 50%, {pa * LB_TO_T:.0f} \\$/t{tag}')
+        # mark the crossover with CCS 60% when it falls inside the plotted H2 range
+        hc = h_cross(pa)
+        if H2_RANGE[0] <= hc <= H2_RANGE[1]:
+            ax.plot(hc, mjsp_ccs(hc), 'o', color='#444444', markersize=4)
 
-ax.set_xlabel('Gray hydrogen price [\\$/kg H$_2$]')
-ax.set_ylabel('MJSP [\\$/L SAF]')
-ax.set_xlim(h[0], h[-1])
-ax.legend(loc='upper left')
+    ax.axvline(H2_BASE, color='#888888', lw=0.6, ls=':')
+    # anchor the base-H2 tag at the bottom so it clears the top-left legend
+    ax.annotate('base H$_2$', (H2_BASE, ax.get_ylim()[0]),
+                textcoords='offset points', xytext=(3, 6), fontsize=8, color='#888888')
 
-out = os.path.join('Figure', 'ammonia_crossover_mjsp.png')
-fig.savefig(out, dpi=150)
-print(f'saved {out}  |  slopes: CCS {SLOPE_CCS:.3f}, NH3 {SLOPE_NH3:.3f} $/L per $/kg')
-for pa in AMM_LINES:
-    print(f'  ammonia {pa * LB_TO_T:5.0f} $/t -> crossover H2 = {h_cross(pa):.3f} $/kg')
+    ax.set_xlabel('Gray hydrogen price [\\$/kg H$_2$]')
+    ax.set_ylabel('MJSP [\\$/L SAF]')
+    ax.set_xlim(h[0], h[-1])
+    ax.legend(loc='upper left')
 
-# check: CCS steeper than NH3 route, and cheaper ammonia pulls the crossover to lower H2 price
-assert SLOPE_CCS > SLOPE_NH3
-assert h_cross(AMM_RANGE_LBS[0]) < h_cross(AMM_P_BASE)
+
+def main() -> None:
+    fig, ax = plt.subplots(figsize=(7.5, 5))
+    draw(ax)
+    out = os.path.join('Figure', 'ammonia_crossover_mjsp.png')
+    fig.savefig(out, dpi=150)
+    print(f'saved {out}  |  slopes: CCS {SLOPE_CCS:.3f}, NH3 {SLOPE_NH3:.3f} $/L per $/kg')
+    for pa in AMM_LINES:
+        print(f'  ammonia {pa * LB_TO_T:5.0f} $/t -> crossover H2 = {h_cross(pa):.3f} $/kg')
+
+    # check: CCS steeper than NH3 route, and cheaper ammonia pulls the crossover to lower H2 price
+    assert SLOPE_CCS > SLOPE_NH3
+    assert h_cross(AMM_RANGE_LBS[0]) < h_cross(AMM_P_BASE)
+
+
+if __name__ == '__main__':
+    main()
