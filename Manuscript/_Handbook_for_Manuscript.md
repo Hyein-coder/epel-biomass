@@ -8,6 +8,20 @@
 
 ## Log history
 
+### 2026-10-02 (update 22)
+
+**Discussion**
+- The user asked to add the CO₂ abatement-cost plot to the composite Pareto figure as panel (b), move the MJSP crossover to (e), and draw the abatement panel from the datasheet. The datasheet used is the `abatement` column of `Result/pareto_front.xlsx` (CCS 60% base), not `Figure/scale_up_abatement.xlsx`, which is the scale-up series.
+- Layout chosen: 3×2 grid, with (a) and (b) on the top row, (c) and (d) SHAP in the middle, and (e) bottom-left. The bottom-right cell is empty.
+
+**Code**
+- `plot_pareto_from_xlsx.py`: new `draw_abatement(ax, cax)` reads the recorded `abatement` column and draws the same contour as `pareto_abatement_contour_compliance.png` (no TEA re-run).
+- `plot_composite.py`: grid changed to 3×3 (third column holds the colorbars). Panels relabelled a–e. Regenerated `Figure/composite_pareto_crossover_shap.png`.
+
+**Open**
+- The 12,511 \$/t cell (NH₃ 75%, CCS 0%) stretches the linear colour scale, so most of panel (b) is one blue band. Log or clipped levels not applied.
+- The empty bottom-right cell could hold (e) spanning both columns, or a legend. Not decided.
+
 ### 2026-10-02 (update 19)
 
 **Discussion**

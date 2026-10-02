@@ -46,6 +46,22 @@ def draw(ax: plt.Axes) -> pd.DataFrame:
     return df
 
 
+def draw_abatement(ax: plt.Axes, cax: plt.Axes) -> None:
+    """CO2 abatement-cost contour from the recorded 'abatement' column of Result/pareto_front.xlsx
+    (same plot as tea_pareto_front's pareto_abatement_contour_compliance.png, no TEA re-run)."""
+    df = pd.read_excel(os.path.join('Result', 'pareto_front.xlsx'))
+    piv = df.pivot(index='ccs', columns='ammonia_portion', values='abatement')
+    X, Y = np.meshgrid(piv.columns.values, piv.index.values)
+    cf = ax.contourf(X, Y, piv.values, levels=12, cmap='RdYlBu_r')
+    cs = ax.contour(X, Y, piv.values, levels=cf.levels, colors='k', linewidths=0.4)
+    ax.clabel(cs, inline=True, fmt='%.0f', fontsize=7)
+    ax.scatter(X, Y, c='k', s=8, zorder=3)   # the 30 sampled combinations
+    ax.figure.colorbar(cf, cax=cax, label='CO$_2$ abatement cost [\\$/tCO$_2$]')
+    ax.set_xlabel('Green NH$_3$ H$_2$ substitution ratio')
+    ax.set_ylabel('CCS portion')
+    ax.tick_params(axis='y', labelsize=plt.rcParams['xtick.labelsize'])
+
+
 def main() -> None:
     plt.rcParams.update(SA_RC)
     fig, ax = plt.subplots(figsize=(5.5, 5))   # smaller canvas -> legend reads larger relative to axes
