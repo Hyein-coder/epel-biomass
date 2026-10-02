@@ -8,6 +8,18 @@
 
 ## Log history
 
+### 2026-10-02 (update 16)
+
+**Discussion**
+- The user asked to replace the §3.1 figures with `composite_scale_up_mjsp.png`. The two separate figures (base breakdown and price-model MJSP) became one figure with panels (a) and (b), placed at the top of §3.1.
+
+**Code**
+- `Manuscript/3. Results.md`: the first figure link now points to `Figure/composite_scale_up_mjsp.png`, with an (a)/(b) caption. The second figure link (`scale_up_price_model_mjsp.png`) was removed. The text is unchanged.
+
+**Open**
+- Panel (a) labels the smallest scale 0.05 MMt/yr with \$1.48/L, but the §3.1 text says 0.04 MMt/yr and \$1.46/L. This has not been reconciled.
+- §3.1 Step 2 no longer has a figure of its own. A reference to panel (b) (Figure Xb) should be added to its text, pending the user's approval.
+
 ### 2026-10-02 (update 15)
 
 **Discussion**
