@@ -1,15 +1,199 @@
-% Supporting Information, converted from "SI. Supporting Information.md".
-% Table labels follow tab:S<section>-<n> (e.g. \ref{tab:S9-1} -> S9-1).
-% Main text cross-reference: \usepackage{xr} and \externaldocument{SI} in the main .tex.
-\documentclass[11pt]{article}
-\usepackage[T1]{fontenc}
-\usepackage[margin=2.2cm]{geometry}
-\usepackage{amsmath}
-\usepackage{booktabs}
-\usepackage{graphicx}
-\usepackage{textcomp}
-\usepackage{chngcntr}
-\usepackage[hidelinks]{hyperref}
+
+\renewcommand{\thesection}{S\arabic{section}}
+\counterwithin{table}{section}
+\renewcommand{\thetable}{\thesection-\arabic{table}}
+
+\section{Process Design Details}\label{sec:S0}
+
+Table \ref{tab:model-compounds} provides the information of bio-oil model compounds used in process modeling. 
+
+\begin{table}[htbp]
+\centering
+\caption{Model compounds and their composition on a dry weight basis retrieved from \cite{jones2013process}}
+\begin{tabular}{|p{4.5cm}|p{4.5cm}|l|r|}
+\hline
+\textbf{Compound group} & \textbf{Model compound} & \textbf{Formula} & \textbf{\% wt} \\
+% \textbf{} & \textbf{} & \textbf{} & \textbf{(dry basis)} \\
+\hline
+\multicolumn{4}{|l|}{\textbf{\textit{Water soluble}}} \\
+\hline
+Acids & Crotonic acid & C\textsubscript{4}H\textsubscript{6}O\textsubscript{2} & 5.57 \\
+\hline
+Alcohols & 1,4-Benzenediol & C\textsubscript{6}H\textsubscript{6}O\textsubscript{2} & 6.97 \\
+\hline
+Ketones & Hydroxyacetone & C\textsubscript{3}H\textsubscript{6}O\textsubscript{2} & 8.29 \\
+\hline
+Aldehydes & 3-Methoxy-4-Hydroxybenzaldehyde & C\textsubscript{8}H\textsubscript{8}O\textsubscript{3} & 6.97 \\
+\hline
+Guaiacols & Isoeugenol & C\textsubscript{10}H\textsubscript{12}O\textsubscript{2} & 4.98 \\
+\hline
+Low MW sugars & Levoglucosan & C\textsubscript{6}H\textsubscript{10}O\textsubscript{5} & 5.97 \\
+\hline
+High MW sugars & Cellobiose & C\textsubscript{12}H\textsubscript{22}O\textsubscript{11} & 33.86 \\
+\hline
+\multicolumn{4}{|l|}{\textbf{\textit{Water insoluble}}} \\
+\hline
+Low MW lignin derived compound A & Dimethoxy stilbene & C\textsubscript{16}H\textsubscript{16}O\textsubscript{2} & 10.95 \\
+\hline
+Low MW lignin derived compound B & Dibenzofuran (representing diphenyl compounds) & C\textsubscript{12}H\textsubscript{8}O & 2.21 \\
+\hline
+Extractives & Dehydroabietic acid & C\textsubscript{20}H\textsubscript{30}O\textsubscript{2} & 2.99 \\
+\hline
+High MW lignin derived compound A & Oligomeric compounds with $\beta$-O-4 bond & C\textsubscript{20}H\textsubscript{26}O\textsubscript{8} & 9.15 \\
+\hline
+High MW lignin derived compound B & Phenylcoumaran compounds & C\textsubscript{21}H\textsubscript{26}O\textsubscript{8} & 1.99 \\
+\hline
+Nitrogen compounds & 2,4,6-trimethylpyridine & C\textsubscript{8}H\textsubscript{11}N & 0.070 \\
+\hline
+Sulfur compounds & Dibenzothiophene & C\textsubscript{12}H\textsubscript{8}S & 0.025 \\
+\hline
+\end{tabular}
+\label{tab:model-compounds}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Boiling point and vapor pressure equation coefficients of user-defined compounds retrieved from \cite{jones2013process}.}
+\begin{threeparttable}
+% \scriptsize
+\begin{tabular}{|l|l|l|p{4.5cm}|}
+\hline
+\textbf{Compound} & \textbf{Formula} & \textbf{Tbp, F} & \textbf{Coefficients for vapor pressure equation\tnote{1}} \\
+\hline
+Isoeugenol & C$_{10}$H$_{12}$O$_2$ & 507.2 & \begin{tabular}{l}
+A = 50.75 \\
+B = -9430.29 \\
+C = -3.46 \\
+D = -1.17E-6 \\
+E = 2 \\
+(Ref 2)
+\end{tabular} \\
+\hline
+Levoglucosan & C$_6$H$_{10}$O$_5$ & 772.8 & \begin{tabular}{l}
+A = 149.33 \\
+B = -18972.6 \\
+C = -16.826 \\
+D = -4.57E-9 \\
+E = 2 \\
+(Ref 2)
+\end{tabular} \\
+\hline
+Cellobiose & C$_{12}$H$_{22}$O$_{11}$ & 1234.2 & \begin{tabular}{l}
+A = 53.01 \\
+B = -19999.5 \\
+C = -4.4294 \\
+D = -1.5E-7 \\
+E = 2
+\end{tabular} \\
+\hline
+\begin{tabular}{l}
+High MW lignin \\
+derived compound A
+\end{tabular} & C$_{20}$H$_{26}$O$_8$ & 1198.4 & \begin{tabular}{l}
+A = 81.08 \\
+B = -20000 \\
+C = -7.036 \\
+D = -2.279E-7 \\
+E = 2
+\end{tabular} \\
+\hline
+\begin{tabular}{l}
+High MW lignin \\
+derived compound B
+\end{tabular} & C$_{21}$H$_{26}$O$_8$ & 1172.4 & \begin{tabular}{l}
+A = 85.84 \\
+B = -20000 \\
+C = -7.72 \\
+D = -3.84E-7 \\
+E = 2
+\end{tabular} \\
+\hline
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item[1] Vp = exp[A + B/T + C ln(T) + D T$^E$], where Vp = vapor pressure (Pa), T = temperature (K)
+\end{tablenotes}
+\end{threeparttable}
+\label{tab:app-user-define1}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Thermodynamic and critical properties of user-defined compounds retrieved from \cite{jones2013process}.}
+% \scriptsize
+\begin{tabular}{|l|l|p{1.1cm}|p{1.2cm}|p{1.1cm}|p{1.5cm}|p{1.5cm}|}
+\hline
+\textbf{Compound} & \textbf{Tc, F} & \textbf{Pc, psia} & \textbf{Vc, ft$^3$/ lbmol} & \textbf{Tm, F} & \textbf{$\Delta H_f$ (Btu/ lbmol)} & \textbf{$\Delta G_f$ (Btu/ lbmol)} \\
+\hline
+Isoeugenol  & 987.5 & 476.4 & 7.8 & 57.2 & -88516.7 & -16887.1 \\
+\hline
+Levoglucosan  & 1056 & 668.9 & 3.0 & 99.5 & -412740 & -255625 \\
+\hline
+Cellobiose  & 1281.5 & 340 & 6.8 & 462.2 & -958499 & -503968 \\
+\hline
+\begin{tabular}{l}
+High MW \\ lignin derived \\ compound A
+\end{tabular}  & 1482.2 & 241.9 & 15.9 & 218.3 & -498806 & -297590 \\
+\hline
+\begin{tabular}{l}
+High MW \\ lignin derived \\ compound B
+\end{tabular}  & 1468.2 & 243.7 & 16.0 & 252.3 & -496040 & -284159 \\
+\hline
+\end{tabular}
+\label{tab:app-user-define2}
+\end{table}
+
+\FloatBarrier
+\begin{longtable}{|p{0.4\textwidth}|p{0.5\textwidth}|}
+\caption{Compound groups rising in hydroprocesses and their model compounds retrieved from \cite{jones2013process}.} \label{tab:compounds-from-hydroprocess}\\
+\hline
+\textbf{Groups} & \textbf{Model compounds} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Generic names} & \textbf{Model compounds used to represent groups of similar compounds} \\
+\hline
+\endhead
+
+1,2,3,4-Naphthalenes & 6-Hexyltetralin \\ \hline
+Acids Intermediates & N-Butyric acid \\ \hline
+Aromatic A & O-Xylene \\ \hline
+Aromatic B & Benzene, 1-ethenyl-4-ethyl- \\ \hline
+Ash & Ash \\ \hline
+Bicyclos & 1,1-Bicyclohexyl \\ \hline
+Carbon & Carbon \\ \hline
+Carbonyl intermediates & 1,2-Propanediol \\ \hline
+Extractive intermediates & HT Dehydroabietic acid \\ \hline
+Cyclo C5 A & Ethyl-cyclopentane \\ \hline
+Cyclo C5 B & 1-methyl-1-ethylcyclopentane \\ \hline
+Cyclo C6 A & Cyclohexane \\ \hline
+Cyclo C6 B & N-Butylcyclohexane \\ \hline
+Cyclo C6-HCK product & Methyl-cyclohexane \\ \hline
+Cyclo C7+ & 1,3-Dimethyladamantane \\ \hline
+Diphenyl compounds & 1,2-Diphenylethane \\ \hline
+Extractives & Dehydroabietic acid \\ \hline
+High MW lignin compound intermediates & Indene \\ \hline
+Indans & Indan \\ \hline
+Indenes & 1H-Indene, 1,2,3-trimethyl- \\ \hline
+Iso-paraffin A & 3-Methylhexane \\ \hline
+Iso-paraffin B & 4-Methylnonane \\ \hline
+Low MW lignin compound intermediates & Pinosylvin \\ \hline
+Medium chain n-paraffins & N-Dodecane \\ \hline
+Naphthalenes & 2,7-Dimethylnaphthalene \\ \hline
+N-paraffin-HCK product A & N-Nonane \\ \hline
+N-paraffin-HCK product B & N-Octane \\ \hline
+Phenanthrenes & 4-Methylphenanthrene \\ \hline
+Phenols & Thymol \\ \hline
+Polynuclear aromatics & Naphthalene, 1-phenyl- \\ \hline
+Pyrenes & Pyrene \\ \hline
+Sand & Silicon Dioxide \\ \hline
+Short chain n-paraffins & N-Hexane \\ \hline
+Sugar intermediate A & Alpha-D-Glucose \\ \hline
+Sugar intermediate B & Sorbitol \\ \hline
+Sulfur agent & Dimethyl Sulfide \\
+\hline
+\end{longtable}
 
 \newcommand{\COtwo}{CO\textsubscript{2}}
 \newcommand{\COtwoe}{CO\textsubscript{2}e}
@@ -17,21 +201,6 @@
 \newcommand{\NHthree}{NH\textsubscript{3}}
 \newcommand{\code}[1]{\texttt{#1}}
 
-\renewcommand{\thesection}{S\arabic{section}}
-\counterwithin{table}{section}
-\renewcommand{\thetable}{\thesection-\arabic{table}}
-
-\title{Supporting Information}
-\date{}
-
-\begin{document}
-\maketitle
-
-Detail extracted from the analysis scripts (\code{funs.py}, \code{funs\_lca.py},
-\code{Dynamic\_LCA/}, and the \code{tea\_*} / \code{lca\_*} drivers) that supports the
-Methods but is too granular for the main text. Constants are quoted as implemented in code.
-
-%% ------------------------------------------------------------------
 \section{Cost basis and financial parameters}\label{sec:S1}
 
 \begin{itemize}
@@ -100,8 +269,7 @@ price $60 \times 2.2$ \$/kg; R-225 molybdenum LHSV 0.22, price $15.5 \times 2.2$
 
 \begin{table}[htbp]
   \centering
-  \caption{Per-unit single-train caps and replica counts (source:
-    \code{Scaling\_Up\_Study\_ver551\_organized.xlsx}). Number of parallel trains follows
+  \caption{Per-unit single-train caps and replica counts. Number of parallel trains follows
     $n = \mathrm{ceil}(\text{total duty}/\text{cap})$; the cap equals the saturated per-replica load.}
   \label{tab:S3-1}
   \resizebox{\textwidth}{!}{%
@@ -224,7 +392,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 \begin{table}[htbp]
   \centering
   \caption{Base-case (grey \Htwo, flat forest-residue price) MJSP breakdown vs SAF production
-    (\S3.1, base-case breakdown figure; source: \code{Result/scale\_up\_base\_summary.xlsx}).
+    (\S3.1, base-case breakdown figure).
     Components in \$/L SAF; MJSP = sum of components.}
   \label{tab:S9-1}
   \resizebox{\textwidth}{!}{%
@@ -248,7 +416,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 \begin{table}[htbp]
   \centering
   \caption{Biomass price and grey-\Htwo{} base MJSP under three biomass price models
-    (\S3.1, price-model figure; source: \code{Result/scale\_up\_price\_model\_mjsp.xlsx}). MJSP in \$/L SAF.}
+    (\S3.1, price-model figure). MJSP in \$/L SAF.}
   \label{tab:S9-2}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{@{}rrrrrrr@{}}
@@ -271,8 +439,8 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 \begin{table}[htbp]
   \centering
   \caption{MJSP of the full green-\NHthree{} and full-CCS configurations under three biomass price models
-    (\S3.1, price-model figure; source: \code{Result/scale\_up\_price\_model\_mjsp.xlsx}, sheets
-    \code{MJSP Ammonia} = 100\% green-\NHthree{} hydrogen, \code{MJSP CCS} = CCS portion 1.0). MJSP in \$/L SAF.}
+    (\S3.1, price-model figure; full green-\NHthree{} = 100\% green-\NHthree{} hydrogen,
+    full CCS = CCS portion 1.0). MJSP in \$/L SAF.}
   \label{tab:S9-3}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{@{}rrrrrrr@{}}
@@ -295,8 +463,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 \begin{table}[htbp]
   \centering
   \caption{MJSP, GHG, Pareto status, sensitivity band, and abatement cost of the 30 green-\NHthree{} share
-    $\times$ CCS portion configurations at 0.414 MMt/yr SAF (\S3.2, Figure Xa; sources:
-    \code{Result/pareto\_front.xlsx}, \code{Result/pareto\_front\_sensitivity.xlsx}). MJSP low/high =
+    $\times$ CCS portion configurations at 0.414 MMt/yr SAF (\S3.2, Figure Xa). MJSP low/high =
     tornado-driver band (\S2.2.4), computed for Pareto points only (\S3.3). Abatement cost =
     $\Delta\text{MJSP}\cdot10^6/(\Delta\text{GHG}\cdot E)$, $E$ = 31.66 MJ/L, relative to CCS 60\%
     (75.14 g \COtwoe/MJ, \$0.977/L); -- where GHG is not below CCS 60\%.}
@@ -365,8 +532,8 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 
 \begin{table}[htbp]
   \centering
-  \caption{Mean $|$SHAP$|$ of MJSP drivers at the two cheapest compliant points (\S3.3, Figure Xc, d;
-    source: \code{Result/shap\_ccs60\_vs\_nh10ccs50.xlsx}). \$/L SAF; 128 Latin-hypercube TEA runs per point,
+  \caption{Mean $|$SHAP$|$ of MJSP drivers at the two cheapest compliant points (\S3.3, Figure Xc, d).
+    \$/L SAF; 128 Latin-hypercube TEA runs per point,
     gradient-boosted surrogate ($R^2 > 0.999$); -- = driver not sampled.}
   \label{tab:S9-6}
   \small
@@ -388,8 +555,8 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 
 \begin{table}[htbp]
   \centering
-  \caption{One-at-a-time MJSP spans at the two cheapest compliant points (\S3.3; source:
-    \code{Result/tornado\_shap\_ccs60\_vs\_nh10ccs50.xlsx}). \$/L SAF; input ranges as in \S2.2.4.}
+  \caption{One-at-a-time MJSP spans at the two cheapest compliant points (\S3.3).
+    \$/L SAF; input ranges as in \S2.2.4.}
   \label{tab:S9-7}
   \small
   \begin{tabular}{@{}llrrrr@{}}
@@ -415,5 +582,3 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
     \bottomrule
   \end{tabular}
 \end{table}
-
-\end{document}

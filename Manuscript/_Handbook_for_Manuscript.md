@@ -5,8 +5,72 @@
 1. Do not use quotation marks for emphasis. Carry the emphasis in the tone of the sentence, or set the word in *italic*.
 2. Do not state scale as a multiple of the base case (no "×" of base). Give the exact SAF production figure instead.
 3. Every SI subsection must be referenced in the related part of the main body. If no matching place is found, ask the user.
+4. Before generating or editing any `.tex` file, read `Manuscript/main-sc.tex` first. It is the master document, and every `.tex` fragment must follow its class, packages, labels, and `\input` names (see *Manuscript structure* below).
+
+## Manuscript structure (main-sc.tex)
+
+**Template.** Elsevier CAS bundle, single column: `\documentclass[a4paper,fleqn]{cas-sc}`. If the front matter runs past one page, switch to the `longmktitle` option (already present as a commented-out line).
+
+**Packages available to fragments.** `natbib` (`authoryear,longnamesfirst`), `mhchem` v3 (`\ce{}`), `amsmath`, `amssymb`, `booktabs`, `caption`, `threeparttable` (table notes under the table), and `longtable`. `hyperref` and `placeins` are commented out, so fragments must not use `\url`/`\href` or `\FloatBarrier`. Any new package goes into the preamble of `main-sc.tex` and nowhere else.
+
+**Front matter (still template placeholders).** `\shorttitle`, `\shortauthors`, `\title[mode = title]` with `\tnotetext`, two `\author` blocks, each with `\fnmark`, `\ead`, `\credit`, and `\affiliation`, plus `\cortext` for the corresponding author. The abstract still contains the template line `\nocite{*}`, which must be removed. After that come `highlights` (3 items), `keywords` (separated by `\sep`), and `\maketitle`. The graphical abstract is commented out.
+
+**Body.** Each section is a separate fragment pulled in with `\input`. A fragment has no preamble and no `\section{}` of its own, since `main-sc.tex` supplies the heading and label:
+
+| Section | Label | `\input` file | Markdown source |
+|---|---|---|---|
+| Introduction | `sec:intro` | `1 Introduction.tex` | `1. Introduction.md` |
+| Methods | `sec:methods` | `2 Methods.tex` | `2. Methods.md` |
+| Results and Discussion | `sec:results` | `3 Results.tex` | `3. Results.md` |
+| Conclusion | `sec:conclusion` | `4 Conclusion.tex` | `4. Conclusion.md` |
+| Appendix (SI) | `sec:S0`–`sec:S9` | `SI.tex` | `SI. Supporting Information.md` |
+
+The `.tex` file names contain a space and no period after the number (`2 Methods.tex`, not `2. Methods.tex`). Fragments start at `\subsection`.
+
+**Appendix.** `\appendix` is followed by `\input{SI}`. `SI.tex` renumbers its own sections as S0–S9, nests tables within sections, and numbers them `S<n>-<k>` (e.g. Table S9-1). It contains `\section`s of its own, which is the one exception to the no-`\section` rule above. Tables use `table[htbp]` + `\centering` + `\caption`, with labels in the form `tab:<name>`.
+
+**Back matter.** `\printcredits`, bibliography style `cas-model2-names` (author–year), and `\bibliography{main-sc}`, so references go in `main-sc.bib`. This file does not exist yet. Cite with `\cite{key}` (natbib, author–year). The biography is commented out.
+
+**Status (2026-10-03).** Only `SI.tex` exists as a fragment. The four body `.tex` files and `main-sc.bib` are not written yet, so `main-sc.tex` will not compile until they exist.
 
 ## Log history
+
+### 2026-10-03 (update 4)
+
+**Discussion**
+- Discard excel-file citations in `SI.tex` only where the data is already embedded as a table. Scope split: table-caption `source: ...xlsx` clauses (data lives in the table) are removed; upstream-provenance prose (APEA `.xlsm`, GREET `WTWa_LCA.xlsx`, the `Result/` folder umbrella) is kept because no table embeds it.
+- Table S9-3 caption: dropped the `scale_up_price_model_mjsp.xlsx` + sheet-name citation but kept the config meaning (full green-NH3 = 100% green-NH3 H2; full CCS = CCS portion 1.0) as plain text.
+
+**Code**
+- `Manuscript/SI.tex`: removed 7 excel citations from table captions S3-1, S9-1, S9-2, S9-3, S9-4, S9-6, S9-7. Caption text otherwise unchanged.
+
+**Open**
+- None.
+
+### 2026-10-03 (update 3)
+
+**Discussion**
+- The user asked for a new Introduction `.tex` that fits the `main-sc.tex` structure. The file holds body text only: `main-sc.tex` supplies `\section{Introduction}\label{sec:intro}`, and the Introduction has no subsections.
+- The prose follows the ¶1–¶7 outline in `1. Introduction.md`. Scale figures are left out because §3.1 (0.41 MMt/yr) and the outline's consistency check (0.457 MMt/yr) still disagree.
+
+**Code**
+- `Manuscript/1 Introduction.tex`: new fragment with seven paragraphs. Old-manuscript references are placeholder keys `oldref1`–`oldref11`, and claims without a source are marked `\textbf{[cite needed]}`. ¶7 points to `sec:methods`, `sec:results` and `sec:conclusion`.
+
+**Open**
+- `main-sc.bib` does not exist yet, so the `oldrefN` keys and every `[cite needed]` still need real BibTeX entries.
+- The fragment has not been compiled, because `2 Methods.tex`, `3 Results.tex` and `4 Conclusion.tex` do not exist yet.
+
+### 2026-10-03 (update 2)
+
+**Discussion**
+- The user asked the handbook to point to `main-sc.tex` whenever a `.tex` file is generated or edited, and to summarize the manuscript's structure and format.
+
+**Code**
+- `Manuscript/_Handbook_for_Manuscript.md`: added Drafting rule 4 (read `main-sc.tex` before any `.tex` work) and a new *Manuscript structure (main-sc.tex)* section, covering the template, packages, front matter, the `\input` map, SI numbering, back matter, and status.
+
+**Open**
+- `main-sc.tex` is untracked in git. The four body `.tex` fragments and `main-sc.bib` are missing.
+- The front matter is all placeholders, and `\nocite{*}` is still in the abstract.
 
 ### 2026-10-03
 
