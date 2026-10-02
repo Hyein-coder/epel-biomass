@@ -8,6 +8,25 @@
 
 ## Log history
 
+### 2026-10-03
+
+**Discussion**
+- The user asked for Methods to describe the plots newly added to Results. Methods now covers the scale-up breakdown and price-model panels, the Pareto grid, the abatement contour, SHAP, and the NH₃-vs-CCS crossover. The text follows the code (`tea_pareto_front.py`, `tea_pareto_shap.py`, `plot_ammonia_crossover.py`) and the `Result/*.xlsx` sheets, not the old Methods wording.
+- Text that conflicted with the code was kept and qualified with appended sentences rather than replaced, per the append-only rule. The abatement base (grey H₂ in the old text, CCS 60% in the code) and the U.S.- vs Korea-grid intensities in §2.3.3 were handled this way.
+- New text names no panel letters, because the composite figure was relettered in update 22 and §3 still uses the old letters.
+
+**Code**
+- `Manuscript/2. Methods.md` §2.2.1: appended *Scale-up evaluation*, covering the seven scales from 0.041 to 1.243 MMt/yr, the cost-breakdown categories, and the three price models × three configurations (SI Tables S9-1 to S9-3).
+- `Manuscript/2. Methods.md` §2.2.4: count of sensitivity treatments changed from three to five. The Pareto bullet gained the 6 × 5 levels, the Korea-grid allocation basis, the additive GHG(a, c) assumption, the supply-curve biomass band (107.3–116.1 \$/t) and the CCS 60% interpolation. The abatement bullet gained the CCS 60% reference and the undefined region. New bullets: *SHAP attribution* (LHS N = 128, gradient-boosted surrogate, R² > 0.99, TreeSHAP; S9-6, S9-7) and *NH₃-vs-CCS crossover* (analytic lines, slopes from OAT spans; S9-5).
+- `Manuscript/2. Methods.md` §2.3.3: appended the Korea-grid values used in §3.2 (threshold 75.93, grey base 100.8, CCS 60% 75.14 g CO₂e/MJ).
+- Concurrent edit in another session (`3. Results.md`, 23:46 on 2026-10-02): §3.1 Step 1 bullet 2 moved to the 551 basis. It now reads ~20% / ~10% per doubling, 0.41 MMt/yr, and 1.24 MMt/yr. This agrees with the new Methods scales. Commit `671f4e8` (composite abatement panel) also landed during this session.
+
+**Open**
+- `2. Methods.md` §2.1.1 says the scale-up reaches 1.23 MMt/yr; the data sheets give 1.243.
+- The *Results reminder* blockquote in §2.2.1 is outdated, since §3.1 Step 2 now covers the price models. It has not been removed.
+- §3 text and the composite caption still use the pre-update-22 panel letters, with crossover = (b), and the abatement panel (b) has no Results text.
+- The new Methods text uses `\$`, but the older Methods text still uses unescaped `$`.
+
 ### 2026-10-02 (update 22)
 
 **Discussion**
@@ -21,6 +40,37 @@
 **Open**
 - The 12,511 \$/t cell (NH₃ 75%, CCS 0%) stretches the linear colour scale, so most of panel (b) is one blue band. Log or clipped levels not applied.
 - The empty bottom-right cell could hold (e) spanning both columns, or a legend. Not decided.
+
+### 2026-10-02 (update 21)
+
+**Discussion**
+- Code review of `tea_scale_up.py` (commit df306cf) used a second model to check the SI. Code and SI Tables S9-1 to S9-3 agree with `Result/scale_up_base_summary.xlsx` and `Result/scale_up_price_model_mjsp.xlsx`. The manuscript text was still on the pre-551, short-ton numbers.
+- The user said they had fixed the §3.1 numbers themselves and asked for the Conclusion to be updated. For the rest of §3, they asked only to be pointed to the numbers, not to have them edited.
+
+**Code**
+- `Manuscript/4. Conclusion.md` point 1: scale numbers moved to the 551 metric-tonne basis. Crossover 0.457 → 0.414 MMt/yr, range 0.04–1.25 → 0.041–1.243 MMt/yr, "to a third (\$1.46 → \$0.54/L)" → "by ~60% (\$1.64 → \$0.66/L)", "captured by 0.42" → "0.414". The ~90% share is unchanged (88% on S9-1).
+- `Manuscript/4. Conclusion.md` point 2: base intensity 87.6 → 100.8 g CO₂e/MJ. 87.6 was the U.S.-grid value; §3.2 and S9-4 use the Korea grid mix.
+
+**Open**
+- The §3.1 edits the user mentioned are not on disk in the Revise worktree. `3. Results.md` has no diff and still reads 0.05–1.37 MMt/yr and \$1.48 → \$0.54/L.
+- `3. Results.md:26` still says 0.457 MMt/yr; it should be 0.414. The rest of §3.2–§3.3 matches S9-4. The §3.3 SHAP and crossover numbers were checked against the SI text only, not re-run.
+- The "exponent ~0.8 to ~1.0" claim in Conclusion point 1 and `3. Results.md:10` comes from the old model; not checked on 551.
+- `2. Methods.md:174` still uses 87.6 g CO₂e/MJ (U.S. grid).
+- Other review items left open: 2- vs 3-decimal tick labels (`plot_scale_up_from_xlsx.py:37`), unescaped `$69.14 M` (`SI. Supporting Information.md:37`), and the CCS line labelled and coloured 'Mix' (`tea_scale_up.py:126`).
+
+### 2026-10-02 (update 20)
+
+**Discussion**
+- The user asked for the CO₂ abatement-cost numbers in §3.2 to be converted from the `\$/L per g CO₂e/MJ` slope form to `\$/t CO₂ avoided`. Converted and reported only; not yet written into the text.
+
+**Code**
+- No file changed. Conversion uses the existing project formula (Methods: ΔMJSP·10⁶/(ΔGHG·E), E = 31.66 MJ/L SAF), i.e. slope·10⁶/E.
+- Raw-derived values (from ΔMJSP/ΔGHG, not the rounded slopes): Green NH₃ 0.185·10⁶/(3.81·31.66) ≈ \$1,534/t; CCS 0→50% 0.12·10⁶/(21.8·31.66) ≈ \$174/t; CCS 50→100% 0.42·10⁶/(19.0·31.66) ≈ \$698/t.
+- Cross-check: ratios 1534/174 = 8.8× and 1534/698 = 2.2× reproduce the text's "~8×" and "~2× cheaper than green NH₃".
+
+**Open**
+- §3.2 lines 32–33 still carry the `\$/L per g` slopes; the \$/t swap is proposed, not applied. Awaiting user go-ahead on whether to replace or add alongside.
+- Rounded-slope path (0.049/0.006/0.022) gives 1,548/190/695 \$/t — small rounding drift; use the raw-derived figures if the text is edited.
 
 ### 2026-10-02 (update 19)
 
