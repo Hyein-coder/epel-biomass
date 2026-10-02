@@ -8,6 +8,22 @@
 
 ## Log history
 
+### 2026-10-02 (update 18)
+
+**Discussion**
+- The user found the panel labels in `composite_pareto_crossover_shap.png` too small, and wanted the labels to come from a script so the figure can be reproduced.
+
+**Code**
+- `plot_composite.py`: panel-label font size changed from 12 (rc `axes.labelsize`) to 16, because 12 reads too small on the 12.6-inch-wide figure. The scale-up composite keeps 12. The PNG was regenerated.
+
+### 2026-10-02 (update 17)
+
+**Discussion**
+- The user asked for alphabetical panel labels on the composite_* figures. The labels go at the top-left, outside each axes, as (a), (b), and so on.
+
+**Code**
+- `plot_composite.py` and `plot_scale_up_from_xlsx.py`: added the panel labels (a–d and a–b). They use the same weight and size as the axis labels. `fontweight='bold'` rendered a hollow outline variant of Helvetica Neue LT Pro, so it was replaced by `axes.labelweight`. Both PNGs were regenerated.
+
 ### 2026-10-02 (update 16)
 
 **Discussion**

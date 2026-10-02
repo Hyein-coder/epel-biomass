@@ -76,4 +76,7 @@ ax2.set_ylim(0, ax2.get_ylim()[1] * 1.2)
 handles, labels = ax.get_legend_handles_labels()
 h2, l2 = ax2.get_legend_handles_labels()
 ax.legend(handles + h2, labels + l2, loc='upper left')
+for a, lab in zip([ax_top, ax], 'ab'):
+    a.text(-0.1, 1.02, f'({lab})', transform=a.transAxes, va='bottom',
+           fontweight=plt.rcParams['axes.labelweight'], fontsize=plt.rcParams['axes.labelsize'])
 plt.savefig(os.path.join(fig_folder, 'composite_scale_up_mjsp.png'))

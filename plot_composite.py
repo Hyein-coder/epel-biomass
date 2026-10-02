@@ -34,6 +34,9 @@ def main() -> None:
         sc = beeswarm(ax, d['X'], d['sv'], order, '')   # in-panel case label dropped
     cb = fig.colorbar(sc, cax=cax)
     cb.set_ticks([0, 1]); cb.set_ticklabels(['low', 'high']); cb.set_label('driver value')
+    for ax, lab in zip([ax_p, ax_c, *ax_s], 'abcd'):
+        ax.text(-0.1, 1.02, f'({lab})', transform=ax.transAxes, va='bottom',
+                fontweight=plt.rcParams['axes.labelweight'], fontsize=16)   # 12.6-in-wide figure: rc 12 reads too small
 
     out = os.path.join('Figure', 'composite_pareto_crossover_shap.png')
     fig.savefig(out, dpi=150)
