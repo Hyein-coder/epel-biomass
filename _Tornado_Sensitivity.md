@@ -208,6 +208,18 @@ None of these papers gives an ammonia-price threshold for H₂ used in SAF or hy
 
 ## Log history
 
+### 2026-10-02
+
+**Discussion**
+- User asked for a version of the §6 gray-H₂ crossover figure with CO₂ T&S cases added. It was built as three panels (T&S 4 / 10 / 45 \$/tCO₂; the \$10 panel is the original §6 figure). User judged it **not very useful**, so it stays out of the report body; §6 keeps the single-panel figure. Do not propose it again as a §6 figure.
+- What it showed: T&S moves the crossovers by at most ~0.45 \$/kg H₂ (lower at \$45/t, because CCS-only stores more CO₂). At \$45/t the base-ammonia (635 \$/t) crossover moves into the plotted range at 3.95 \$/kg. Shift method: the two routes' §5 CO₂ T&S spans (0.187 / 0.165 \$/L over 4–45 \$/t), no re-run.
+
+**Code**
+- `plot_ammonia_crossover_ts.py` (new): three-panel T&S variant of `plot_ammonia_crossover.py` that imports that script's anchors and saves `Figure/ammonia_crossover_ts_mjsp.png`. Self-check: the \$10 panel reproduces the original, and dearer T&S lowers every crossover.
+
+**Open**
+- None.
+
 ### 2026-10-01 (update 2)
 
 **Discussion**
