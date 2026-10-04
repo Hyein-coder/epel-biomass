@@ -206,7 +206,70 @@ Plot types used for this kind of claim, most to least common:
 
 None of these papers gives an ammonia-price threshold for H₂ used in SAF or hydrotreating.
 
+## 8. Range selection rationale
+
+Why each sensitivity range takes the width it does. Two classes of range are in play
+and they answer different questions:
+
+- **OAT tornado (§1 "Tornado range"): reviewer-requested stress bands.** Deliberately
+  wide, symmetric ±% or market-extreme endpoints whose job is to rank drivers under a
+  worst-case swing — not to be a calibrated uncertainty. These trace to the external
+  Critical Review §4.7/§4.5 list (not in this worktree), not to literature.
+- **SHAP / OAT-over-SHAP (§1 "SHAP range"): physically grounded bands.** Narrower,
+  tied to the realistic attainable range of each input, so the importance ranking
+  reflects uncertainty the plant would actually see.
+
+| Parameter | Range | Rationale basis | Source status |
+|---|---|---|---|
+| Biomass price | ±50% (tornado); 0.0487–0.0527 \$/lb (SHAP) | SHAP band = forest-residue (FR) price floor → Galik supply curve at ×10 demand (`tea_pareto_front.py`); tornado ±50% is a reviewer stress band | SHAP band **grounded** in the Galik supply curve, but the bibkey `galik` is a placeholder — real citation owed. Tornado ±50% uncited |
+| Gray H₂ price | 1.0–4.0 \$/kg (base 1.50) | Spans low-cost SMR gray H₂ to dearer/constrained supply; base 1.50 is the APEA raw-material cost; SMR+CCS reference cost from `katebah2022` | Base cost cites `katebah2022` (placeholder key); the 1–4 \$/kg **width** is uncited (reviewer §4.7) |
+| Ammonia price | 270–1000 \$/t (0.1225–0.4535 \$/lb) | Market span: ~270 \$/t projected/future green, ~1000 \$/t recent market high; base 635 \$/t | Prose labels only; **no price-series citation**. Reviewer §4.5 |
+| CAPEX | ±30% | Conventional TEA capital-cost accuracy band (AACE Class-4/5-type, Humbird-style ±30%) | **Uncited** (reviewer §4.7); a standard NREL/AACE reference would back it |
+| Electricity | ±30% | Reviewer stress band for grid-price volatility | **Uncited** (reviewer §4.7) |
+| Co-product | ±20% | Reviewer stress band for fuel co-product (gasoline, diesel) price | **Uncited** (reviewer §4.7) |
+| Capacity factor | 85% / 91% | Engineering bounds: base 8000 h = 91.3%; 85% a conventional lower operating bound; §4.9 flags 8000 h as optimistic | **Uncited** (reviewer §4.7/§4.9); one-sided (both endpoints ≤ base) |
+| CO₂ T&S | 4–45 \$/tCO₂ (basis 10) | Spans published CO₂ transport-and-storage cost estimates | **Uncited** (reviewer §4.7) |
+
+**Grounded vs. stress.** Only the SHAP biomass band is tied to a dataset (Galik supply
+curve). The H₂ base and ammonia endpoints are market-anchored in prose but carry no
+source. Every ±% stress band (CAPEX, electricity, co-product) and the capacity and T&S
+ranges are reviewer-requested widths with no literature attached — defensible as
+stress-test convention, but not currently cited.
+
+**Citations owed (actionable).** To move ranges from "reviewer-requested" to
+"literature-justified": (1) a real citation for the Galik forest-residue supply curve
+(replaces placeholder `galik`; already flagged owed in `Manuscript\1. Introduction.md`);
+(2) the SMR/SMR+CCS H₂ cost source (`katebah2022` placeholder); (3) an ammonia
+price-series source for the 270–1000 \$/t span; (4) a standard ±30% CAPEX-accuracy
+reference (e.g. NREL/Humbird design-report convention); (5) a CO₂ T&S cost source for
+the 4–45 \$/t span. No `.bib` file exists in the worktree, so all current keys are
+placeholders (per `Manuscript\_Handbook_for_Manuscript.md`).
+
 ## Log history
+
+### 2026-10-04
+
+**Discussion**
+- User asked for the reasoning behind the sensitivity ranges (tornado + SHAP) and to
+  look for references in the project. A reference-hunt subagent swept `.py`/`.md`/`.tex`
+  and found: ranges are fully defined in code + documented in prose, but range *rationale*
+  traces to the external Critical Review §4.7/§4.5 list, **not** literature. Only the SHAP
+  biomass band is dataset-grounded (Galik supply curve); H₂ base and ammonia span are
+  market-anchored in prose with no source; all ±% stress bands + capacity + T&S are
+  uncited reviewer widths. No `.bib` file exists — every bibkey (`galik`, `katebah2022`,
+  …) is a placeholder.
+- The §7 literature table was checked for range-width justification and does **not** cover
+  it — it justifies breakeven/crossover thresholds, a different claim. Not reused for §8.
+- Chose not to fabricate citations (per CLAUDE.md fact-check rule); §8 states the honest
+  basis per parameter and lists the five citations owed instead.
+
+**Code**
+- None (report-only edit).
+
+**Open**
+- Five citations owed to make ranges literature-justified (see §8 "Citations owed"):
+  Galik supply curve, SMR/SMR+CCS H₂ cost, ammonia price series, ±30% CAPEX accuracy
+  convention, CO₂ T&S cost span. Blocked on a real `.bib` being created for the manuscript.
 
 ### 2026-10-02
 
