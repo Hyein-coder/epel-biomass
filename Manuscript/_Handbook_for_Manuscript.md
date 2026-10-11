@@ -35,6 +35,19 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-11 (update 5)
+
+**Discussion**
+- The user asked to pull the 1st-draft LaTeX source (`Biomass_Ammonia_Elsevier.zip`, `main` commit `0556baa`) into `Manuscript/`. The zip's `.tex` files (Oct 11) supersede the local copies (Oct 3).
+- Skipped `2 Methods_claude.tex` from the zip: it is identical to the old local `2 Methods.tex`.
+
+**Code**
+- `Manuscript/`: replaced `1 Introduction.tex`, `2 Methods.tex`, `main-sc.tex`, `SI.tex`, and added `3 Results.tex`, `4 Conclusion.tex` from the zip.
+
+**Open**
+- `main-sc.bib`, the Elsevier class/style files and the figure PNGs are in the zip only; `Manuscript/` does not compile on its own.
+- `1 Introduction_old.tex` is no longer part of the draft; keep or remove is undecided.
+
 ### 2026-10-11 (update 4)
 
 **Discussion**
