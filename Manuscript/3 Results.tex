@@ -1,0 +1,84 @@
+
+\subsection{Scale-up}
+\label{sec:scale_feedstock}
+
+Scale-up study in SAF production plant demonstrates the opposing effects of economies of scale and feedstock scarcity. Following the increase in process scale, economies of scale reduces CAPEX and overall conversion costs. On the other hand, biomass demand also increases, which raises the feedstock price as low-cost forest-residue resources become increasingly constrained. Their interaction determines the scale at which further expansion no longer reduces the MJSP.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{composite_scale_up_mjsp.png}
+    \caption{Effect of SAF production scale and feedstock price on the MJSP. 
+    (a) MJSP breakdown as a function of SAF production scale at a constant forest-residue price. 
+    (b) Biomass price and MJSP under the forest-residue (FR) price, FR--Log Linear, and Fixed Elasticity models. 
+    Bars represent biomass price, while lines represent the MJSP for the grey-hydrogen (H$_2$) base case, green-ammonia (NH$_3$) substitution, and CCS. Shaded regions indicate the range arising from the biomass price models.}
+    \label{fig:scale_feedstock}
+\end{figure}
+%%%% Numbers should be updated based on the figure and SI
+
+Increasing SAF production from 0.04 to 1.24~MMt/yr reduces the MJSP of the base process from \$1.64 to \$0.66/L SAF when the biomass price is fixed at the forest-residue floor (Fig.~\ref{fig:scale_feedstock}a; SI Table~S8-1). This reduction is primarily associated with the scale-sensitive components of the conversion cost. Because co-product revenue exceeds the raw-material cost at all considered scales, the remaining gross production cost is dominated by capital investment, utilities, and fixed operating costs. Capital investment accounts for approximately half of the total MJSP reduction up to 0.41~MMt/yr, while utilities and fixed operating costs account for most of the remainder. However, the scale benefit diminishes substantially with increasing capacity. Each capacity doubling reduces the MJSP by approximately 20\% below 0.41~MMt/yr, compared with only approximately 10\% above this scale. Consequently, 0.41~MMt/yr captures approximately 90\% of the total MJSP reduction obtained by increasing the capacity to 1.24~MMt/yr. The diminishing scale benefit is also associated with the increasing capital scaling exponent, which approaches unity as the pyrolyzer, gas turbines, compressors, and expanders reach single-train capacity limits and require parallel trains (SI~S3-4).
+
+This scale effect changes when the increase in biomass demand is coupled with a realistic feedstock supply curve (Fig.~\ref{fig:scale_feedstock}b; specific numbers in SI Table~S8-2). Below approximately 0.41~MMt/yr, all three biomass-price models remain at the forest-residue price floor of \$0.11/kg because the biomass demand remains within the low-cost forest-residue supply. At the production scale of 0.41~MMt/yr, the biomass price increases only to \$0.12/kg, corresponding to an 8.3\% increase and an MJSP increase from \$0.78 to \$0.84/L for the base process. At larger scales, however, the feedstock-price increase progressively offsets the scale benefit.  
+
+Therefore, the opposing effects of scale and feedstock price produce a minimum MJSP at 0.41~MMt/yr scale under both rising feedstock-price models. Below this scale, the reduction in conversion cost from increasing capacity exceeds the increase in feedstock cost; above this scale, the feedstock-price penalty becomes larger than the additional scale benefit. Therefore, increasing the capacity beyond this range provides limited economic benefit while exposing the process to increasing feedstock costs. 
+
+At this critical scale, hydrogen supply and process configuration become important considerations. A configuration change is essential, because the base configuration using grey hydrogen remains above the CORSIA emission threshold. However, the green-ammonia and CCS configurations consistently incur higher production costs across the considered scales and feedstock price models. Notably, at a scale of 0.41~MMt/yr, operating expenditure accounts for more than 80\% of the gross production cost, indicating that hydrogen supply and process configuration offer greater opportunities for cost reduction than further plant-scale expansion.
+
+\subsection{Cost--emission trade-off of hydrogen supply and CCS}
+\label{sec:h2_ccs_tradeoff}
+
+The CORSIA compliance threshold can be achieved through post-combustion CCS alone, with a minimum capture rate of 60\% (Fig.~\ref{fig:pareto_crossover_shap}a). The CCS 60\% configuration achieves a WTWa GHG intensity of 75.14~g~CO$_2$e/MJ at an MJSP of \$0.977/L, making it the lowest-cost compliant configuration among the evaluated options. This result highlights the economic advantage of CCS at moderate capture rates, which provides substantial emission reductions at relatively low incremental cost.
+
+In contrast, green-ammonia substitution alone is economically unfavorable for achieving compliance. Each 10-percentage-point increase in green-ammonia substitution raises the MJSP by \$0.185/L, corresponding to an incremental abatement cost of \$1,530/t~CO$_2$e avoided (Fig.~\ref{fig:pareto_crossover_shap}b). These results indicate that green-ammonia substitution alone is both insufficient for compliance and costly relative to CCS.
+
+Combining green-ammonia substitution with CCS provides an alternative pathway to compliance. For example, a configuration with 10\% green-ammonia substitution and 50\% CCS achieves a comparable GHG intensity to the CORSIA threshold, with an MJSP of \$1.098/L compared with \$0.977/L for CCS alone. Although this combination does not offer a cost advantage under the current assumptions, it demonstrates that compliance can be achieved through different combinations of hydrogen supply and carbon capture. Therefore, the preferred configuration depends on the relative costs of green ammonia and CCS, as well as the desired degree of emission reduction beyond the compliance threshold.
+
+% The plant capacity was subsequently fixed at 0.42~MMt/yr to examine the effects of hydrogen source and CCS. Green-NH$_3$ hydrogen substitution and CCS generate distinct cost--emission trajectories, spanning an MJSP of \$0.79--3.09/L and a WTWa GHG intensity of 100.8--21.9~g~CO$_2$e/MJ SAF (Fig.~\ref{fig:pareto_crossover_shap}a). Thus, the lowest-emission configuration reduces GHG intensity by approximately 4.6-fold relative to the grey-H$_2$ base case, but increases the MJSP by approximately 3.9-fold.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{composite_pareto_crossover_shap.png}
+    \caption{Cost, emissions, and MJSP sensitivity to hydrogen supply and CCS. 
+    (a) MJSP versus WTWa GHG intensity for combinations of green-ammonia (NH$_3$) hydrogen share and CCS capture fraction. 
+    (b) CO$_2$ abatement cost relative to the CCS 60\% compliant base over the same green-ammonia (NH$_3$) hydrogen share and CCS capture fraction grid; blank cells emit at or above the base and have no
+  abatement cost.
+    (c,d) SHAP-based attribution of MJSP drivers for CCS 60\% and Green-ammonia 10\% + CCS 50\%, respectively. 
+    (e) MJSP of the two compliant configurations as a function of grey-hydrogen price at different green-ammonia prices. 
+    The dashed line in (a) and (e) denotes the CORSIA threshold and base grey-hydrogen price, respectively.}
+    \label{fig:pareto_crossover_shap}
+\end{figure}
+
+% Green-NH$_3$ substitution produces an approximately linear change in both cost and emissions. Increasing the green-NH$_3$ share by 10 percentage points decreases the WTWa GHG intensity by 3.81~g~CO$_2$e/MJ while increasing the MJSP by \$0.185/L, independent of the CCS level. This corresponds to an incremental cost of \$1,530/t~CO$_2$e avoided, resulting in approximately parallel iso-CCS trajectories in the cost--emission space. 
+
+% In contrast, the CCS effect is nonlinear, with a distinct change in the incremental cost after 50\% capture. Increasing post-combustion carbon capture rate from 0 to 50\% reduces the GHG intensity by 21.8~g~CO$_2$e/MJ for an MJSP increase of only \$0.12/L, corresponding to \$174/t~CO$_2$e avoided. Increasing capture from 50 to 100\% provides a further reduction of 19.0~g~CO$_2$e/MJ but requires an additional \$0.42/L, increasing the incremental cost to \$698/t~CO$_2$e avoided. Thus, the marginal cost of CCS increases substantially beyond 50\% capture, whereas the marginal cost of green-NH$_3$ substitution remains constant.
+
+% The different cost trajectories result in distinct pathways to CORSIA compliance. The CORSIA threshold is 75.93~g~CO$_2$e/MJ, corresponding to 90\% of the WTWa GHG intensity of conventional jet fuel. The grey-H$_2$ base case has a GHG intensity of 100.8~g~CO$_2$e/MJ and therefore does not meet the threshold. CCS alone reaches the threshold at approximately 58\% capture. The CCS 60\% configuration has a GHG intensity of 75.14~g~CO$_2$e/MJ and an MJSP of \$0.977/L, making it the lowest-cost compliant configuration among the considered composites of green-NH$_3$ and CCS.
+
+% On the similar GHG emission rate level, addition of green-NH$_3$ 10\% to CCS 50\% rate configuration also exists with MJSP at \$1.098/L. This is comparable to the lowest-cost compliant configuration using CCS only, from both of economic and environmental perspective.
+
+% Beyond the compliance point, the incremental cost of further GHG reduction depends strongly on the selected lever(Fig.~\ref{fig:pareto_crossover_shap}b). Starting from the CCS 60\% configuration, increasing CCS to 75 and 100\% requires approximately \$733 and \$742/t~CO$_2$ avoided, respectively. In comparison, adding green-NH$_3$ results in substantially higher incremental costs of approximately \$900--1360/t~CO$_2$ over the 10--100\% green-NH$_3$ range along the CCS 75 and 100\% pathways. The full green-NH$_3$ and CCS configuration reaches the lowest simulated GHG intensity of 21.9~g~CO$_2$e/MJ at an MJSP of \$3.09/L, corresponding to approximately \$1250/t~CO$_2$ avoided relative to the CCS 60\% reference.
+
+\subsection{Sensitivity of the hydrogen-supply and CCS trade-off}
+\label{sec:sensitivity_tradeoff}
+
+% The uncertainty in the cost--emission trade-off is dominated by hydrogen-related prices. Applying the parameter ranges defined in Section~2.2.4 gives MJSP ranges of \$0.55--1.84/L for the grey-H$_2$ base case and \$1.91--4.26/L for the full green-NH$_3$ + CCS 100\% configuration. Under favourable hydrogen prices and high capacity factor, the overall trade-off shifts downward by approximately \$0.3/L while retaining a similar shape.
+
+SHAP analysis was performed for the two compliant configurations with the lowest MJSP: CCS 60\% and Green-ammonia 10\% + CCS 50\% (Fig.~\ref{fig:pareto_crossover_shap}c,d; SI Table~S8-6). The biomass contribution remains comparatively narrow because the biomass-price range at the selected plant scale is only \$0.11--0.12/kg. 
+Drivers are ranked by their mean absolute SHAP values in Fig.~\ref{fig:pareto_crossover_shap}c,d. One-at-a-time MJSP ranges over the same parameter intervals are also calculated in SI (Table~\ref{tab:S9-7}).
+
+Grey-hydrogen price was the dominant MJSP driver in both configurations, with mean absolute SHAP values of \$0.310/L for CCS 60\% and \$0.274/L for Green-ammonia 10\% + CCS 50\%. These values are approximately three times larger than those of the next most influential variables. Higher grey-hydrogen prices consistently increase the MJSP, producing the broad horizontal spread observed in both SHAP distributions. The larger influence in the CCS-only configuration reflects its complete dependence on grey hydrogen, compared with 90\% grey-hydrogen dependence in the green-ammonia configuration.
+
+CAPEX, co-product price, and electricity were the next most influential variables, with mean absolute SHAP values of approximately \$0.10/L, \$0.08--0.10/L, and \$0.05/L, respectively. Capacity factor and biomass price had substantially smaller effects, quite negligible. The route-specific variables were also secondary. CO$_2$ T\&S cost parameter contributed approximately \$0.025/L and \$0.023/L for CCS 60\% and Green-ammonia 10\% + CCS 50\%, respectively. Green-ammonia price contributed \$0.031/L in the latter configuration because green ammonia supplied only 10\% of the total hydrogen demand. Thus, although the choice of compliance route changes the contributions of route-specific variables, hydrogen price remains the primary source of MJSP uncertainty for both configurations.
+
+
+\subsection{Green-ammonia--CCS cost crossover}
+\label{sec:h2_crossover}
+
+The resulting MJSP ranges of neighboring configurations overlap substantially, when the relative cost of the two compliance routes changes according to the varying hydrogen and CO$_2$ management prices (Fig.~\ref{fig:pareto_crossover_shap}e).
+This indicates that the relative cost of different hydrogen-supply and CCS configurations depends on the assumed market conditions.
+
+In the meantime, the two compliance configurations exhibit different sensitivities to grey-hydrogen price because of their different hydrogen compositions. The CCS-only configuration uses 100\% grey hydrogen and its MJSP increases by \$0.419/L for each \$1/kg increase in grey-hydrogen price. The Green-ammonia 10\% + CCS 50\% configuration uses 90\% grey hydrogen and therefore has a lower slope of \$0.378/L per \$1/kg~H$_2$. Consequently, increasing grey-hydrogen price progressively narrows the cost difference between the two configurations.
+
+The crossover grey-hydrogen price depends strongly on the green-ammonia price. Only the two lowest green-ammonia price cases cross within the investigated grey-hydrogen range--crossover occurs at \$1.59~/kg~hydrogen for \$270/t NH$_3$ and \$2.91~/kg~H$_2$ for \$441/t NH$_3$ (SI Table~S8-5). At the base prices of \$1.50~/kg~H$_2$ for grey hydrogen and \$635/t for green ammonia, the CCS-only configuration remains lower in MJSP throughout the investigated grey-hydrogen range. The green-ammonia pathway becomes cost-competitive when the grey-hydrogen price increases sufficiently or when the green-ammonia price decreases toward approximately \$450/t, at which point the crossover occurs below approximately \$3~/kg~H$_2$.
+This is substantially larger effect than CO$_2$ T\&S cost result of which is handled in SI Table~S8-7. 
+
+% Across the considered green-NH$_3$ price range of \$270--1000/t, the one-at-a-time MJSP variation is \$0.234/L, compared with \$0.165--0.187/L for the CO$_2$ transport and storage range of \$4--45/t~CO$_2$. The resulting crossover in grey-H$_2$ price shifts by approximately 5.6~\$/kg~H$_2$ across the green-NH$_3$ price range, whereas the full CO$_2$ transport and storage range changes the crossover by no more than approximately 0.45~\$/kg~H$_2$ (SI Table~S9-7).

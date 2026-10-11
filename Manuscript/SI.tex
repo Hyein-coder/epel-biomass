@@ -1,9 +1,190 @@
 
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{siunitx}
+
+%%%%%%%%%%%%%%%%%%%%
+% Personal packages
+\usepackage{amssymb}
+\usepackage{blindtext}
+\usepackage{caption}
+
+% Caption below table 
+\usepackage{threeparttable}
+
+% Long table and floating behavior handling
+\usepackage{longtable}
+% \usepackage{placeins}
+\usepackage{xurl}
+\usepackage{hyperref}
+
+\usepackage[authoryear,longnamesfirst]{natbib}
+
+%%%%%%%%%%%%%%%%%%%%
+
+\title{
+    Hydrogen-supply and feedstock sensitivity in pyrolysis-based sustainable aviation fuel production with South Korean context\\[1em]
+    \Large\textbf{Supporting Information}
+}
+\author{Hyein Jung, Kyeongsu Kim, Jong Min Lee, Tae Hoon Oh}
+\date{}
+
+\begin{document}
+
+\maketitle
+
 \renewcommand{\thesection}{S\arabic{section}}
 \counterwithin{table}{section}
 \renewcommand{\thetable}{\thesection-\arabic{table}}
 
 \section{Process Design Details}\label{sec:S0}
+
+The pyrolysis process employs a circulating fluidized bed (CFB) reactor, selected for its scalability and proven performance in industrial applications by Ensyn \cite{ensyn_quebec} and Fortum \cite{fortum_biooil_joensuu}. 
+The CFB reactor operates at 925~$^{\circ}$F, 21 psi with residence time in seconds to maximize bio-oil yield up to 75 wt\% while minimizing char formation.
+Another key design parameter is the heat transfer regime, which utilizes sand as the fluidizing medium in this work. 
+The sand enters the pyrolyzer with a temperature of 1,190~$^{\circ}$F and a sand-to-biomass ratio of 14.5 to ensure rapid heating rates and suppress secondary reactions. 
+
+The pyrolysis product consists of three phases: crude bio-oil, solid char, and non-condensable gas (NCG). 
+Crude bio-oil is a complex mixture of over 300 oxygenated compounds, modeled using representative groups from \cite{jones2013process}.
+The model compounds used to represent each group are summarized in Table \ref{tab:model-compounds}. 
+It is separated via a high-efficiency cyclone with 99.9\% capture rate, where heat-transferring sand is also separated.
+Solid stream with char and sand is fed to the combustor, where the sand is heated up to 1189~$^{\circ}$F, ready to be sent back to the pyrolyzer.
+NCG comprises CO, CO\textsubscript{2}, and light hydrocarbons as shown in Table \ref{tab:pyro-prod}.
+A bi-level quenching system rapidly cools the vapor stream from 800~$^{\circ}$F to 113~$^{\circ}$F to stabilize reactive intermediates and remove NCG products from the bio-oil stream. 
+The separated NCG components are compressed and fed back to the pyrolyzer as fluidizing gas. 
+
+\begin{table}[htbp]
+\centering
+\caption{Composition of pyrolysis products, gas components, and bio-oil components.}
+\begin{tabular}{lc||lc}
+\toprule
+\multicolumn{2}{c||}{\textbf{Pyrolysis Product}} & \multicolumn{2}{c}{\textbf{}} \\
+\multicolumn{2}{c||}{(per dry biomass)} & \multicolumn{2}{c}{\textbf{Gas}} \\
+\hline
+\textbf{Components} & \textbf{wt\%} & \textbf{Components} & \textbf{wt\%}\\
+\hline
+Bio-oil & 64 & CO & 46 \\
+Reaction water & 12 & CO\textsubscript{2} & 43 \\
+Char \& ash & 12 & CH\textsubscript{4} & 6 \\
+Gas & 12 & C\textsubscript{2}+ & 4.7 \\
+& & H\textsubscript{2} & 0.3 \\
+\midrule
+\multicolumn{4}{c}{\textbf{Bio-oil Components}} \\
+\hline
+\textbf{Groups} & \textbf{wt\%} & \textbf{Groups} & \textbf{wt\%}\\
+\hline
+Acids & 5.57 & LMW Lignin A & 10.95 \\
+Alcohols & 6.97 & LMW Lignin B & 2.21 \\
+Ketones & 8.29 & Extractives & 2.99 \\
+Aldehydes & 6.97 & HMW Lignin A & 9.15 \\
+Guaiacols & 4.98 & HMW Lignin B & 1.99 \\
+LMW Sugars & 5.97 & N-compounds & 0.07 \\
+HMW Sugars & 33.86 & S-compounds & 0.025 \\
+\bottomrule
+\end{tabular}
+\label{tab:pyro-prod}
+\end{table}
+
+Crude bio-oil requires upgrading to reduce its high oxygen content at 35~wt\% and acidity for fuel compatibility \cite{elliott2007historical}, achieved through a three-stage hydrotreating system \cite{elliott2016transportation}. First, a stabilizer operating at 140°C and 1200 psi with Ruthenium sulfide catalyst selectively hydrogenates reactive carbonyls and dienes, consuming minimal hydrogen (0.08 wt\%) to produce intermediates with lower acidity. The first-stage hydrotreater then processes moderate-reactivity oxygenates at 260°C and 2065 psi using Ru-based catalysts, requiring 7 wt\% hydrogen for temperature control via quenching and 0.18 wt\% for deoxygenation. Finally, sulfided molybdenum-based catalysts in the last stage (352°C, 2000 psi) saturate stubborn oxygenates and aromatics into cyclohexanes and iso-paraffins. Overall, the process converts 28.5 wt\% of dry biomass into upgraded oil with 12.2 wt\% hydrogen consumption. The composition of the upgraded oil was modeled  using user-defined components, based on experimental data reported in a previous study \cite{jones2013process}. Thermodynamic description of the user-defined components used in this study is in Table \ref{tab:app-user-define1}-\ref{tab:app-user-define2}.
+
+After the sequential hydrotreating, the light column (T-290) separates NCG components smaller than C\textsubscript{5}.
+In the design process, it separates pentane (light key component) from short-chain paraffins (heavy key components). 
+The column employs a partial vapor condenser operating at 650 psi, which incorporates water entrainment to mitigate fouling and enhance separation performance. 
+More detailed specification follows the description in Table \ref{tab:distil}.
+
+\begin{table}[tbp]
+\centering
+\caption{Specifications for product distillation columns} \label{tab:distil}
+\begin{threeparttable}
+\begin{tabular}{l|c|c|c|c}
+\toprule
+\textbf{} & \textbf{T-290} & \textbf{T-310} & \textbf{T-320} & \textbf{T-330} \\
+\midrule \midrule
+Distillate & $<$ C\textsubscript{5} & Gasoline & SAF & Diesel \\
+% \hline
+% Light Key & Cyclo C6-HCK product & Cyclo C6 B & 1,2,3,4-Naphthalenes \\
+% \hline
+% Heavy Key & Cyclo C5 B & Phenols & Extractive intermediates \\
+% \hline
+No. of Stages & 30 & 30 & 20 & 20 \\
+Feed stage & 8 & 15 & 10 & 10 \\
+Reflux ratio\tnote{a} & 0.952 & 3.6 & 0.43 & 0.72 \\
+Distillate/Feed\tnote{a} & 0.2 & 0.33 & 0.60 & 0.56 \\
+Bottom Temp. & 367~$^{\circ}$F & 422~$^{\circ}$F & 512~$^{\circ}$F & 672~$^{\circ}$F \\
+Condenser pressure & 65~psi & 45~psi & 20~psi & 15~psi \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item[a] based on molar flow rate
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+    This study proposes sequential fractionation of hydrotreated bio-oil into three kinds of liquid fuels--gasoline, diesel, and SAF.
+    % Upgraded bio-oil is fractionated into three kinds of liquid fuels - gasoline, diesel, and SAF. 
+    The first column (T-310) for gasoline-range fuel operates at 45 psi, with cyclo C6-HCK products group as light key components and cyclo C5-B group as heavy components. 
+    These hydrotreated compounds are defined in Table.\ref{tab:compounds-from-hydroprocess}.
+    The last column (T-330) produces diesel-range fuel, separating 1,2,3,4-naphthalenes group from extractive intermediates.  
+    The leftover long-chain hydrocarbons pass hydrocracker to produce short-chain products such as cyclo C6-HCK products group and return to the column T-310. 
+
+%% Simulation: Pyrolysis_Jones_551_into_571_forQuality_TSOL2_retune.apw
+\begin{table}[tb]
+\centering
+\caption{Comparison of Jet A and pyrolysis-based SAF product properties.}
+\begin{threeparttable}
+\begin{tabular}{l r r}
+\toprule
+\textbf{Property} & \textbf{Jet A} & \textbf{Pyrolysis SAF} \\
+\midrule
+\multicolumn{3}{l}{\textbf{Performance requirements}\tnote{a}} \\
+% \midrule
+Heat of combustion (MJ/kg) & $> 42.8 $ & 44.8 \\
+Specific gravity  & 775--840  & 786 \\
+Freezing point ($^\circ$C) & $< -40 $ & $-$56 \\
+% Flash point, max ($^\circ$C) & $> 38 $ & 27.8 \\
+Aromatic compounds (vol\%) & 8--25  & 10.2  \\
+Sulfur content (wt\%) & $< 0.3 $ & NA \\
+\midrule
+\multicolumn{3}{l}{\textbf{Atomic composition comparison}\tnote{b}} \\
+% \midrule
+Carbon  (wt\%) & 86.4 & 83.8 \\
+Hydrogen  (wt\%) & 13.5  & 13.6  \\
+Oxygen  (wt\%) & 0.0044 & 0.026  \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item[a] Ref. \cite{lahijani2022upgrading} 
+\item[b] Ref. \cite{zhang2015production}
+\end{tablenotes}
+\end{threeparttable}
+\label{tab:saf-spec}
+\end{table}
+
+    The second column (T-320) produces SAF within the C\textsubscript{8-16} hydrocarbon range, which is targeted to meet the performance specification of Jet A fuel \cite{Davidson2014}. 
+    The evaluation of fuel quality was based on several key performance indicators: heat of combustion, flash point, specific gravity, and aromatic content \cite{lahijani2022upgrading}, as outlined in Table \ref{tab:saf-spec}.
+    The heat of combustion was assessed conservatively using the lower heating value of the fuel components, while the flash point was determined by the lowest boiling point of the constituent compounds. 
+    Specific gravity and volumetric fraction of aromatic compounds were evaluated via Aspen Plus simulations.
+    The freezing point was estimated according to carbon class composition, employing correlation models proposed by \cite{shi2017quantitative}.
+    Among these models, coefficients optimized by a genetic algorithm were selected, as they demonstrated the highest accuracy for freezing point estimation in catalytic fast pyrolysis-derived SAF \cite{watanasiri2023prediction}. 
+
+    With the exception of the volumetric fraction of aromatic compounds, all evaluated properties were found to be within the desired range. 
+    To address this, phenols were separated from the final product, which resulted in an aromatic content of 10.2 vol\%.
+    Additionally, the atomic composition of carbon, hydrogen, and oxygen in the produced fuel was compared to that of conventional jet fuel \cite{zhang2015production}, confirming that the composition of T-320 product is comparable to standard aviation fuels.
+    
+    The off-gas collected from hydroprocesses, hydrotreating, and hydrocracking is rich in hydrogen gas.
+    Hence, the leftover hydrogen gas is recovered via a pressure swing adsorption (PSA) unit to satisfy the high purity ($> 99$ wt\%) required for the hydroprocesses.
+    Hydrogen recovery is assumed to be 85\%, referring to the industrial technology providing approximately 80\% recovery rate these days \cite{mahler_hydroswing}.
+    The recovered hydrogen gas is recycled for the hydroprocesses with makeup feed from external sources. 
+    
+    The off-gas consists of 74.8 vol\% hydrogen gas, so the state-of-the-art gas turbine technology should be applied to resolve the high flame temperature and flame speed of hydrogen gas combustion.
+    Exhaust gas recirculation (EGR) framework was applied to fulfill the maximum combustion temperature of 3002~$^{\circ}$F and prevent NOx emission \cite{dennis2024literature}.
+    The gas turbine generates 65 MW with high-temperature waste heat, which is utilized in the distillation column reboilers, EGR preheating, and CCS absorber regeneration. 
 
 Table \ref{tab:model-compounds} provides the information of bio-oil model compounds used in process modeling. 
 
@@ -205,10 +386,7 @@ Sulfur agent & Dimethyl Sulfide \\
 
 \begin{itemize}
   \item Cost-year indices: \code{cost\_idx\_1Q2022 = 3230}, \code{cost\_idx\_Jones = 2250};
-    Jones-era source costs escalated $\times(3230/2250)$ to 1Q-2022 USD. Katebah SMR uses its own index 2340.
-  \item The standalone Jones base-case validation script (\code{tea\_base\_JonesBaseCaseScale.py})
-    instead deflates 1Q-2022 $\rightarrow$ 2011 by \code{bi\_22to11} $= 2250/3230 \approx 0.697$; this factor is
-    \textbf{not} applied in the production engine \code{funs.py}, which works in 1Q-2022 USD.
+    Jones-era source costs escalated $\times(3230/2250)$ to 1Q-2022 USD. SMR uses its own index 2340.
   \item Financial: economic period 30 yr; IRR/discount 10\%; tax 35\%; salvage 0; straight-line
     depreciation; 8000 operating hours/yr ($\approx$91.3\% capacity factor).
   \item MJSP (annuity form):
@@ -220,17 +398,24 @@ Sulfur agent & Dimethyl Sulfide \\
   \item SAF annual volume = stream 326SAF volumetric flow $\times$ 8000 h $\times$ 28.3168 L/cuft.
   \item Product/utility prices: 326SAF = 0 (the priced product); 316GAS (naphtha) 0.75757 \$/lb;
     336DIES (diesel) 0.6 \$/lb; electricity 19.05 \$/MMBtu; natural gas / fuel 14.38 \$/MMBtu.
-  \item LHV is read per stream (``LHV at 15\,\textdegree C [Btu/lb]'') and corrected to 25\,\textdegree C via
-    $\text{lhv}_{25\text{C}} = \text{lhv}_{15\text{C}} + \text{heat capacity}\cdot\Delta T$, $\Delta T = (25-15)\cdot 5/9$\,\textdegree F.
-    The 44.8 MJ/kg SAF LHV in the main text is a reporting basis, not a hardcoded engine constant.
 \end{itemize}
 
 %% ------------------------------------------------------------------
 \section{Sub-unit cost interpolation}\label{sec:S2}
 
-All five bolt-on sub-units use \code{unit\_cost\_interpolation} with the same law
+All five bolt-on sub-units use the same law
 ($r$ = stream/base stream): \textbf{CAPEX $\times r^{0.6}$} (six-tenths), \textbf{OPEX $\times r^{0.7}$},
 stream and utility rates linear ($\times r$). Literature base cases are listed in Table~\ref{tab:S2-1}.
+Hydrotreating catalyst charging: R-202/R-220 ruthenium LHSV 0.5,
+price $60 \times 2.2$ \$/kg; R-225 molybdenum LHSV 0.22, price $15.5 \times 2.2$ \$/kg.
+
+Its GHG emission is calculated from the simulated CCS cases and a constant ammonia-related emissions adjustment:
+    \begin{equation}
+    \mathrm{GHG}(a,c) =
+    \mathrm{GHG}_{\mathrm{CCS}}(c)
+    -a\left(\mathrm{GHG}_{\mathrm{grey}}-\mathrm{GHG}_{\mathrm{NH}_3}\right),
+    \end{equation}
+    where \(a\) denotes the green-ammonia substitution fraction and \(c\) denotes the CCS capture fraction. 
 
 \begin{table}[htbp]
   \centering
@@ -250,21 +435,16 @@ stream and utility rates linear ($\times r$). Literature base cases are listed i
   \end{tabular}}
 \end{table}
 
-Hydrotreating catalyst charging (\code{calc\_cost\_HTcat}): R-202/R-220 ruthenium LHSV 0.5,
-price $60 \times 2.2$ \$/kg; R-225 molybdenum LHSV 0.22, price $15.5 \times 2.2$ \$/kg ($\times$ cost index).
 
 %% ------------------------------------------------------------------
 \section{Scale-up and single-train limits}\label{sec:S3}
 
 \begin{itemize}
-  \item Scale set: [1, 2.5, 5, 7.5, 10, 20, 30]$\times$; main plant read from per-scale APEA files
-    \code{Pyrolysis\_551\_Scale0010\ldots1000\_APEA.xlsm}.
+  \item Scale set: [1, 2.5, 5, 7.5, 10, 20, 30]$\times$; main plant process 0.343~MMt/yr of lignocellulosic biomass.
   \item Pyrolyzer (R-110) single-train cap 700 MMBtu/hr = 10$\times$ base duty (70 MMBtu/hr at
     45.5 t/hr biomass); train count = ceil(base duty $\times$ scale / cap) $\rightarrow$ 1/1/1/1/1/2/3 across
     the scale set. Gas turbines, compressors, and expanders follow the same numbering-up.
   \item Ammonia-cracker reactor single-train cap 172 MMBtu/hr (distinct unit).
-  \item Compressor optimization (\code{opt\_compressor.py}): inlet 50 bar $\rightarrow$ 365 bar target;
-    gas-turbine firing-temperature sweep 1900--2400\,\textdegree F (\code{opt\_GT\_temperature.py}).
 \end{itemize}
 
 \begin{table}[htbp]
@@ -303,17 +483,22 @@ price $60 \times 2.2$ \$/kg; R-225 molybdenum LHSV 0.22, price $15.5 \times 2.2$
 %% ------------------------------------------------------------------
 \section{Ammonia cracker detail}\label{sec:S4}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{BiomassLCA-Ammonia (2).png}
+    \caption{Simplified process flow diagram of the ammonia cracking unit: green, blue, and orange line refer to the streams with ammonia feed, hydrogen-rich product, and residual gas, respectively.}
+    \label{fig:pfd-ammonia}
+\end{figure}
+
+Ammonia cracker is simplified in Fig.~\ref{fig:pfd-ammonia}.
 \begin{itemize}
   \item Cracker scale index $n$ = main \Htwo{} demand / 6570.40 lb/hr; non-grid $n$ linearly
-    interpolated between bracketing APEA runs \code{NH3\_Cracking\_130\_scale\{NNNN\}\_APEAresult.xlsm}.
-  \item Base cost structure from \code{NH3\_Cracking\_126\_FinalComp\_APEAresult.xlsm}.
+    interpolated between bracketing APEA runs.
   \item Utilities = electricity; raw material = ammonia; fertilizer credited from the Product
     Summary sheet. Conversion / \Htwo-recovery ratios live inside the Aspen model (APEA export
-    gives \NHthree-in vs \Htwo-out); GHSV/kinetics source: \code{ghsv\_IJHE\_2024.py} (Int.\ J.\ Hydrogen
-    Energy 2024).
-  \item Grey-\Htwo{} benchmark 0.68 \$/lb \Htwo. SMR calc uses NG price 0.092306 \$/lb (US), escalated.
-  \item PEM alternative: 40 kWh/kg \Htwo, 70\% efficiency, 2000 \$/kW (DOE 2024, 2022 USD),
-    0.5 capacity factor (Korean PV).
+    gives \NHthree-in vs \Htwo-out); GHSV/kinetics from \cite{cho2024ammonia}.
+  \item Grey-\Htwo{} benchmark 0.68 \$/lb \Htwo. SMR uses natural-gas price 0.092306 \$/lb (US), escalated.
+  \item 
 \end{itemize}
 
 %% ------------------------------------------------------------------
@@ -323,76 +508,47 @@ price $60 \times 2.2$ \$/kg; R-225 molybdenum LHSV 0.22, price $15.5 \times 2.2$
   \item Sequestered mass $\text{co2}_\text{seq} = \text{co2}_\text{left}(\text{623CO2})\cdot\text{ccs portion} + \text{co2}_\text{EGR}(\text{622X})$;
     622X captured at 100\%, 623CO2 at ccs portion.
   \item Capture OPEX: Fuel $= \max(\text{heat} - \text{plant heat gen}, 0)\cdot 14.38\cdot 8000$;
-    Electricity $= \text{elec}\cdot 19.05\cdot 8000$; T\&S $= \text{co2}_\text{seq}/2204.62\cdot 8000\cdot\text{co2 ts usd per ton}$.
+    Electricity $= \text{elec}\cdot 19.05\cdot 8000$; T\&S $= \text{co2}_\text{seq}/2204.62\cdot 8000\cdot(\text{co2 TS cost per ton}$).
   \item \COtwo{} T\&S price: default 0 (off) in base runs; literature range 4--45 \$/t; manuscript basis
-    10 \$/t (\code{tea\_tornado.py}, \code{tea\_pareto\_front.py}). T\&S adder verified linear in price
-    (\code{test\_co2\_ts.py}, \code{tea\_scale\_up\_co2ts.py}).
-  \item ccs portion sweeps: \{0, 0.25, 0.5, 0.75, 1.0\} (\code{tea\_ccs.py}); 0--0.9 in 0.1 steps
-    (\code{tea\_co2\_portion.py}); scale-up scenario fixed at 0.60.
-  \item \textbf{Open caveat (from \code{\_Base\_Revision.md}).} The Rao \& Rubin base case implies a specific
-    reboiler duty of $\sim$8.9 GJ/t \COtwo{} (3315 MMBtu/hr $\div$ 862,853 lb/hr), roughly 2$\times$ the
-    conventional 30 wt\% MEA benchmark of 3.5--4.2 GJ/t. The absolute duty and base \COtwo{} stream
-    are not traceable to the ES\&T 2002 letter's own tables. Flagged for correction; not yet resolved.
+    10 \$/t. 
+  \item ccs portion sweeps: \{0, 0.25, 0.5, 0.75, 1.0\}; 0--0.9 in 0.1 steps; scale-up scenario fixed at 0.60.
 \end{itemize}
 
-%% ------------------------------------------------------------------
-\section{Dynamic LCA (Bern model)}\label{sec:S6}
-
-Used only for the dynamic-GWP illustration (\code{Dynamic\_LCA/}), not the headline intensities.
-
-\begin{itemize}
-  \item Bern impulse-response function (Levasseur 2010; IPCC 2007, 378 ppm background):
-    $a_0=0.217$, $a_1=0.259$, $a_2=0.338$, $a_3=0.186$; $\tau_1=172.9$, $\tau_2=18.51$, $\tau_3=1.186$ yr;
-    $\tau_{\mathrm{CH_4}}=12$ yr, $\tau_{\mathrm{N_2O}}=114$ yr.
-  \item Radiative efficiencies: \COtwo{} $1.759\times10^{-15}$, CH\textsubscript{4} $7.54\times10^{-14}$,
-    N\textsubscript{2}O $3.7\times10^{-13}$.
-  \item Time-varying characterization factor $\mathrm{dGWP}_X(t) = \mathrm{aGWP}_X(T-t)/\mathrm{aGWP}_X(T)$.
-  \item Sequestration entered as negative flux over its duration; net trajectory = emission +
-    sequestration (+ construction). CCS trajectory in the green-CCS illustration uses a
-    10-yr capture window. Sequestration profile data: \code{Dynamic\_LCA/Sequestration\_Traj/}
-    (Lan 2021).
-\end{itemize}
 
 %% ------------------------------------------------------------------
-\section{LCA inventories, allocation, and SAF criterion}\label{sec:S7}
+% \section{LCA inventories, allocation, and SAF criterion}\label{sec:S7}
 
-\begin{itemize}
-  \item Numeric LCA results are read from GREET-derived Excel workbooks
-    (\code{Process\_Data/WTWa\_LCA.xlsx}, \code{Process\_Data/Pyrolysis\_551\_LCA\_<method>.xlsx}); the
-    Python only orchestrates, thresholds, averages, and plots. The energy/mass/market
-    allocation basis itself is implemented inside GREET/the workbooks, one sheet per method.
-  \item Four LCA method variants computed: Allocation, Displacement, Allocation\_KRmix,
-    Displacement\_KRmix (U.S.\ vs Korea grid mix). Reported central value = Allocation; spread
-    = (Allocation, Displacement) range, per config.
-  \item WTWa = WTP + PTWa; PTWa (combustion) for every pyrolysis case taken from the FT-jet
-    reference. \code{wBio} toggle selects the with-/without-biogenic combustion sheet
-    (\code{WTWa\_ftjet} vs \code{WTWa\_ftjet\_woBio}), driven by the \code{woBiogenic} case name.
-  \item SAF threshold = 0.9 $\times$ conventional-jet WTWa GHG-100 (CORSIA $-10$\%); conventional baseline
-    read from the \code{WTWa\_conventional} sheet, not hardcoded. The SAF-comparison figure draws a
-    75.9 g \COtwoe/MJ CORSIA line; its scatter points are flagged in code as visualization dummies.
-  \item 60\% CCS intensity is a linear interpolation between the simulated CCS-50\% and CCS-75\%
-    WTWa points (\code{lca\_ccs.py}); base and full-ammonia intensities are read directly.
-  \item Abatement-cost energy density $E$ = 31.66 MJ/L SAF.
-\end{itemize}
+% In this paper, LCA on the environmental impact of the developed process designs was conducted following the CORSIA methodology \cite{ICAO2023CORSIA} as illustrated in Fig. \ref{fig:lca-scope}.
+% The International Civil Aviation Organization (ICAO) has proposed the method as a standard so that the SAF industry can consistently and transparently monitor its GHG emission intensities. 
+% % It was formerly proposed by the International Civil Aviation Organization (ICAO) as a standard to guide the SAF industry to monitor their GHG emission intensities consistently and transparently. 
+% CORSIA life cycle emission value is the sum of the direct emissions along the supply chains of individual SAFs and the estimated emissions for induced land use change (ILUC) \cite{prussi2021corsia}.
+% It is also referred to as WTWa emissions since its scope spans from feedstock preparation to fuel combustion on the aircraft. 
+
+
 
 %% ------------------------------------------------------------------
-\section{Supply-availability context}\label{sec:S8}
+\section{Biomass price model in supply-availability context}\label{sec:S7}
 
-Domestic feedstock ceilings used to convert plant scale to a share of aviation-fuel demand
-(\code{tea\_scale\_up\_price\_models.py}): forest residue 3,127,378 t/yr; log (2,843,071 + 3,274,200)
-t/yr. Critical scale multiples where each supply tier is exhausted: forest residue $\approx$8.6$\times$,
-forest residue + log $\approx$18.5$\times$.
+Domestic feedstock ceilings used to convert plant scale to a share of aviation-fuel demand: forest residue 3,127,378 t/yr; log (2,843,071 + 3,274,200) t/yr. 
 
+\textbf{FR Price (reference).} A constant forest-residue price of 107.3~\$/t, independent of scale; this is the optimistic floor.
+
+\textbf{FR--Log Linear} (naive Galik supply curve; \citealp{galik}). The forest-residue price holds until regional forest-residue supply (2.84~MMt/yr) is exhausted, beyond which the delivered price rises linearly with demand, price = supply $\times$ 25.08 + 33.30~\$/t (supply in MMt/yr), as logging residue is drawn in.
+
+\textbf{Fixed Elasticity} (Galik supply curve, supply elasticity 0.3). Follows the FR--Log Linear curve until the combined forest-residue-plus-log supply (6.12~MMt/yr) is exhausted, then extrapolates linearly under a fixed supply elasticity of 0.3 (log reference price 192.4~\$/t), giving the steepest scale penalty.
+
+\textbf{Scale-up evaluation.} MJSP is evaluated at seven plant scales: 0.041, 0.104, 0.207, 0.311, 0.414, 0.828 and 1.243~MMt/yr SAF. At the forest-residue floor price, the base-case (grey-\ce{H2}) MJSP at each scale is broken down into capital investment, raw materials, utilities, fixed operating costs (operating labor, maintenance, operating charges, plant overhead, and general and administrative costs) and co-product sales, which enter as a negative term (Table~\ref{tab:S9-1}). Each of the three supply-curve models then sets the delivered biomass price at each scale, and MJSP is recomputed for three configurations: the grey-\ce{H2} base, full green ammonia, and full CCS (Tables~\ref{tab:S9-2} and \ref{tab:S9-3}). Biomass is costed identically in all three configurations, so a given price model shifts each of them by the same biomass-cost increment. The minimum-MJSP scale is read where the falling conversion cost and the rising feedstock cost cross.
+%% ------------------------------------------------------------------
 %% ------------------------------------------------------------------
 \section{Data tables for the Results figures}\label{sec:S9}
 
-Numeric values behind the main-text Results figures, read from the \code{Result/} workbooks.
+Numeric values behind the main-text Results figures.
 MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, Korea grid mix).
 
 \begin{table}[htbp]
   \centering
   \caption{Base-case (grey \Htwo, flat forest-residue price) MJSP breakdown vs SAF production
-    (\S3.1, base-case breakdown figure).
+    (base-case breakdown figure).
     Components in \$/L SAF; MJSP = sum of components.}
   \label{tab:S9-1}
   \resizebox{\textwidth}{!}{%
@@ -416,7 +572,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 \begin{table}[htbp]
   \centering
   \caption{Biomass price and grey-\Htwo{} base MJSP under three biomass price models
-    (\S3.1, price-model figure). MJSP in \$/L SAF.}
+    (price-model figure). MJSP in \$/L SAF.}
   \label{tab:S9-2}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{@{}rrrrrrr@{}}
@@ -439,7 +595,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 \begin{table}[htbp]
   \centering
   \caption{MJSP of the full green-\NHthree{} and full-CCS configurations under three biomass price models
-    (\S3.1, price-model figure; full green-\NHthree{} = 100\% green-\NHthree{} hydrogen,
+    (price-model figure; full green \NHthree{} = 100\% green-\NHthree{} hydrogen,
     full CCS = CCS portion 1.0). MJSP in \$/L SAF.}
   \label{tab:S9-3}
   \resizebox{\textwidth}{!}{%
@@ -463,59 +619,53 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 \begin{table}[htbp]
   \centering
   \caption{MJSP, GHG, Pareto status, sensitivity band, and abatement cost of the 30 green-\NHthree{} share
-    $\times$ CCS portion configurations at 0.414 MMt/yr SAF (\S3.2, Figure Xa). MJSP low/high =
-    tornado-driver band (\S2.2.4), computed for Pareto points only (\S3.3). Abatement cost =
-    $\Delta\text{MJSP}\cdot10^6/(\Delta\text{GHG}\cdot E)$, $E$ = 31.66 MJ/L, relative to CCS 60\%
+    $\times$ CCS portion configurations at 0.414 MMt/yr SAF.  Abatement cost relative to CCS 60\%
     (75.14 g \COtwoe/MJ, \$0.977/L); -- where GHG is not below CCS 60\%.}
   \label{tab:S9-4}
   \small
-  \begin{tabular}{@{}rrrrcrrr@{}}
+  \begin{tabular}{@{}rrrrcr@{}}
     \toprule
     \shortstack{Green \NHthree\\share [\%]} & \shortstack{CCS\\portion [\%]} & \shortstack{MJSP\\{[\$/L]}} &
-    \shortstack{GHG\\{[g \COtwoe/MJ]}} & Pareto & \shortstack{MJSP low\\{[\$/L]}} & \shortstack{MJSP high\\{[\$/L]}} &
+    \shortstack{GHG\\{[g \COtwoe/MJ]}} & Pareto &
     \shortstack{Abatement cost\\{[\$/t \COtwo]}} \\
     \midrule
-    0 & 0 & 0.792 & 100.83 & yes & 0.546 & 1.841 & -- \\
-    0 & 25 & 0.855 & 89.93 & yes & 0.608 & 1.903 & -- \\
-    0 & 50 & 0.913 & 78.99 & yes & 0.666 & 1.962 & -- \\
-    0 & 75 & 1.111 & 69.36 & yes & 0.864 & 2.160 & 733 \\
-    0 & 100 & 1.334 & 59.96 & yes & 1.087 & 2.382 & 742 \\
-    10 & 0 & 0.977 & 97.02 & no & -- & -- & -- \\
-    10 & 25 & 1.039 & 86.12 & no & -- & -- & -- \\
-    10 & 50 & 1.098 & 75.18 & yes & 0.851 & 2.042 & -- \\
-    10 & 75 & 1.296 & 65.55 & yes & 1.049 & 2.240 & 1,049 \\
-    10 & 100 & 1.518 & 56.15 & yes & 1.271 & 2.462 & 900 \\
-    25 & 0 & 1.240 & 91.31 & no & -- & -- & -- \\
-    25 & 25 & 1.302 & 80.40 & no & -- & -- & -- \\
-    25 & 50 & 1.361 & 69.46 & no & -- & -- & 2,138 \\
-    25 & 75 & 1.559 & 59.83 & no & -- & -- & 1,201 \\
-    25 & 100 & 1.782 & 50.44 & yes & 1.489 & 2.568 & 1,029 \\
-    50 & 0 & 1.680 & 81.78 & no & -- & -- & -- \\
-    50 & 25 & 1.742 & 70.88 & no & -- & -- & 5,671 \\
-    50 & 50 & 1.800 & 59.94 & no & -- & -- & 1,711 \\
-    50 & 75 & 1.998 & 50.31 & yes & 1.413 & 2.584 & 1,299 \\
-    50 & 100 & 2.221 & 40.91 & yes & 1.635 & 2.806 & 1,148 \\
-    75 & 0 & 2.116 & 72.26 & no & -- & -- & 12,511 \\
-    75 & 25 & 2.178 & 61.35 & no & -- & -- & 2,752 \\
-    75 & 50 & 2.236 & 50.41 & no & -- & -- & 1,609 \\
-    75 & 75 & 2.434 & 40.78 & yes & 1.556 & 3.313 & 1,340 \\
-    75 & 100 & 2.657 & 31.39 & yes & 1.779 & 3.535 & 1,213 \\
-    100 & 0 & 2.544 & 62.74 & no & -- & -- & 3,991 \\
-    100 & 25 & 2.606 & 51.83 & no & -- & -- & 2,207 \\
-    100 & 50 & 2.665 & 40.89 & no & -- & -- & 1,556 \\
-    100 & 75 & 2.862 & 31.26 & yes & 1.691 & 4.034 & 1,357 \\
-    100 & 100 & 3.085 & 21.86 & yes & 1.914 & 4.256 & 1,250 \\
+    0 & 0 & 0.792 & 100.83 & yes & -- \\
+    0 & 25 & 0.855 & 89.93 & yes & -- \\
+    0 & 50 & 0.913 & 78.99 & yes & -- \\
+    0 & 75 & 1.111 & 69.36 & yes & 733 \\
+    0 & 100 & 1.334 & 59.96 & yes & 742 \\
+    10 & 0 & 0.977 & 97.02 & no & -- \\
+    10 & 25 & 1.039 & 86.12 & no & -- \\
+    10 & 50 & 1.098 & 75.18 & yes & -- \\
+    10 & 75 & 1.296 & 65.55 & yes & 1,049 \\
+    10 & 100 & 1.518 & 56.15 & yes & 900 \\
+    25 & 0 & 1.240 & 91.31 & no & -- \\
+    25 & 25 & 1.302 & 80.40 & no & -- \\
+    25 & 50 & 1.361 & 69.46 & no & 2,138 \\
+    25 & 75 & 1.559 & 59.83 & no & 1,201 \\
+    25 & 100 & 1.782 & 50.44 & yes & 1,029 \\
+    50 & 0 & 1.680 & 81.78 & no & -- \\
+    50 & 25 & 1.742 & 70.88 & no & 5,671 \\
+    50 & 50 & 1.800 & 59.94 & no & 1,711 \\
+    50 & 75 & 1.998 & 50.31 & yes & 1,299 \\
+    50 & 100 & 2.221 & 40.91 & yes & 1,148 \\
+    75 & 0 & 2.116 & 72.26 & no & 12,511 \\
+    75 & 25 & 2.178 & 61.35 & no & 2,752 \\
+    75 & 50 & 2.236 & 50.41 & no & 1,609 \\
+    75 & 75 & 2.434 & 40.78 & yes & 1,340 \\
+    75 & 100 & 2.657 & 31.39 & yes & 1,213 \\
+    100 & 0 & 2.544 & 62.74 & no & 3,991 \\
+    100 & 25 & 2.606 & 51.83 & no & 2,207 \\
+    100 & 50 & 2.665 & 40.89 & no & 1,556 \\
+    100 & 75 & 2.862 & 31.26 & yes & 1,357 \\
+    100 & 100 & 3.085 & 21.86 & yes & 1,250 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
 \begin{table}[htbp]
   \centering
-  \caption{Grey-\Htwo{} price at which Green \NHthree{} 10\% + CCS 50\% matches CCS 60\%
-    (\S3.3, Figure Xb; source: \code{plot\_ammonia\_crossover.py}). Both routes are linear in grey-\Htwo{}
-    price $h$ [\$/kg]: CCS 60\% $= 0.977 + 0.419\,(h - 1.50)$ \$/L; Green \NHthree{} 10\% + CCS 50\%
-    $= 1.098 + 0.378\,(h - 1.50) + 0.2038\,(p_{\mathrm{NH_3}}/635 - 1)$ \$/L. Slopes are the one-at-a-time
-    grey-\Htwo{} spans (Table~\ref{tab:S9-7}) divided by the 3 \$/kg range width.}
+  \caption{Grey-\Htwo{} price at which Green \NHthree{} 10\% + CCS 50\% matches CCS 60\%.}
   \label{tab:S9-5}
   \small
   \begin{tabular}{@{}rrrc@{}}
@@ -532,8 +682,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 
 \begin{table}[htbp]
   \centering
-  \caption{Mean $|$SHAP$|$ of MJSP drivers at the two cheapest compliant points (\S3.3, Figure Xc, d).
-    \$/L SAF; 128 Latin-hypercube TEA runs per point,
+  \caption{Mean $|$SHAP$|$ of MJSP drivers at the two cheapest compliant points in \$/L SAF: 128 Latin-hypercube TEA runs per point,
     gradient-boosted surrogate ($R^2 > 0.999$); -- = driver not sampled.}
   \label{tab:S9-6}
   \small
@@ -555,8 +704,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 
 \begin{table}[htbp]
   \centering
-  \caption{One-at-a-time MJSP spans at the two cheapest compliant points (\S3.3).
-    \$/L SAF; input ranges as in \S2.2.4.}
+  \caption{One-at-a-time MJSP spans at the two cheapest compliant points in \$/L SAF; input ranges as in the tornado-driver analysis.}
   \label{tab:S9-7}
   \small
   \begin{tabular}{@{}llrrrr@{}}
@@ -578,7 +726,13 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
     Green \NHthree{} 10\% + CCS 50\% & Green \NHthree & 1.098 & 0.980 & 1.215 & 0.234 \\
     Green \NHthree{} 10\% + CCS 50\% & Capacity & 1.098 & 1.313 & 1.108 & 0.205 \\
     Green \NHthree{} 10\% + CCS 50\% & \COtwo{} T\&S & 1.098 & 1.073 & 1.238 & 0.165 \\
-    Green \NHthree{} 10\% + CCS 50\% & Biomass & 1.098 & 1.098 & 1.149 & 0.052 \\
+    Green \NHthree{} 10\% + CCS 50\% & Biomass & 1.098 & 1.149 & 1.149 & 0.052 \\
     \bottomrule
   \end{tabular}
 \end{table}
+
+\bibliographystyle{cas-model2-names}
+\bibliography{main-sc}
+
+\end{document}
+

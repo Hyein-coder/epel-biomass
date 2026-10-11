@@ -30,7 +30,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Personal packages
-\usepackage[version=3]{mhchem} % Formula subscripts using \ce{}
+\usepackage[version=4]{mhchem} % Formula subscripts using \ce{}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{blindtext}
@@ -43,8 +43,9 @@
 % Long table and floating behavior handling
 \usepackage{longtable}
 % \usepackage{placeins}
-% \usepackage{hyperref}
+\usepackage{hyperref}
 % \hypersetup{breaklinks=true}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%Author macros
@@ -72,15 +73,15 @@
 \shortauthors{}  
 
 % Main title of the paper
-\title [mode = title]{}  
+\title [mode = title]{Hydrogen-supply and feedstock sensitivity in pyrolysis-based sustainable aviation fuel production with South Korean context}  
 
 % Title footnote mark
 % eg: \tnotemark[1]
-\tnotemark[1] 
+% \tnotemark[1] 
 
 % Title footnote 1.
 % eg: \tnotetext[1]{Title footnote text}
-\tnotetext[1]{} 
+% \tnotetext[1]{} 
 
 % First author
 %
@@ -95,69 +96,75 @@
 %       twitter=<twitter id>,
 %       linkedin=<linkedin id>,
 %       gplus=<gplus id>]
+% ---------------- Author 1 ----------------
+\author[1]{Hyein Jung}[orcid=0009-0002-8027-3385]%[<options>]
+\ead{976hannah@kist.re.kr}
+\credit{Conceptualization; Methodology; Software; Formal analysis; Investigation; Writing - Original Draft; Visualization}
 
-\author[1]{}%[<options>]
-
-% Corresponding author indication
+% ---------------- Author 2 ----------------
+\author[1,2]{Kyeongsu Kim}[orcid=0000-0002-9383-7605]%[<options>]
+\ead{kyeongsu@kist.re.kr}
+\credit{Resources; Writing - Review \& Editing; Visualization; Funding acquisition}
 \cormark[1]
 
-% Footnote of the first author
-\fnmark[1]
+% ---------------- Author 3 ----------------
+\author[3,4]{Jong Min Lee}[orcid=0000-0001-5395-0067]%[<options>]
+\ead{jongmin@snu.ac.kr}
+\credit{Resources; Writing - Review \& Editing; Supervision; Funding acquisition}
+\cormark[1]
 
-% Email id of the first author
-\ead{}
+% ---------------- Author 4 ----------------
+\author[5]{Tae Hoon Oh}[orcid=0000-0003-1847-2164]%[<options>]
+\ead{oh.taehoon@unist.ac.kr}
+\credit{Conceptualization; Formal analysis; Writing - Review \& Editing; Supervision; Project administration}
+\cormark[1]
 
-% URL of the first author
-\ead[url]{}
+% Corresponding author indication (add to whichever author applies)
+% \cormark[1]
 
-% Credit authorship
-% eg: \credit{Conceptualization of this study, Methodology, Software}
-\credit{}
+% ---------------- Affiliations ----------------
+\affiliation[1]{organization={Clean Energy Research Center, Korea Institute of Science and Technology},
+            addressline={5, Hwarang-ro 14-gil, Seongbuk-gu},
+            city={Seoul},
+            postcode={02792},
+            country={Republic of Korea}}
 
-% Address/affiliation
-\affiliation[1]{organization={},
-            addressline={}, 
-            city={},
-%          citysep={}, % Uncomment if no comma needed between city and postcode
-            postcode={}, 
-            state={},
-            country={}}
+\affiliation[2]{organization={Division of Energy and Environment Technology, KIST School, University of Science and Technology},
+            addressline={5, Hwarang-ro 14-gil, Seongbuk-gu},
+            city={Seoul},
+            postcode={02792},
+            country={Republic of Korea}}
 
-\author[2]{}%[]
+\affiliation[3]{organization={Department of Chemical and Biological Engineering, Seoul National University},
+            addressline={1, Gwanak-ro, Gwanak-gu},
+            city={Seoul},
+            postcode={08826},
+            country={Republic of Korea}}
 
-% Footnote of the second author
-\fnmark[2]
+\affiliation[4]{organization={Institute of Chemical Process, Seoul National University},
+            addressline={1, Gwanak-ro, Gwanak-gu},
+            city={Seoul},
+            postcode={08826},
+            country={Republic of Korea}}
 
-% Email id of the second author
-\ead{}
-
-% URL of the second author
-\ead[url]{}
-
-% Credit authorship
-\credit{}
-
-% Address/affiliation
-\affiliation[2]{organization={},
-            addressline={}, 
-            city={},
-%          citysep={}, % Uncomment if no comma needed between city and postcode
-            postcode={}, 
-            state={},
-            country={}}
-
-% Corresponding author text
-\cortext[1]{Corresponding author}
+\affiliation[5]{organization={Graduate School of Carbon Neutrality, Ulsan National Institute of Science and Technology},
+            addressline={50, UNIST-gil, Eonyang-eup, Ulju-gun},
+            city={Ulsan},
+            postcode={44919},
+            country={Republic of Korea}}
 
 % Footnote text
-\fntext[1]{}
+% \fntext[1]{}
 
 % For a title note without a number/mark
 %\nonumnote{}
 
 % Here goes the abstract
 \begin{abstract}
-Here goes the abstract \nocite{*}%% Remove this line from your manuscript.
+Sustainable aviation fuel (SAF) offers a near-term pathway for reducing aviation emissions because it can be deployed using existing aircraft and fuelling infrastructure without major modifications. Fast pyrolysis of lignocellulosic biomass is a promising alternative given its abundant supply, but its economic and environmental disadvantages hinder their industrial deployment.  
+Its economic and environmental performance can be enhanced by balancing economies of scale, finite biomass availability, and decarbonization costs. In this study, the optimal production scale is identified, at which rising feedstock costs and single-train capacity limitations offset each other without depleting resources. 
+On the other hand, the CORSIA greenhouse gas intensity threshold is satisfied by integrating green ammonia-derived hydrogen and post-combustion carbon capture and storage (CCS). At current stage, CCS is the most cost-effective decarbonization option, whereas green ammonia becomes economically competitive when the grey-hydrogen price exceeds a crossover range of \$1.59--2.91/kg H$_2$. This crossover reflects the strong influence of hydrogen supply costs on SAF production economics and provides a practical benchmark for evaluating the future competitiveness of green ammonia. 
+Overall, the results show that the preferred decarbonization pathway depends on the required emission reduction level, as well as the relative costs of hydrogen and CCS. These findings establish a resource-constrained framework for SAF deployment in which plant scale, biomass availability, emission targets, and future hydrogen prices must be considered jointly.
 \end{abstract}
 
 % Use if graphical abstract is present
@@ -167,16 +174,16 @@ Here goes the abstract \nocite{*}%% Remove this line from your manuscript.
 
 % Research highlights
 \begin{highlights}
-\item 
-\item 
-\item 
+\item Developed an integrated sustainable aviation fuel process combining biomass pyrolysis with green ammonia-derived hydrogen. 
+\item Identified a minimum-efficient production scale by balancing economies of scale with finite biomass availability.
+\item Demonstrated that green ammonia becomes economically favorable at a grey-hydrogen price of \$1.59--2.91/kg H$_2$.
 \end{highlights}
 
 
 % Keywords
 % Each keyword is seperated by \sep
 \begin{keywords}
- \sep \sep \sep
+Sustainable aviation fuel \sep Lignocellulosic biomass \sep Green ammonia \sep Techno-economic assessment \sep Life-cycle analysis 
 \end{keywords}
 
 \maketitle
@@ -227,11 +234,14 @@ Here goes the abstract \nocite{*}%% Remove this line from your manuscript.
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
-\appendix
-\input{SI}
+% \appendix
+% \input{SI}
 
 % To print the credit authorship contribution details
 \printcredits
+
+\section*{Acknowledgements}
+This work was supported by the Settlement Research Fund of UNIST (Ulsan National Institute of Science \& Technology).
 
 %% Loading bibliography style file
 %\bibliographystyle{model1-num-names}
@@ -245,7 +255,7 @@ Here goes the abstract \nocite{*}%% Remove this line from your manuscript.
 % Here goes the biography details.
 %\endbio
 
-%\bio{pic1}
+%\bio{pic1} 
 % Here goes the biography details.
 %\endbio
 

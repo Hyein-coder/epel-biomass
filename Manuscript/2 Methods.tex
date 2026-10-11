@@ -1,95 +1,153 @@
 % Body of Section 2; \section{Methods} is set in main-sc.tex.
-% Source: 2. Methods.md.
-% Citation keys other than jones2013process (rao2002, galik, katebah2022, ijhe2024cracker,
-% greet, levasseur2010, lan2021) are placeholders; replace them once main-sc.bib exists.
 
 \subsection{Process design}\label{sec:methods-process}
 
 \subsubsection{Main process unit}\label{sec:methods-main}
 
-The process is a biomass fast-pyrolysis-to-fuels flowsheet adapted from the NREL/PNNL design of \citet{jones2013process}. The flowsheet is organized into eight areas: feed handling, pyrolysis (reactor R-110, area 100), hydrotreating (area 200), product finishing, hydrogen recovery, hydrocracking (R-510, area 500), off-gas combustion, and the steam/balance-of-plant island.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{BiomassLCA-BioPyrolysis (3).pdf}
+    \caption{Biomass pyrolysis-to-SAF production process flow diagram. The diagram shows the major process units, biomass and hydrogen feed, intermediate streams, and product outputs in the analysis.}
+    \label{fig:pfd-main}
+\end{figure}
 
-Four changes distinguish this design from the \citet{jones2013process} base case:
+The process is based on the biomass fast-pyrolysis-to-fuels flowsheet developed by NREL/PNNL \citep{jones2013process}. The flowsheet comprises eight process areas: feed handling, pyrolysis, hydrotreating, product finishing, hydrogen recovery, hydrocracking, off-gas combustion, and the steam and balance-of-plant island (Fig.~\ref{fig:pfd-main}). Detailed description is available in SI~S1. 
 
-\textbf{Product slate.} The plant is retuned to maximize SAF production rate for the South Korean market rather than the gasoline/diesel blendstock of the original design. Gasoline-range and diesel-range streams are retained as priced co-products.
+In this study, the process design is adjusted from the early study of \citep{jones2013process} in four distinctive points. 
+First, product slate of the process is shifted to maximize SAF production for the South Korean market, rather than the gasoline and diesel blendstock production targeted in the original design. Gasoline- and diesel-range streams are retained as value-generating co-products.
+Second, surplus electricity is generated as a co-product via a gas-turbine power island, which is newly introduced in this study. 
+Next, the original grey-hydrogen supply can be partially or fully replaced with hydrogen produced by green-ammonia cracking, as described in Section~\ref{sec:methods-cracker}.
+Lastly, an amine-based CCS unit is added to capture recoverable CO$_2$ streams leaving combustion chambers or separators (Section~\ref{sec:methods-ccs}).
 
-\textbf{Power co-product.} A gas-turbine power island is added so that surplus electricity is exported as a co-product, absent from the Jones base case.
+At the base scale, the plant processes 0.343~MMt/yr of woody biomass and produces 0.041~MMt/yr of SAF. The bio-oil sent to hydrotreating amounts to 0.244~MMt/yr, equivalent to approximately 71~wt\% of the biomass feed. Total fresh make-up hydrogen consumption is 0.024~MMt/yr, comprising 0.021~MMt/yr for hydrotreating and 0.003~MMt/yr for hydrocracking. Hydrotreating employs ruthenium catalysts in a series of two reactors at a liquid hourly space velocity (LHSV) of 0.5, followed by the last reactor with molybdenum catalyst at an LHSV of 0.22. Catalyst costs are estimated separately from reactor-vessel costs.
 
-\textbf{Hydrogen-supply flexibility.} The grey hydrogen of the original design can be replaced, in whole or in part, by green-ammonia-cracked hydrogen or SMR-with-CCS hydrogen (Sections~\ref{sec:methods-cracker} and \ref{sec:methods-nh3}).
+The Aspen Plus flow-sheet is costed using Aspen Process Economic Analyzer (APEA). The resulting \textit{Main} block, which represents whole-flow sheet capital and operating expenditures (CAPEX and OPEX) obtained from the APEA, is combined with five separately costed sub-units: CCS, pressure swing adsorption (PSA) hydrogen recovery, the off-gas reformer, hydrotreating catalysts, and the hydrocracker. Cost interpolation for these sub-units is detailed in SI~S3.
 
-\textbf{Carbon capture.} An amine CCS retrofit is added on the recoverable \ce{CO2} streams (Section~\ref{sec:methods-ccs}).
+Plant capacity is scaled from the base-case SAF output of 0.041 MMt/yr to 1.23 MMt/yr, representing a 30-fold difference between the smallest and largest plant scales. Rather than applying a single cost-scaling exponent to the entire plant, each major unit is assigned an explicit single-train capacity limit. Additional parallel trains are introduced when a unit reaches its limit. The capacity limits and corresponding numbers of trains at each scale are reported in SI~S4. Because additional trains replicate existing units rather than enlarge individual units, they do not benefit from further single-unit economies of scale. This train-level configuration is implemented explicitly in the assessment at each plant scale.
 
-Base-scale feed is 0.343~MMt/yr of woody biomass, producing 0.041~MMt/yr of SAF; the bio-oil sent to hydrotreating is 0.244~MMt/yr ($\approx$71~wt\% of the biomass). Fresh make-up hydrogen totals 0.0238~MMt/yr (0.0212~MMt/yr to the hydrotreating stream and 0.00268~MMt/yr to the hydrocracking stream). Hydrotreating uses ruthenium catalysts in reactors R-202 and R-220 (LHSV 0.5) and a molybdenum catalyst in R-225 (LHSV 0.22); catalyst charging is costed separately from the vessels.
-
-The Aspen Plus flowsheet is costed in Aspen Process Economic Analyzer (APEA); the resulting \textit{Main} block (whole-flowsheet CAPEX/OPEX read from the APEA Project Summary sheet) is combined with five literature-interpolated sub-units (CCS, PSA hydrogen recovery, off-gas reformer, hydrotreating catalysts, and the R-510 hydrocracker; cost interpolation detailed in Appendix~\ref{sec:S2}).
-
-\textbf{Scale-up and single-train limits.} Capacity is scaled from the base case (0.041~MMt/yr SAF) up to 1.23~MMt/yr SAF. Rather than applying a single blanket cost exponent, each major unit carries an explicit single-train ceiling and is numbered up into parallel trains once that ceiling is reached. The per-unit single-train caps and the resulting replica counts are tabulated in Table~\ref{tab:S3-1}; because each unit is replicated into identical parallel trains rather than enlarged, the added trains capture none of the single-unit economies of scale, which is the mechanism driving the exponent toward 1.0 above the minimum efficient scale. This train-level detail is realized inside the per-scale assessments, not by a closed-form correlation.
-
-All costs are reported in first-quarter 2022 USD; Jones-era (2011) source costs are escalated by the cost-index ratio 3230/2250. Financial basis: 8000 operating hours per year, a 30-year economic life, a 10\% internal rate of return, and a 35\% tax rate. The full cost basis and financial parameters are tabulated in Appendix~\ref{sec:S1}.
+All costs are reported in first-quarter 2022 USD. Costs from the original study of \citep{jones2013process} are escalated using a cost-index ratio of 3230/2250. The financial assumptions are 8,000 operating hours per year, a 30-year plant life, a 10\% internal rate of return (IRR), and a 35\% tax rate. The complete cost basis and financial assumptions are provided in SI~S2.
 
 \subsubsection{Ammonia cracker}\label{sec:methods-cracker}
 
-Green ammonia is used as a hydrogen carrier: imported \ce{NH3} is catalytically cracked to supply make-up hydrogen. The cracker is sized to the plant's make-up hydrogen demand. Cracker reactors carry a single-train ceiling of 403~GWh/yr. The cracking reaction network (GHSV, kinetics) follows the source used for the Aspen model \citep{ijhe2024cracker}; ammonia conversion and hydrogen recovery are embedded in that simulation rather than imposed as fixed constants. A nitrogen-fertilizer stream is credited as an ammonia-side co-product. The cracker process is described in detail in Appendix~\ref{sec:S4}.
+Green ammonia is used as a hydrogen carrier, with ammonia imported and catalytically cracked at the site to supply make-up hydrogen. The cracker capacity is determined by the plant's make-up hydrogen demand, with a single-train capacity limit of 403~GWh/yr. The reaction network, gas hourly space velocity (GHSV), and kinetics follow the source used to develop the Aspen model \citep{cho2024ammonia}. Ammonia conversion and hydrogen recovery also follow the parameters set in the original source. 
 
-\subsubsection{Carbon capture and storage (CCS)}\label{sec:methods-ccs}
+The recovery process was modified to employ a sulfuric acid scrubbing system to capture converted ammonia. It employs a multi-stage sulfuric acid scrubber to convert left ammonia into a liquid fertilizer \citep{manuzon2007prototype}. At the end, the scrubbed gas proceeds to nitrogen gas separation, yielding high-purity hydrogen (99.9\% H$_2$). The produced nitrogen fertilizer is credited as an ammonia-side co-product. Further details of the cracker process are provided in SI~S5.
 
-\ce{CO2} capture is a post-combustion amine (MEA) retrofit, cost-interpolated from the power-plant amine-capture base case of \citet{rao2002} (base stream 3.13~MMt/yr \ce{CO2}; total CAPEX \$297.9~M; regeneration heat 7,772~GWh/yr; auxiliary electricity at 14\% of the heat duty, all rebased to 1Q-2022 USD).
+\subsubsection{Carbon capture and storage}\label{sec:methods-ccs}
 
-The captured mass is the sum of the EGR \ce{CO2} stream and a fraction of the recoverable process \ce{CO2} stream. Here, EGR \ce{CO2} is always fully captured. Capture-unit CAPEX scales with the captured mass by the six-tenths rule, OPEX by exponent 0.7, and utility draws linearly. Capture OPEX comprises make-up fuel for any regeneration heat not met by on-site heat, auxiliary electricity, and optional \ce{CO2} transport and storage (T\&S; Section~\ref{sec:methods-ccscost}). The capture portion is swept from 0 to 1.0. The full CCS cost derivation is given in Appendix~\ref{sec:S5}.
+Post-combustion CCS is modeled using a monoethanolamine (MEA)-based retrofit. Its cost is interpolated from the power-plant amine-capture reference case reported by \citet{rao2002}, which processes 3.13~MMt/yr of CO$_2$, has a total CAPEX of \$297.9~M, requires 7,772~GWh/yr of regeneration heat, and consumes auxiliary electricity equivalent to 14\% of the heat duty. All costs are converted to refer to first-quarter 2022 USD.
+
+The total captured mass comprises the exhaust-gas-recirculation (EGR) CO$_2$ stream and a specified fraction of the recoverable process CO$_2$ stream. The EGR CO$_2$ stream is completely captured. Capture-unit CAPEX scales with captured mass according to the six-tenths rule, whereas OPEX scales with an exponent of 0.7. Utility requirements scale linearly with captured mass. Capture OPEX includes make-up fuel for regeneration heat not supplied by on-site heat, auxiliary electricity, and optional CO$_2$ transport and storage (T\&S), the details for which is described in section~\ref{sec:methods-ccscost}). The capture fraction is varied from 0 to 1.0. The complete CCS cost derivation is provided in SI~S6.
 
 \subsection{Techno-economic analysis}\label{sec:methods-tea}
 
-The economic metric is the minimum jet-fuel selling price (MJSP, \$/L SAF), obtained from a discounted-cash-flow calculation of the SAF price that zeroes net present value over the 30-year life at a 10\% IRR and 35\% tax, with straight-line depreciation and zero salvage. Equivalently,
-\begin{equation}
-\mathrm{MJSP} = \frac{\text{minimum required revenue} - \text{co-product sales}}{\text{annual SAF volume}}.
-\end{equation}
-Co-product sales (naphtha, diesel, exported electricity, ammonia-side fertilizer) are credited on the cost side. Utility prices: electricity 65.0~\$/MWh ($\approx$0.065~\$/kWh), natural gas 49.1~\$/MWh.
+The economic performance metric is the minimum jet-fuel selling price (MJSP,  \$/L SAF). MJSP is determined by discounted cash-flow analysis as the SAF selling price required to achieve a zero net present value given the economic parameters, assuming straight-line depreciation and zero salvage value.
+Revenue from naphtha, diesel, exported electricity, and ammonia-side fertilizer is credited against the required revenue. Electricity and natural gas prices are set at \$65.0/MWh and \$49.1/MWh, respectively.
 
 \subsubsection{Feedstock price model}\label{sec:methods-feed}
 
-Because domestic forest-residue supply is finite, the delivered biomass price is treated as a function of plant scale rather than a fixed input: a larger plant must draw on progressively costlier feedstock (the regional supply-availability context is in Appendix~\ref{sec:S8}). Biomass demand is mapped to scale as demand = scale $\times$ 0.330~MMt/yr, and three supply-curve models are compared:
+Because the domestic forest-residue supply is finite, the delivered biomass price is modeled as a function of plant scale rather than held constant. Larger plants are assumed to require progressively more expensive feedstock as regional supply is depleted and additional sources are accessed. 
+% The regional supply context is described in SI~S8. 
 
-\textbf{FR Price (reference).} A constant forest-residue price of 107.3~\$/t, independent of scale; this is the optimistic floor.
+% The scarcity of FR biomass feedstock was reflected in the scale-up analysis as a feedstock price via two main approaches. 
+This study considers the full spectrum of woody biomass as viable feedstock, capitalizing on the proven versatility of pyrolysis to process both softwood and hardwood species. Literature consistently demonstrates successful bio-oil conversion across a diverse range of softwoods, such as pine and conifers \cite{tran2021fast, jarvis2014characterization}, as well as hardwoods, including black locust and birch \cite{straker2015black, li2014autothermal}. While comparative research indicates that compositional factors—specifically differences in lignin and ash content—may influence the precise yield profile \citep{garcia2007vacuum, azeez2010fast}, the fundamental feasibility of thermochemical conversion remains robust across species. Consequently, this process is designed to be feedstock-flexible, accommodating any woody biomass regardless of its classification.
 
-\textbf{FR--Log Linear} (naive Galik supply curve; \citealp{galik}). The forest-residue price holds until regional forest-residue supply (2.84~MMt/yr) is exhausted, beyond which the delivered price rises linearly with demand, price = supply $\times$ 25.08 + 33.30~\$/t (supply in MMt/yr), as logging residue is drawn in.
+The economic viability of this feedstock-flexible approach is further supported by the immense volume of available biomass. The total potential supply is substantial, comprising approximately 706~MMt of logs and 412~MMt of underutilized residues. However, these resources are subject to distinct market dynamics; currently, logs are valued at \$0.19/kg, while residues trade at a significantly lower price of \$0.11/kg. Given this vast scale and the sharp cost disparity between high-quality timber and lower-cost residues, static pricing data is insufficient for long-term strategic planning. Consequently, a robust price prediction model is required to accurately forecast market fluctuations and optimize feedstock procurement strategies.
 
-\textbf{Fixed Elasticity} (Galik supply curve, supply elasticity 0.3). Follows the FR--Log Linear curve until the combined forest-residue-plus-log supply (6.12~MMt/yr) is exhausted, then extrapolates linearly under a fixed supply elasticity of 0.3 (log reference price 192.4~\$/t), giving the steepest scale penalty.
+The first model treats forest-residue biomass and log as interchangeable sources for products with wood fiber. 
+This approach defines the supply curve using two key data points: the total available residues at a low price and the amount of residues and log supplies added at the current log price. 
+The supply equation parameters are set to make the curve passes through both data points. 
+However, this method often results in a supply curve that is more price-sensitive (\textit{elastic}) than what is typically observed in real markets, where pulpwood supply is usually less responsive to price changes. 
 
-\textbf{Scale-up evaluation.} MJSP is evaluated at seven plant scales: 0.041, 0.104, 0.207, 0.311, 0.414, 0.828 and 1.243~MMt/yr SAF. At the forest-residue floor price, the base-case (grey-\ce{H2}) MJSP at each scale is broken down into capital investment, raw materials, utilities, fixed operating costs (operating labor, maintenance, operating charges, plant overhead, and general and administrative costs) and co-product sales, which enter as a negative term (Table~\ref{tab:S9-1}). Each of the three supply-curve models then sets the delivered biomass price at each scale, and MJSP is recomputed for three configurations: the grey-\ce{H2} base, full green ammonia, and full CCS (Tables~\ref{tab:S9-2} and \ref{tab:S9-3}). Biomass is costed identically in all three configurations, so a given price model shifts each of them by the same biomass-cost increment. The minimum-MJSP scale is read where the falling conversion cost and the rising feedstock cost cross.
+To address this discrepancy, the second approach uses a price elasticity adopted from previous research \cite{galik2009forest}.
+This method assumes a constant, inelastic price response for pulpwood in the states of North Carolina, South Carolina, and Virginia with a fixed elasticity of 0.3 in a supply curve. 
+It also assumes that all available forest-residue biomass is used up before any log is purchased for feedstock. 
+The supply curve is constructed by following the same linear curve of the first model until the current log price and quantity. 
+From then on, it maintains the elasticity of 0.3, making the slope steeper (SI~S7). 
 
 \subsubsection{Green ammonia and hydrogen supply}\label{sec:methods-nh3}
 
-Green ammonia is priced at 635~\$/t \ce{NH3} (base), swept over 270~\$/t (projected, future) to 1000~\$/t (current). Ammonia-cracked hydrogen substitutes grey hydrogen at a given fraction. The grey-hydrogen reference is SMR-with-CCS costed from \citet{katebah2022} (1499~\$/t \ce{H2}).
+Green ammonia is assigned a base price of \$635/t NH$_3$, with sensitivity analysis spanning \$270/t, representing a projected future price, to \$1,000/t, representing a current price. Hydrogen produced through ammonia cracking replaces grey hydrogen at a specified substitution fraction. The grey-hydrogen reference is priced at \$1,499/t H$_2$ \citep{katebah2022}.
 
 \subsubsection{CCS cost}\label{sec:methods-ccscost}
 
-Capture cost follows Section~\ref{sec:methods-ccs}. \ce{CO2} transport and storage is applied to the sequestered mass at a base rate of 10~\$/t \ce{CO2} (sensitivity range 4--45~\$/t \ce{CO2}); the T\&S cost adder is linear in the T\&S price.
+Capture costs are calculated as described in Section~\ref{sec:methods-ccs}. T\&S costs are applied to the sequestered CO$_2$ mass at a base rate of \$10/t CO$_2$ , with a sensitivity range of \$4--45/t CO$_2$. The T\&S cost contribution varies linearly with its unit price.
 
-\subsubsection{Sensitivity analysis}\label{sec:methods-sens}
+\subsubsection{CO$_2$ abatement cost}
+CO$_2$ abatement cost was used to evaluate the trade-off between hydrogen supply and CCS. Its definition is as follows: 
+    \begin{equation}
+    \text{Abatement cost} =
+    \frac{\Delta\mathrm{MJSP}}
+    {\Delta\mathrm{GHG}\times E_{saf}},
+    \end{equation}
+where \(E=31.66\)~MJ/L is the volumetric energy content of SAF. Because producers must at least meet the compliance threshold set by CORSIA, the reported value represents the additional cost of abatement beyond the reference configuration. Abatement costs values are undefined for configurations at or above the GHG intensity of compliance threshold. 
 
-Three complementary sensitivity treatments are run:
-\begin{itemize}
-\item \textbf{Pareto front.} With the main plant fixed at the knee-point scale (0.41~MMt/yr SAF), the ammonia portion (0--1) and CCS portion (0--1.0) are gridded into 30 configurations, and the non-dominated set is found minimizing both MJSP and WTWa GHG-100 intensity. Each point carries an MJSP uncertainty band drawn from the tornado drivers. The $6 \times 5$ grid crosses green-\ce{NH3} hydrogen shares of 0, 10, 25, 50, 75 and 100\% with CCS portions of 0, 25, 50, 75 and 100\% (Table~\ref{tab:S9-4}). MJSP is computed by the full TEA at every grid point. GHG is reported on the allocation basis with the Korea grid mix (Section~\ref{sec:methods-alloc}). It is built from the simulated CCS cases and a constant ammonia increment,
-\begin{equation}
-\mathrm{GHG}(a, c) = \mathrm{GHG}_{\mathrm{CCS}}(c) - a\,(\mathrm{GHG}_{\mathrm{grey}} - \mathrm{GHG}_{\ce{NH3}}),
-\end{equation}
-where $a$ is the ammonia portion and $c$ the CCS portion. This assumes that the upstream emission avoided by replacing grey \ce{H2} is independent of, and additive to, the process \ce{CO2} captured by CCS. In the band, biomass price is swept over the supply-curve span at this scale (107.3--116.1~\$/t, the forest-residue floor to the supply-curve price; Section~\ref{sec:methods-feed}) instead of the $\pm$50\% tornado range. CCS 60\%, the cheapest CORSIA-compliant point, lies between grid levels. Its MJSP comes from a TEA run at a CCS portion of 0.60, and its GHG is interpolated linearly between the simulated CCS 50\% and 75\% cases (Appendix~\ref{sec:S7}).
-\item \textbf{\ce{CO2} abatement cost.} Computed as $\Delta\mathrm{MJSP} \times 10^{6} / (\Delta\mathrm{GHG} \times E)$, where $E = 31.66$~MJ/L is the volumetric energy of SAF, giving \$/t \ce{CO2} avoided relative to the grey-\ce{H2} base. In the Pareto analysis the reference point is CCS 60\% rather than the grey-\ce{H2} base. A producer must reach compliance at least, so the reported value is the extra cost of abatement below that compliance point. The cost is calculated only for configurations with lower GHG intensity than CCS 60\%; configurations at or above it are left undefined. The values are plotted as a contour over green-\ce{NH3} share and CCS portion (Table~\ref{tab:S9-4}).
-\item \textbf{SHAP attribution.} The two cheapest compliant routes, CCS 60\% and Green \ce{NH3} 10\% + CCS 50\%, are examined with all drivers varied jointly: grey-\ce{H2} price 1000--4000~\$/t, ammonia price 270--1000~\$/t, CAPEX $\pm$30\%, \ce{CO2} T\&S 4--45~\$/t (CCS only), electricity price $\pm$30\%, co-product price $\pm$20\%, and capacity factor 85\%/91\%. In addition, biomass takes the supply-curve band above. CCS 60\% has seven drivers, because green-\ce{NH3} price is inactive at a zero ammonia share. Green \ce{NH3} 10\% + CCS 50\% has eight. For each route, 128 Latin-hypercube samples over the driver ranges are evaluated with the TEA. A gradient-boosted regression surrogate is fitted to them (in-sample $R^2 > 0.99$ is required), and TreeSHAP on the surrogate attributes each sample's MJSP to its drivers. MJSP is close to additive in these drivers, so the surrogate tracks the TEA almost exactly, and its fit is the only approximation in the attribution. Drivers are ranked by mean $|\mathrm{SHAP}|$ (Table~\ref{tab:S9-6}). One-at-a-time MJSP spans over the same ranges are computed for comparison (Table~\ref{tab:S9-7}).
-\end{itemize}
 
 \subsection{Life-cycle assessment}\label{sec:methods-lca}
 
 \subsubsection{System boundary and biogenic carbon}\label{sec:methods-boundary}
 
-The functional unit is 1~MJ of SAF and the boundary is well-to-wake (WTWa), taken as the sum of well-to-pump (WTP) and pump-to-wake (PTWa, i.e.\ combustion) stages; the combustion stage is taken from the Fischer--Tropsch-jet reference. Impacts are reported as GHG-100 (100-year global warming potential) in g~\ce{CO2}e per MJ SAF, using GREET-derived inventories \citep{greet}; the inventory tables, allocation factors, and SAF criterion are compiled in Appendix~\ref{sec:S7}.
+The functional unit is 1~MJ of SAF, and the system boundary covers the well-to-wake (WTWa) life cycle, comprising the well-to-pump (WTP) and pump-to-wake (PTWa) stages. The PTWa stage, representing fuel combustion, is adopted from the Fischer--Tropsch jet-fuel reference. Environmental impacts are expressed as GHG-100, based on 100-year global warming potential, in g~CO$_2$e/MJ SAF. Life-cycle inventories are derived from Greenhouse gases, Regulated Emissions, and Energy use in Technologies (GREET) model \cite{wang2023greet}, since it coincides with the standard of CORSIA. 
 
-Biogenic carbon is treated under carbon neutrality: biogenic combustion \ce{CO2} is carried as a separate species (\ce{CO2}\textsubscript{Biogenic}) distinct from fossil \ce{CO2} so that the biomass uptake and its combustion release net to zero, while any biogenic \ce{CO2} diverted to CCS registers as a negative emission. A time-resolved (dynamic) LCA variant is also available, propagating each pulse through the Bern impulse-response carbon-climate model \citep{levasseur2010} with a sequestration trajectory \citep{lan2021} (model detail in Appendix~\ref{sec:S6}).
+The total forest residue production emission includes forest maintenance activities, harvesting, collecting, bailing, and extracting, such as milling and chipping \cite{han2011well}.
+In the meantime, ILUC emission of the feedstock is not considered since it has low risk in generating ILUC emissions, which applies similarly to biomass from wastes and microalgae \cite{ICAO2023CORSIA}.
+This total emission of the production process is allocated to forest residue feedstock based on mass fractions, except for the emissions induced by fertilizer or agrochemical inputs \cite{han2011well}. 
 
-\subsubsection{Allocation}\label{sec:methods-alloc}
+Ammonia was assumed to be produced by renewable energy in Australia \cite{lee2022techno} and transported via conventional ship fueled by liquefied natural gas. Applying the technology of ammonia-fueled ships \cite{schwarzkopf2023future}, its benefit was negligible ($<$ 1.2 g CO$_2$e/MJ), so it was not included in the results of this paper.
+Heat utilities such as mid-pressure and low-pressure steam were counted by heat consumption of fuel, which is natural gas from North America, without considering transportation. 
+Heat exchange network in the process requires some make-up boiler feed water, and it is counted as process water resources. 
 
-Co-product emissions are handled by allocation, which is used for the central estimate. This choice keeps the SAF intensity insensitive to volatile displacement credits (grid electricity, fertilizer) whose market values swing the displacement result far more than the allocation result; the allocation basis therefore gives the more stable and conservative headline number, with displacement retained as the uncertainty bound. Co-products carried in the allocation are exported electricity and, in the ammonia configurations, nitrogen fertilizer. Both U.S.-grid and Korea-grid electricity mixes are evaluated.
+The counting of emissions from the downstream product chain imitates that of conventional synthetic paraffinic kerosene fuel. 
+SAF produced from the plant is distributed via multiple routes following the assumption of the domestic jet distribution over the U.S. \cite{xie2011assessment}.
+After reaching at pump stations, the PTWa emission profile is assumed to be the same as Fischer--Tropsch jet fuel from biomass \cite{elgowainy2012life}.
+SAF compliance is assessed against the CORSIA requirement that eligible SAF achieve at least a 10\% reduction in WTWa GHG-100 intensity relative to conventional jet fuel.
 
-\subsubsection{SAF compliance criterion}\label{sec:methods-corsia}
+Biogenic carbon is treated under the carbon-neutrality assumption. Biogenic combustion emissions are tracked separately as \(\text{CO$_{2, biogenic}$}\), distinct from fossil CO$_2$, such that biomass uptake and subsequent combustion emissions cancel. Biogenic CO$_2$ diverted to CCS is instead counted as a negative emission.
 
-Compliance is judged against the CORSIA rule: an eligible SAF must emit at least 10\% less than the conventional-jet baseline on a WTWa GHG-100 basis, i.e.\ the threshold is $0.9 \times$ (conventional-jet WTWa GHG-100). The conventional baseline is taken from the GREET inventory. On this basis the grey-\ce{H2} base case (87.6~g~\ce{CO2}e/MJ) is non-compliant, while full green ammonia (49.5~g~\ce{CO2}e/MJ) and 60\% CCS (60.3~g~\ce{CO2}e/MJ) both clear the threshold. These intensities use the U.S. grid mix. The cost--emission grid and the compliance screening in the Results (Section~\ref{sec:results}) use the Korea grid mix instead.
+% \subsubsection{Allocation}\label{sec:methods-alloc}
+
+Co-product emissions are allocated among the products for the central LCA estimate. This approach avoids strong dependence on displacement credits for exported electricity and fertilizer, whose results can vary substantially with the assumed displaced products and market conditions. 
+
+% \subsubsection{SAF compliance criterion}\label{sec:methods-corsia}
+
+\subsection{Sensitivity analysis}\label{sec:methods-sens}
+
+% Three complementary analyses are conducted.
+
+% First, cost-emission trade-off of hydrogen supply and CCS was evaluated.
+% The main plant is fixed at the knee-point scale of 0.41~MMt/yr SAF. The green-ammonia hydrogen substitution fraction (0--1) and CCS capture fraction (0--1.0) are varied over a \(6\times5\) grid, yielding 30 configurations. Green NH$_3$ hydrogen shares of 0, 10, 25, 50, 75, and 100\% are crossed with CCS capture fractions of 0, 25, 50, 75, and 100\% (Table~\ref{tab:S9-4}). The non-dominated configurations are identified by simultaneously minimizing MJSP and well-to-wake GHG-100 intensity.
+
+%%%% TO APPENDIX
+% MJSP is calculated using the full TEA for every grid point. GHG intensity is evaluated on the allocation basis using the Korean electricity grid mix (Section~\ref{sec:methods-alloc}). It is calculated from the simulated CCS cases and a constant ammonia-related emissions adjustment:
+%     \begin{equation}
+%     \mathrm{GHG}(a,c) =
+%     \mathrm{GHG}_{\mathrm{CCS}}(c)
+%     -a\left(\mathrm{GHG}_{\mathrm{grey}}-\mathrm{GHG}_{\mathrm{NH}_3}\right),
+%     \end{equation}
+%     where \(a\) denotes the green-ammonia substitution fraction and \(c\) denotes the CCS capture fraction. This formulation assumes that the upstream emissions avoided by replacing grey H$_2$ are independent of, and additive to, the process CO$_2$ captured by CCS.
+
+% Uncertainty bands for MJSP are constructed by varying the biomass price across the supply-curve range at this plant scale (107.3--116.1~\$/t), from the fixed forest-residue reference price to the supply-curve price (Section~\ref{sec:methods-feed}).
+
+Sensitivity of process economics was compared by computing SHAP attribution of different parameters. Sensitivity analysis was applied only when the compliance threshold was satisfied based on LCA. For each configuration, 128 Latin hypercube samples are generated over the specified parameter ranges and evaluated using the TEA model. A gradient-boosting regression surrogate is fitted to the resulting samples, with an in-sample \(R^2>0.99\) required. TreeSHAP values are then calculated from the surrogate to attribute each sample's MJSP to individual drivers.
+
+The varied parameters are grey-hydrogen price (\$1,000--4,000/t), green-ammonia price (\$270--1,000/t), CAPEX inflation (\(\pm30\%\)), CO$_2$ T\&S cost (\$4--45/t for CCS configurations), electricity price (\(\pm30\%\)), co-product prices (\(\pm20\%\)), and capacity factor (85\% or 91\%). Biomass price is additionally varied across the supply-curve range according to their production scale.
+
+\begin{table}[htbp]
+\centering
+\caption{Varied parameters and corresponding ranges or values.}
+\label{tab:varied_parameters}
+\begin{tabular}{ll}
+\hline
+\textbf{Parameter} & \textbf{Range / Value} \\
+\hline
+Grey-H$_2$ price & \$1,000--4,000/t \\
+Ammonia price & \$270--1,000/t \\
+CAPEX & $\pm 30\%$ \\
+CO$_2$ T\&S cost (CCS configurations) & \$4--45/t \\
+Electricity price & $\pm 30\%$ \\
+Co-product prices & $\pm 20\%$ \\
+Capacity factor & 85\% or 91\% \\
+Biomass price & Supply-curve range according to production scale \\
+\hline
+\end{tabular}
+\end{table}

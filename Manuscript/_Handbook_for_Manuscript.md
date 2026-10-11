@@ -35,6 +35,48 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-11 (update 4)
+
+**Discussion**
+- The user decided T&S stays on the EGR CO₂ (`622X`): `co2_seq = co2_left·capture + co2_EGR` in `funs.calc_cost_CCS` is intended. Dropped option: charging T&S on `co2_left·capture` only. Update 3 called this charge a modelling error; that was wrong. The \$10/t results (S9-1–S9-4, tornado, SHAP, crossover anchors) stand as they are.
+
+### 2026-10-11 (update 3)
+
+**Discussion**
+- The user approved replacing the values in SI S9-1–S9-3 with the T&S \$10/t numbers.
+- The user asked what "T&S on EGR CO₂" means. Stream `622X` is 200,000 lb/hr of pure CO₂ split off at `VAL-621` (the same block that releases `623CO2`) and returned as `622XX` into `VAL-610`. It is a recycle loop that sends CO₂ back into the process. `calc_cost_CCS` adds it to `co2_seq`, so T&S is charged on CO₂ that is never shipped or stored: 725,700 t/yr × \$10/t = \$7.26M/yr, or \$0.0128/L at 0.414 MMt/yr. That is the whole S9-4 vs composite gap. The same `co2_seq` also sizes the CCS unit's CAPEX and energy, so the base case (0% capture) carries a CCS unit sized on the recycle flow. That part is common to both runs and is not part of the gap.
+
+**Code**
+- `Manuscript/SI. Supporting Information.md`: rewrote the rows of S9-1, S9-2 and S9-3 from the regenerated `scale_up_base_summary.xlsx` and `scale_up_price_model_mjsp.xlsx` (T&S \$10/t). Captions unchanged.
+
+**Open**
+- Not decided: whether T&S should apply only to `co2_left·capture` (excluding the recycled `622X`). If so, every \$10/t result (S9-4, S9-5+, tornado, SHAP, crossover anchors) shifts by about −\$0.0128/L.
+- Rounding: S9-1 at 0.414 shows 0.793 (sum of unrounded components 0.79251), while S9-4 shows 0.792 (from 0.7925, already rounded to 4 decimals in the xlsx).
+
+### 2026-10-11 (update 2)
+
+**Discussion**
+- The user picked T&S \$10/t for the scale-up runs (not a caption note) and asked for a basis check on the other composite figures.
+- `composite_pareto_crossover_shap.png` was already on one basis: (a, b) come from `pareto_front.xlsx` (`CO2_TS = 10`); (c, d) from `tea_pareto_shap.py` (`TS_BASE = 10`); (e) uses the `plot_ammonia_crossover.py` anchors 0.977 / 1.098, taken from tornado runs at `TS_BASE = 10`. No re-run was needed.
+
+**Code**
+- `tea_scale_up.py`, `tea_scale_up_price_models.py`: added `tea.co2_ts_usd_per_ton = 10.` and re-ran both. `scale_up_base_summary.xlsx` and `scale_up_price_model_mjsp.xlsx` were regenerated, then the composite was redrawn with `plot_scale_up_from_xlsx.py`. Base MJSP at 0.414 MMt/yr is now 0.7925 and full CCS is 1.3337, both equal to S9-4. Each scale shifts by about +\$0.012/L (base and full NH₃, EGR T&S) and about +\$0.068/L (full CCS).
+- `tea_scale_up.py` still crashes at line 322 (`KeyError: [18.5]`). An equipment table indexes scale 18.5, which is not in `case_scale`. This bug was already there; the outputs used for the figures are written before line 322.
+
+**Open**
+- SI Tables S9-1–S9-3 and `_Scale_Up_Sensitivity.md` still show the T&S-0 numbers and need updating.
+
+### 2026-10-11
+
+**Discussion**
+- The user flagged that the 0.414 MMt/yr base MJSP disagrees: SI Table S9-4 (a=0, c=0) gives \$0.792/L and `Figure/composite_scale_up_mjsp.png` gives \$0.780/L.
+- Cause: CO₂ T&S basis. `tea_pareto_front.py` sets `co2_ts_usd_per_ton = 10`. `tea_scale_up.py` and `tea_scale_up_price_models.py` keep the default of 0. In `funs.calc_cost_CCS`, `co2_seq = co2_left·capture + co2_EGR`, so the EGR stream `622X` is charged T&S even at 0% capture. That charge, \$0.0128/L, is the whole gap. Re-running the current engine with the Scale0100 551 files gives 0.7797 (T&S 0) and 0.7925 (T&S 10), which match both sources exactly. Engine and input files are unchanged since 2026-09-26, so neither number is stale.
+- The scale-up 60% CCS line (T&S 0) and the S9-4 abatement anchor CCS 60% \$0.977/L (T&S 10) have the same basis mismatch.
+
+**Open**
+- Not decided: put scale-up on T&S \$10/t (re-run `tea_scale_up.py`, `tea_scale_up_price_models.py`, then redraw the composite and SI S9-1–S9-3), or add a T&S-basis note to S9-4 and the figure caption.
+- Not decided: whether the base case (0% capture) should be charged T&S on EGR CO₂ at all.
+
 ### 2026-10-03 (update 5)
 
 **Discussion**
