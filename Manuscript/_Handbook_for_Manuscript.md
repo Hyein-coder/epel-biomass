@@ -35,6 +35,122 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-13 (update 19)
+
+**Discussion**
+- The user checked the gasification temperature, which resolves part of the open item in update 18. Our pyrolyzer design is 925 °F (~496 °C), with sand entering at 1,190 °F (~643 °C). Both are below the 870 °C and 1,300 °C gasifier cases in Swanson 2010.
+
+**Open**
+- Not yet decided: add "(~500 °C)" to the pyrolysis-temperature clause in the Introduction ¶3.
+- Not yet decided: change `SI.tex` line 55 from 1189 °F to 1,190 °F.
+
+### 2026-10-13 (update 18)
+
+**Discussion**
+- The user asked for one sentence in the Conclusion saying our SAF is slightly cheaper than earlier work. The comparison uses the update 13 energy-basis values (base `\$25.0/GJ`, CCS 50% `\$28.8/GJ`) against the Introduction range of `\$34.8–91.0/GJ` (CEPCI, 2022 USD).
+
+**Code**
+- `4 Conclusion.tex` ¶2: appended a sentence after the CCS 50% lowest-cost sentence, citing `dutta2023model` and `griffin2024opening`.
+
+**Open**
+- The `\$/GJ` values depend on E = 31.66 MJ/L (update 13 open item). If 35.2 MJ/L is right, they drop by about 10%, which widens the gap but leaves the claim intact.
+
+### 2026-10-13 (update 18)
+
+**Discussion**
+- The user asked for citations for the two uncited clauses added in update 16: pyrolysis runs cooler than gasification, and syngas cleanup adds cost.
+- I chose Bridgwater 2012 for the temperature claim. Swanson 2010 is cited with it because it reports gasifiers running at 870 °C and 1,300 °C. For the complexity-and-cost claim I chose Swanson 2010 and Anex 2010.
+
+**Code**
+- `main-sc.bib`: appended `bridgwater2012review`, `swanson2010techno` and `anex2010techno`. The metadata comes from Crossref, and a fact-checker agent confirmed it (all 13 Anex authors).
+- `1 Introduction.tex`: added `\citep{swanson2010techno, anex2010techno}` after "complexity and cost" in ¶2. Added `\citep{bridgwater2012review, swanson2010techno}` after "lower temperatures than gasification" in ¶3.
+
+**Open**
+- The fact-checker rated support as PLAUSIBLE, not CONFIRMED. The Elsevier full texts returned 403, so there are no verbatim quotes for Bridgwater's ~500 °C, Swanson's cleanup cost, or Anex's capital-cost comparison. Check them with institutional access.
+
+### 2026-10-13 (update 17)
+
+**Discussion**
+- The user added a sentence to the scale/feedstock paragraph saying that feedstock remains a key factor. I copy-edited it.
+
+**Code**
+- `1 Introduction.tex` (line 13): "In other words, the feedstock viability is still playing key-role…" became "In particular, feedstock availability and cost remain key factors in the sustainable production of alternative jet fuels." "In other words" was wrong because the sentence does not restate the one before it. I also fixed the next sentence. It said that a larger plant cuts capital cost *as* sourcing expands, which is not what the comment above the paragraph intends. It now reads "Although increasing plant capacity can reduce unit capital costs, it also raises feedstock costs as sourcing expands…".
+
+**Open**
+- Not yet checked whether `chireshe2025cost` supports the rising-feedstock-cost half of the corrected sentence.
+
+### 2026-10-13 (update 16)
+
+**Discussion**
+- The user reorganized the Introduction and asked for better conjunctions in the 2nd and 3rd paragraphs (HEFA/FT limits; fast pyrolysis and prior studies), and allowed the 2nd paragraph to be longer.
+
+**Code**
+- `1 Introduction.tex`: ¶2 now opens with "However". It adds two consequences (HEFA supply alone cannot keep pace with demand; FT adds complexity and cost) and a bridge sentence leading into pyrolysis. In ¶3, "Meanwhile" became "Fast pyrolysis ... offers such an alternative, because it operates at lower temperatures than gasification". "Moreover" became "In addition", the prior-study sentence now starts with "Accordingly", and "Nevertheless" became "Despite these advances".
+
+**Open**
+- The new uncited clauses (pyrolysis runs cooler than gasification; FT cleanup adds cost) are general knowledge. Decide whether they need a citation.
+
+### 2026-10-13 (update 15)
+
+**Discussion**
+- The user moved the prior-study sentences from ¶2 to ¶3, because Dutta 2023 and Griffin 2024 are both woody-biomass pyrolysis studies. They now open ¶3 and lead into the existing scale and feedstock-cost argument. The first sentence now says "woody-biomass pyrolysis".
+
+**Code**
+- `main-sc.bib`: appended `dutta2023model` and `griffin2024opening`, with metadata from the doi.org BibTeX for each DOI. A. Nolan Wilson is written as `Wilson, A. Nolan`. Correction to update 14: the citations now resolve.
+- `1 Introduction.tex`: moved the two sentences to the start of ¶3 and updated the ¶3 comment.
+
+**Open**
+- The "more expensive than petroleum jet fuel" claim still has no cited jet-price figure.
+
+### 2026-10-13 (update 14)
+
+**Discussion**
+- The user asked for a prior-study context sentence in the Introduction: (1) earlier pyrolysis designs span a wide MSP and GHG range, in 2022 USD on CEPCI; (2) they are still expensive.
+- Ranges come from `_Base_Revision.md` §5.2–5.3, CEPCI ×1.506 basis: MSP `\$34.8–91.0/GJ` (Dutta 2023 low end, Griffin 2024 ±10% high end) and GHG 3.9–35.0 g CO₂e/MJ (Dutta Case B to Case C; Griffin 7–13.3 and Jones 2013 28.3–33.3 fall inside).
+- Bann 2017, Michailos 2019 and Wang 2022 are left out of the range because they have not been escalated to 2022 USD.
+
+**Code**
+- `1 Introduction.tex` ¶2: two sentences appended after the lignin/jet-fraction sentence, citing `dutta2023model` and `griffin2024opening`.
+
+**Open**
+- `dutta2023model` and `griffin2024opening` are not in `main-sc.bib` yet, so the citations will show as `?` until entries are added.
+- The "more expensive than petroleum jet fuel" claim has no cited jet-price figure.
+
+### 2026-10-13 (update 13)
+
+**Discussion**
+- Our SAF energy density is E = 31.66 MJ/L. It is the process volume basis (SAF MJ/hr ÷ L/hr from Aspen), the same litre our MJSP is quoted on (`2 Methods.tex` l.83, `tea_pareto_front.py:198`). The update 10/12 assumption of 34.5 MJ/L is superseded.
+- Our MJSP on an energy basis (1Q-2022 USD): `$0.79/L` = `$25.0/GJ`; CCS 50% `$0.913/L` = `$28.8/GJ`; maximum `$3.09/L` = `$97.6/GJ`. Per litre of gasoline equivalent (32.36 MJ/L, the GGE basis of Dutta and Griffin): `$0.81`, `$0.93` and `$3.16/LGE`.
+- Compared with the update 12 escalated values: Dutta 2023 is `$27–31/GJ` (CPI) or `$35–40/GJ` (CEPCI); Griffin 2024 is `$53–72/GJ` (CPI) or `$68–91/GJ` (CEPCI). Our base and our CCS 50% case both sit at or below Dutta's lower bound.
+- Inconsistency found: SI Table (`SI.tex` l.146–147) lists an LHV of 44.8 MJ/kg and a specific gravity of 786 (it should read 0.786). These imply 35.2 MJ/L, not 31.66. Conversely, 31.66 MJ/L implies 0.707 kg/L at 44.8 MJ/kg (below the Jet A minimum of 0.775) or 40.3 MJ/kg at 0.786.
+
+**Code**
+- None.
+
+**Open**
+- Reconcile E = 31.66 MJ/L with the SI LHV and specific gravity. One of the Aspen volume basis, the density or the LHV is off. If 35.2 MJ/L is right, MJSP per GJ and the abatement costs (`$/t`) drop by about 10%.
+- The specific gravity "786" in `SI.tex` l.147 is missing its decimal point.
+
+### 2026-10-13 (update 12)
+
+**Discussion**
+- Our cost basis is 1Q-2022 USD (`2 Methods.tex` l.28; `funs.py:58-59`, `cost_idx_1Q2022 = 3230`, `cost_idx_Jones = 2250` for 2011). The repo does not name this index and has no 2016 value for it. It is not the Nelson–Farrar index (about 2,400 in 2011).
+- Dutta 2023 and Griffin 2024 are in 2016 USD and were escalated to 1Q-2022 with two factors that bracket the result:
+  - CPI-U: 1Q-2022 average 284.123 / 2016 annual 240.007 = 1.184. Values from BLS series CUUR0000SA0, 2016 annual averaged from the monthly values.
+  - CEPCI: 2022 annual 816.0 / 2016 annual 541.7 = 1.506. The 541.7 is confirmed; the 816.0 is from memory (paywalled source).
+- Escalated values, in `$/GGE`, `$/LGE` and `$/GJ`:
+  - Dutta 2023 Cases A–C: CPI `3.35–3.80`, `0.885–1.004`, `27.4–31.0`; CEPCI `4.26–4.84`, `1.126–1.277`, `34.8–39.5`.
+  - Griffin 2024 (±10% band): CPI `6.51–8.76`, `1.72–2.31`, `53.2–71.5`; CEPCI `8.29–11.15`, `2.19–2.95`, `67.6–91.0`.
+- A single index applied to the whole MFSP is a simplification: capital, feedstock and operating costs escalate differently. CPI gives the lower bound and CEPCI the upper.
+
+**Code**
+- None.
+
+**Open**
+- Name and source of the 3230/2250 index; it should be stated in `2 Methods.tex` l.28 and the SI.
+- CEPCI 2022 annual (816.0) and the 1Q-2022 monthly CEPCI values are unverified (paywalled).
+- Jet LHV behind our `$/GJ` figure: `funs.py:146` gives density from Aspen; the LHV is not checked.
+
 ### 2026-10-13 (update 11)
 
 **Discussion**
