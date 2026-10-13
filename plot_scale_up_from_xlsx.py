@@ -37,6 +37,7 @@ df_price = sheets.pop('biomass price')
 xlabels = [f'{v:.2f}' for v in df_price.pop(X_COL)]
 # upper panel reuses lower-panel tick labels (same 7 scale-up cases, row order)
 df_base.index = xlabels
+df_base = df_base.rename(columns={'governance and admin.': 'general and admin.'})
 
 stack_hatches = ['///', '\\\\\\', 'xxx', '...', 'ooo', '+++', '---', '|||', '**']   # one per cost column
 fig, (ax_top, ax) = plt.subplots(2, 1, figsize=FIGSIZE)
