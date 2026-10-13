@@ -35,6 +35,19 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-13
+
+**Discussion**
+- Reviewer comment 5: SI S7 supply labels did not match. The reviewer read 3,127,378 t/yr as the residue ceiling and 2.84 as log. That reading is wrong. In the price model (`tea_biomass_price_only.py:7-8`, 783486 / 902296 lb/hr × 8000 h), FR = 2.84 and Log = 3.27 MMt/yr, which matches the 2021 production in `plot_ppt.py`. The labels on the FR–Log Linear and Fixed Elasticity curves were correct; the "ceilings" sentence was the one that was wrong.
+- The user chose to write every supply figure in MMt/yr.
+
+**Code**
+- `Manuscript/SI.tex` S7 ceilings line and `SI. Supporting Information.md` S8: "FR 3,127,378; log (2,843,071 + 3,274,200) t/yr" changed to "FR 2.84; log 3.27 (combined 6.12) MMt/yr". Cause: in `tea_scale_up_price_models.py` the FR value had been put in the log sum.
+- `tea_scale_up_price_models.py`: deleted the unused `supply_rate_in_tpd`/`supply_rate_in_coverage` (the source of the mislabel, referenced nowhere else).
+
+**Open**
+- The source of 3,127,378 t/yr is unknown; it has been in the code since the initial commit.
+
 ### 2026-10-11 (update 6)
 
 **Discussion**

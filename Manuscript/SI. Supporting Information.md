@@ -142,8 +142,8 @@ Used only for the dynamic-GWP illustration (`Dynamic_LCA/`), not the headline in
 ## S8. Supply-availability context
 
 Domestic feedstock ceilings used to convert plant scale to a share of aviation-fuel demand
-(`tea_scale_up_price_models.py`): forest residue 3,127,378 t/yr; log (2,843,071 + 3,274,200)
-t/yr. Critical scale multiples where each supply tier is exhausted: forest residue ≈8.6×,
+(`tea_biomass_price_only.py`): forest residue 2.84 MMt/yr; log 3.27 MMt/yr (combined
+6.12 MMt/yr). Critical scale multiples where each supply tier is exhausted: forest residue ≈8.6×,
 forest residue + log ≈18.5×.
 
 ## S9. Data tables for the Results figures
