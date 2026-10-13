@@ -6,6 +6,7 @@ import os
 from funs import TEA
 
 tea = TEA()
+tea.co2_ts_usd_per_ton = 10.   # CO2 T&S basis, same as tea_pareto_front.py / tea_tornado.py
 operation_hr = 8000
 
 case_scale = [1, 2.5, 5, 7.5, 10, 20, 30]

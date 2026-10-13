@@ -23,6 +23,7 @@ SA_RC = {
 }
 
 tea = TEA()
+tea.co2_ts_usd_per_ton = 10.   # CO2 T&S basis, same as tea_pareto_front.py / tea_tornado.py
 
 # case_scale = [7.5, 8.6, 10]
 case_scale = [1, 2.5, 5, 7.5, 10, 20, 30]
