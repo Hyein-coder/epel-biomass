@@ -35,6 +35,22 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-11 (update 6)
+
+**Discussion**
+- The user asked to bring the MJSP numbers in the synced `.tex` files onto T&S \$10/t, uncommitted, so they can review the edits.
+- Method: mapped every old→new scale-up MJSP (HEAD xlsx vs regenerated xlsx) at 2 and 3 decimals and searched all `.tex` files for them. False positives left alone: lignin compound shares and H₂ price in SI, tornado table rows already on \$10/t, and 0.41 MMt/yr scale mentions.
+- Re-checked the scale claims in Results ¶1 on the new numbers. All still hold: capital ≈47% of the drop to 0.41 (text: "approximately half"), 88% of the reduction by 0.41 (text: ≈90%), 59% total drop (Conclusion: ≈60%), per-doubling ≈20% below 0.41 and ≈10% above.
+
+**Code**
+- `Manuscript/SI.tex`: rows of Tables S8-1–S8-3 (lines 561–614) regenerated from the xlsx; only the numbers changed, 21 rows.
+- `Manuscript/3 Results.tex`: ¶1 \$1.64→\$1.65 and \$0.66→\$0.68/L; ¶2 \$0.78→\$0.79 and \$0.84→\$0.85/L.
+- `Manuscript/4 Conclusion.tex`: ¶2 \$0.78/L→\$0.79/L (\$3.09/L unchanged; it comes from `pareto_front.xlsx`, already on \$10/t).
+
+**Open**
+- Results ¶4 says operating expenditure is ">80% of the gross production cost" at 0.41 MMt/yr. From `scale_up_base_summary.xlsx` it is 72% (gross = all components except co-product sales), and it was 72% under T&S 0 as well. This claim was wrong before today's T&S change.
+- `3. Results.md` still has the old values; it is superseded by the `.tex` but has not been synced.
+
 ### 2026-10-11 (update 5)
 
 **Discussion**
