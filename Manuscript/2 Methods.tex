@@ -23,7 +23,7 @@ At the base scale, the plant processes 0.343~MMt/yr of woody biomass and produce
 
 The Aspen Plus flow-sheet is costed using Aspen Process Economic Analyzer (APEA). The resulting \textit{Main} block, which represents whole-flow sheet capital and operating expenditures (CAPEX and OPEX) obtained from the APEA, is combined with five separately costed sub-units: CCS, pressure swing adsorption (PSA) hydrogen recovery, the off-gas reformer, hydrotreating catalysts, and the hydrocracker. Cost interpolation for these sub-units is detailed in SI~S3.
 
-Plant capacity is scaled from the base-case SAF output of 0.041 MMt/yr to 1.23 MMt/yr, representing a 30-fold difference between the smallest and largest plant scales. Rather than applying a single cost-scaling exponent to the entire plant, each major unit is assigned an explicit single-train capacity limit. Additional parallel trains are introduced when a unit reaches its limit. The capacity limits and corresponding numbers of trains at each scale are reported in SI~S4. Because additional trains replicate existing units rather than enlarge individual units, they do not benefit from further single-unit economies of scale. This train-level configuration is implemented explicitly in the assessment at each plant scale.
+Plant capacity is scaled from the base-case SAF output of 0.041 MMt/yr to 1.24 MMt/yr, representing a 30-fold difference between the smallest and largest plant scales. Rather than applying a single cost-scaling exponent to the entire plant, each major unit is assigned an explicit single-train capacity limit. Additional parallel trains are introduced when a unit reaches its limit. The capacity limits and corresponding numbers of trains at each scale are reported in SI~S4. Because additional trains replicate existing units rather than enlarge individual units, they do not benefit from further single-unit economies of scale. This train-level configuration is implemented explicitly in the assessment at each plant scale.
 
 All costs are reported in first-quarter 2022 USD. Costs from the original study of \citep{jones2013process} are escalated using a cost-index ratio of 3230/2250. The financial assumptions are 8,000 operating hours per year, a 30-year plant life, a 10\% internal rate of return (IRR), and a 35\% tax rate. The complete cost basis and financial assumptions are provided in SI~S2.
 
@@ -35,7 +35,7 @@ The recovery process was modified to employ a sulfuric acid scrubbing system to 
 
 \subsubsection{Carbon capture and storage}\label{sec:methods-ccs}
 
-Post-combustion CCS is modeled using a monoethanolamine (MEA)-based retrofit. Its cost is interpolated from the power-plant amine-capture reference case reported by \citet{rao2002}, which processes 3.13~MMt/yr of CO$_2$, has a total CAPEX of \$297.9~M, requires 7,772~GWh/yr of regeneration heat, and consumes auxiliary electricity equivalent to 14\% of the heat duty. All costs are converted to refer to first-quarter 2022 USD.
+Post-combustion CCS is modeled using a monoethanolamine (MEA)-based retrofit. Its cost is interpolated from the power-plant amine-capture reference case reported by \citet{rao2002technical}, which processes 3.13~MMt/yr of CO$_2$, has a total CAPEX of \$297.9~M, requires 7,772~GWh/yr of regeneration heat, and consumes auxiliary electricity equivalent to 14\% of the heat duty. All costs are converted to refer to first-quarter 2022 USD.
 
 The total captured mass comprises the exhaust-gas-recirculation (EGR) CO$_2$ stream and a specified fraction of the recoverable process CO$_2$ stream. The EGR CO$_2$ stream is completely captured. Capture-unit CAPEX scales with captured mass according to the six-tenths rule, whereas OPEX scales with an exponent of 0.7. Utility requirements scale linearly with captured mass. Capture OPEX includes make-up fuel for regeneration heat not supplied by on-site heat, auxiliary electricity, and optional CO$_2$ transport and storage (T\&S), the details for which is described in section~\ref{sec:methods-ccscost}). The capture fraction is varied from 0 to 1.0. The complete CCS cost derivation is provided in SI~S6.
 
@@ -67,7 +67,7 @@ From then on, it maintains the elasticity of 0.3, making the slope steeper (SI~S
 
 \subsubsection{Green ammonia and hydrogen supply}\label{sec:methods-nh3}
 
-Green ammonia is assigned a base price of \$635/t NH$_3$, with sensitivity analysis spanning \$270/t, representing a projected future price, to \$1,000/t, representing a current price. Hydrogen produced through ammonia cracking replaces grey hydrogen at a specified substitution fraction. The grey-hydrogen reference is priced at \$1,499/t H$_2$ \citep{katebah2022}.
+Green ammonia is assigned a base price of \$635/t NH$_3$, with sensitivity analysis spanning \$270/t, representing a projected future price, to \$1,000/t, representing a current price. Hydrogen produced through ammonia cracking replaces grey hydrogen at a specified substitution fraction. The grey-hydrogen reference is priced at \$1,499/t H$_2$ \citep{katebah2022analysis}.
 
 \subsubsection{CCS cost}\label{sec:methods-ccscost}
 
