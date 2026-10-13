@@ -35,6 +35,17 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-13 (update 20)
+
+**Discussion**
+- Checked abstract numbers in `main-sc.tex` against `3 Results.tex`. Only numeric claim is the grey-H₂ crossover; it still held the old CCS 60% anchor values (\$1.59–2.91/kg) instead of the CCS 50% values in Results, SI Table S8-5 and Conclusion (\$2.51–3.82/kg).
+
+**Code**
+- `main-sc.tex`: abstract (line 166) and highlight 3 (line 179) crossover changed \$1.59–2.91 → \$2.51–3.82/kg H₂.
+
+**Open**
+- During the session, another edit renamed grey→gray across the manuscript files (uncommitted). It did not come from this session.
+
 ### 2026-10-13 (update 19)
 
 **Discussion**

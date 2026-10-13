@@ -358,7 +358,160 @@ T&amp;S price-range reference: Smith et al., *The cost of CO2 transport and stor
 global integrated assessment modeling*, IJGGC 2021
 (`D:\ObsidianVault\KAN\VibeCoding\References\biomass\IJGGC_2021_Smith_The cost of CO2 transport and storage in global integrated assessment modeling.pdf`).
 
+## 5. Comparison with earlier studies
+
+A co-author asked for a comparison with the MJSP and GHG ranges reported in earlier pyrolysis jet/SAF TEA and LCA studies, and for a clearer research-gap statement.
+
+### 5.1. Cost and energy basis
+
+- **Our dollar basis** is 1Q-2022 USD (`2 Methods.tex` l.28). `funs.py:58-59` holds `cost_idx_1Q2022 = 3230` and `cost_idx_Jones = 2250` (2011). Neither the code nor Methods names the index, and it has no 2016 value. It is not Nelson–Farrar, which was about 2,400 in 2011.
+- **Escalating earlier studies from 2016 to 1Q-2022** uses two public indices that bracket the result:
+  - CPI-U: 284.123 / 240.007 = **1.184** (BLS series CUUR0000SA0; 1Q-2022 is the average of Jan–Mar, 2016 is the annual average of the monthly values).
+  - CEPCI: 816.0 / 541.7 = **1.506**. The 541.7 is confirmed; the 816.0 is unverified because the source is paywalled.
+- Applying one index to the whole MFSP is a simplification, since capital, feedstock and operating costs escalate differently. CPI gives the lower bound and CEPCI the upper. Our own 2011→1Q-2022 ratio (1.436) is plant-cost-like, so CEPCI is probably the closer analogue.
+- **Our energy density** is E = 31.66 MJ/L. It is the process volume basis (SAF MJ/hr ÷ L/hr), the same litre our MJSP is quoted on (`2 Methods.tex` l.83). Dutta 2023 and Griffin 2024 quote per gallon gasoline equivalent (GGE = 116,090 Btu/gal LHV = 122.5 MJ = 32.36 MJ/L), about 2% above our litre.
+- **Selected basis (user, 2026-10-13): CEPCI, ×1.506 (816.0 / 541.7).** The CPI columns below are kept for reference only.
+  - 816.0 is cross-checked: chemengonline reports the 2023 annual CEPCI as "797.9, a decrease of more than 18 points compared to 2022", which is consistent with 816.0.
+  - We use the 2022 annual average, not the 1Q-2022 average; the monthly values are paywalled.
+- **CEPCI values to cite (1Q-2022 USD):**
+  - Dutta 2023: `$4.26–4.84/GGE` = `$1.13–1.28/LGE` = `$34.8–39.5/GJ`.
+  - Griffin 2024: `$8.29–11.15/GGE` = `$2.19–2.95/LGE` = `$67.6–91.0/GJ` (base `$9.26–10.08/GGE`).
+
+### 5.2. MJSP comparison (1Q-2022 USD)
+
+| Study | Process | Dollar year (as reported) | As reported | `$/GJ` (CPI) | `$/GJ` (CEPCI) |
+| --- | --- | --- | --- | --- | --- |
+| **This work**, grey-H₂ base | FP + HDO, forest residue, 0.41 MMt/yr SAF | 1Q-2022 | `$0.79/L` | 25.0 | 25.0 |
+| **This work**, CCS 50% (cheapest CORSIA-compliant) | same | 1Q-2022 | `$0.913/L` | 28.8 | 28.8 |
+| **This work**, maximum | green NH₃ + CCS | 1Q-2022 | `$3.09/L` | 97.6 | 97.6 |
+| Dutta et al. 2023, Cases A–C | ex situ CFP (Pt/TiO₂), 2000 dry t/d, gasoline + diesel | 2016 | `$2.83–3.21/GGE` | 27.4–31.0 | 34.8–39.5 |
+| Griffin et al. 2024, ±10% band | ex situ CFP (ZSM-5) + HT, whole fuel pool incl. SAF | 2016 | `$5.5–7.4/GGE` | 53.2–71.5 | 67.6–91.0 |
+
+Dutta 2023 case values (2016 `$/GGE` → 1Q-2022 `$/LGE`, CPI / CEPCI):
+
+| Case | Setup | 2016 `$/GGE` | `$/LGE` (CPI) | `$/LGE` (CEPCI) |
+| --- | --- | --- | --- | --- |
+| A | refinery co-hydrotreating with NG-SMR H₂; acetone + MEK coproducts | 2.83 | 0.885 | 1.126 |
+| B | standalone hydrotreating with off-gas H₂; coproducts | 3.13 | 0.979 | 1.246 |
+| C | as A, without coproducts | 3.21 | 1.004 | 1.277 |
+
+Griffin 2024: base `$6.69/GGE` (17 wt% O) and `$6.15/GGE` (20 wt% O). In 1Q-2022 that is `$1.92–2.09/LGE` (CPI) or `$2.45–2.66/LGE` (CEPCI); TCI is `$711M` and `$726M` (2016).
+
+The other jet-specific pyrolysis TEAs, not yet escalated, are:
+- Bann et al. 2017: `$1.52/L` (`$1.02–2.10`), 2015 USD.
+- Michailos & Bridgwater 2019: `$1.98/L`, 2017 USD.
+- Wang et al. 2022: `$3.21/L`; dollar year not stated.
+
+**Reading.** Our base case and our CCS 50% case sit at or below the lower end of Dutta 2023 and at less than half of Griffin 2024. Scale is the likely reason, since 0.41 MMt/yr SAF is roughly twice a 2000 t/d plant. This needs to be stated next to any comparison.
+
+**CCS 50% MJSP range in `$/GGE`.** Taken from the existing one-at-a-time sensitivity table (`Result/tornado_shap_ccs50_vs_nh10ccs39.xlsx`, SI Table S8-7). Conversion: `$/GGE` = `$/L` × 122.48 / 31.66 = ×3.869.
+
+| CCS 50% | `$/L` SAF | `$/GGE` | Set by |
+| --- | --- | --- | --- |
+| Base | 0.913 | **3.53** | — |
+| Low end | 0.666 | **2.58** | co-product price at its high end |
+| High end | 1.962 | **7.59** | grey-H₂ price at its high end |
+| High end, grey H₂ at base | 1.160 | 4.49 | co-product price at its low end |
+
+- Against CEPCI-escalated values: our base (`$3.53`) is below Dutta 2023 (`$4.26–4.84/GGE`), and only the grey-H₂ price pushes it above. Even our high end (`$7.59`) is below Griffin 2024's low end (`$8.29–11.15/GGE`).
+- This is a one-at-a-time envelope, not a joint uncertainty interval.
+- If E = 35.2 MJ/L (§5.5), all values drop by about 10%: base `$3.18`, range `$2.32–6.83/GGE`.
+
+### 5.3. GHG comparison
+
+Each study uses a different fossil comparator, so compare absolute g CO₂e/MJ and treat the percentage reductions with care.
+
+| Study | Hydrogen source | GHG, g CO₂e/MJ | Comparator, g/MJ | Reduction |
+| --- | --- | --- | --- | --- |
+| **This work**, grey-H₂ base | purchased NG-SMR | **100.8** | 89 (CORSIA) | +13% (above fossil) |
+| **This work**, CCS 50% | NG-SMR + 50% capture | **78.99** | 89 | −11% |
+| **This work**, minimum | green NH₃ + CCS | **21.9** | 89 | −75% |
+| Dutta 2023, Case A | refinery NG-SMR (co-hydrotreating) | 21.5 | 93 (gasoline) | −77% |
+| Dutta 2023, Case B | CFP off-gas reforming | 3.9 | 93 | −96% |
+| Dutta 2023, Case C | refinery NG-SMR, no coproducts | 35.0 | 93 | −62% |
+| Griffin 2024, 17 wt% O / 20 wt% O | off-gas reforming | 7 / 13.3 | 88.7 (jet) | −92% / −85% |
+| de Jong et al. 2017 | in situ off-gas vs ex situ NG-SMR | 54–75% savings | 87.5 | −54 to −75% |
+| Han et al. 2013 | GREET pyrolysis jet | 68–76% reduction | petroleum jet | −68 to −76% |
+| Jones et al. 2013 (gasoline) | off-gas reforming + makeup NG | 28.3–33.3 | 93.4 | −64 to −70% |
+
+Notes:
+- Dutta 2023 Case A includes a coproduct displacement credit of 19.1 g/MJ (acetone, MEK) and about 29 g/MJ from refinery co-hydrotreating (Section 3.2).
+- Griffin's GHG values come from GREET 2022, Dutta's from GREET 2021.
+
+**Reading.**
+- Every earlier pyrolysis LCA meets a 10% reduction comfortably because its H₂ comes mostly from reformed process off-gas.
+- Dutta Case C uses fossil NG-SMR H₂ with no coproduct credit and still reaches 35.0 g/MJ. Our grey-H₂ base, at 100.8 g/MJ, is about 3× that figure. The manuscript needs a contribution-level explanation (H₂ demand per MJ, the SMR H₂ emission factor, whether off-gas is reformed or credited, and the boundary) before this comparison is published.
+- Framed correctly, this is the finding: the H₂ source alone decides whether pyrolysis SAF meets CORSIA.
+
+### 5.4. Research gap (fact-checked 2026-10-13, OpenAlex)
+
+- **Defensible:**
+  - First pyrolysis-SAF TEA/LCA that couples a scale-dependent biomass supply curve with single-train equipment limits. Wright & Brown 2007 (10.1002/bbb.25) is generic, with no jet or LCA.
+  - No study found that uses ammonia-derived H₂ for bio-oil upgrading. Word this as "to our knowledge".
+  - The 30-configuration NH₃ × CCS map with a crossover grey-H₂ price is new.
+  - ICAO Doc 06 (8th ed., Nov 2025) lists no default value for pyrolysis or HDCJ.
+- **Not defensible:**
+  - CCS on pyrolysis-route fuels is prior art: Jafri 2022 (10.3389/fenrg.2022.797529), Meerman & Larson 2017 (10.1039/c7se00013h), Ahlström 2023 (10.1016/j.ijggc.2023.103886).
+  - Electrolytic H₂ already appears as a sensitivity case in de Jong 2017 (10.1186/s13068-017-0739-7).
+
+### 5.5. Inconsistency found while comparing
+
+The SI fuel-property table (`SI.tex` l.146–147) gives an LHV of 44.8 MJ/kg and a specific gravity of "786", which should read 0.786. Together they imply 35.2 MJ/L, not the E = 31.66 MJ/L used for MJSP and abatement cost. Conversely, 31.66 MJ/L implies a density of 0.707 kg/L at 44.8 MJ/kg (below the Jet A minimum of 0.775) or 40.3 MJ/kg at 0.786. If 35.2 MJ/L is correct, our `$/GJ` values and abatement costs (`$/t`) drop by about 10%.
+
+**References.**
+- Dutta et al. 2023, *Chem. Eng. J.* 451, 138485, 10.1016/j.cej.2022.138485 (`D:\ObsidianVault\KAN\VibeCoding\References\biomass\CEJ_2023_Dutta_Model quantification of the effect of coproducts--fast pyrolysis process.pdf`).
+- Griffin et al. 2024, *Green Chem.* 26, 9768, 10.1039/d4gc03333g (`D:\ObsidianVault\KAN\VibeCoding\References\biomass\GreenChem_2024_Griffin_Opening pathways for the conversion of woody biomass into sustainable aviation fuel via catalytic fast pyrolysis and hydrotreating.pdf`).
+- Other DOIs: `Manuscript/_Handbook_for_Manuscript.md`, 2026-10-13 updates 4, 10, 12 and 13.
+
 ## Log history
+
+### 2026-10-13 (update 3)
+
+**Discussion**
+
+- The user asked for the MJSP range of CCS 50% in `$/GGE`. Recorded in §5.2: base `$3.53`, range `$2.58–7.59/GGE` (one-at-a-time sensitivity, E = 31.66 MJ/L).
+- A joint-uncertainty rerun (128 Latin-hypercube TEA calls) was started and stopped by the user; only the one-at-a-time range was wanted.
+
+**Code**
+
+- None.
+
+**Open**
+
+- Joint-uncertainty percentiles for CCS 50% not computed.
+
+### 2026-10-13 (update 2)
+
+**Discussion**
+
+- The user chose CEPCI (×1.506, 2016 → 2022 annual) over CPI-U to escalate earlier studies. CPI is dropped as the basis because it tracks consumer prices, not plant costs; it stays in the §5.2 tables for reference.
+- The CEPCI 2022 annual value of 816.0 is now cross-checked: the 2023 value is 797.9, "a decrease of more than 18 points compared to 2022".
+
+**Code**
+
+- None.
+
+**Open**
+
+- The 1Q-2022 monthly CEPCI is not used (paywalled); 2022 annual stands in for it.
+
+### 2026-10-13
+
+**Discussion**
+
+- Session log target for this work was `Manuscript/_Handbook_for_Manuscript.md` (updates 4, 10, 12, 13). The user asked to append the comparison here as a new body section (§5).
+- §5 added: the MJSP comparison in 1Q-2022 USD with CPI and CEPCI bounds (our index has no 2016 value), a GHG comparison in absolute g/MJ because comparators differ (89, 93, 88.7, 87.5), and the fact-checked gap claims.
+- Dropped claims: "first CCS + pyrolysis jet" and "first green H₂" (prior art; see §5.4).
+
+**Code**
+
+- None.
+
+**Open**
+
+- Name of the 3230/2250 index; CEPCI 2022 value unverified.
+- E = 31.66 MJ/L vs the 35.2 MJ/L implied by the SI LHV and specific gravity (§5.5).
+- Explanation of grey-H₂ 100.8 g/MJ vs Dutta Case C 35.0 g/MJ.
 
 ### 2026-09-30
 
