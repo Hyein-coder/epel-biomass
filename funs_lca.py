@@ -3,6 +3,9 @@ import numpy as np
 from funs import TEA
 
 
+# CORSIA SAF eligibility: >=10% below the ICAO fossil-jet baseline LCA value, 89 g CO2e/MJ
+CORSIA_THRESHOLD: float = 0.9 * 89.0  # 80.1 g CO2e/MJ
+
 payload_saf = 0.200251125  # g/kg-km
 def get_WTWa_conventional(file_name):
     with open(file_name, 'rb') as f:

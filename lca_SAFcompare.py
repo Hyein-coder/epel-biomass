@@ -38,7 +38,8 @@ for fuel, points in data.items():
     marker, color = marker_style[fuel]
     x, y = zip(*points)
     plt.scatter(x, y, label=fuel, marker=marker, color=color, s=110)
-plt.axvline(x=75.9, color='r', linestyle='-', linewidth=1)
+plt.axvline(x=80.1,  # CORSIA: 0.9 x ICAO 89 g/MJ baseline
+            color='r', linestyle='-', linewidth=1)
 plt.xlabel("Average WTWa GHG Emissions [gCO$_2$eq/MJ]")
 plt.ylabel("MJSP [$/L]")
 plt.ylim(0, 6)

@@ -15,7 +15,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from funs import TEA
-from funs_lca import get_WTWa_pyrolysis, get_WTWa_conventional
+from funs_lca import get_WTWa_pyrolysis, CORSIA_THRESHOLD
 
 # _PLOTTING_STYLE.md (SA_RC lives only in the notebook; inlined here)
 SA_RC = {
@@ -191,17 +191,16 @@ def main() -> None:
     df['pareto'] = pareto_mask(df)
 
     # CO2 abatement cost vs the CCS-only CORSIA-compliance base (§7). Producer is held to the
-    # cheapest compliant point; the manuscript now fixes that base at CCS 60% (a=0, c=0.60),
-    # replacing the dynamically-picked NH3 10%+CCS 50% floor. CCS60 is an interpolated, non-grid
-    # point: MJSP from economic_analysis at ccs_portion=0.60; GHG linear in capture fraction over
-    # CCS050->CCS075 (75.14 g/MJ, §7). abatement = extra $/tCO2 to decarbonize *below* it.
+    # cheapest compliant point. Against the ICAO 89 g/MJ baseline (threshold 80.1) that is the
+    # CCS 50% grid point (a=0, c=0.50, 78.99 g/MJ); replaces the earlier interpolated CCS 60% anchor
+    # set against 0.9x GREET conventional jet. abatement = extra $/tCO2 to decarbonize *below* it.
     # Same formula as tea_scale_up_abatement.py.
     E_MJ_PER_L = 31.66   # MJ/L SAF (report section 3b)
-    anchor_ghg = ghg_ccs[0.50] + (0.60 - 0.50) / (0.75 - 0.50) * (ghg_ccs[0.75] - ghg_ccs[0.50])
-    anchor_mjsp = mjsp(tea, 0.0, 0.60)
-    d_ghg = (anchor_ghg - df['ghg']) * E_MJ_PER_L          # g/L avoided vs the CCS60 base
+    anchor_ghg = ghg_ccs[0.50]
+    anchor_mjsp = mjsp(tea, 0.0, 0.50)
+    d_ghg = (anchor_ghg - df['ghg']) * E_MJ_PER_L          # g/L avoided vs the CCS50 base
     df['abatement'] = (df['mjsp'] - anchor_mjsp) * 1e6 / d_ghg   # $/tCO2
-    df.loc[df['ghg'] >= anchor_ghg, 'abatement'] = float('nan')  # at/above the CCS60 base (dirtier): n/a
+    df.loc[df['ghg'] >= anchor_ghg, 'abatement'] = float('nan')  # at/above the CCS50 base (dirtier): n/a
 
     # scatter: color by ammonia scale, marker by CCS -----------------------
     plt.rcParams.update(SA_RC)
@@ -262,7 +261,7 @@ def main() -> None:
     fig2.savefig(os.path.join('Figure', 'pareto_abatement_contour_compliance.png'), dpi=150)
 
     pd.set_option('display.width', 200, 'display.max_rows', 40)
-    print(f'\nCCS60 abatement base: GHG={anchor_ghg:.2f} g/MJ, MJSP={anchor_mjsp:.3f} $/L')
+    print(f'\nCCS50 abatement base: GHG={anchor_ghg:.2f} g/MJ, MJSP={anchor_mjsp:.3f} $/L')
     print(df.round(3).to_string(index=False))
     print('\nPareto front with CO2 abatement cost + MJSP sensitivity range (§4.7):')
     print(front[['amm_scale', 'ccs', 'ghg', 'mjsp', 'mjsp_lo', 'mjsp_hi', 'abatement']].round(2).to_string(index=False))
@@ -274,9 +273,8 @@ def main() -> None:
     # more NH3 lowers GHG at fixed CCS; front is non-empty and trades off (ghg up <-> mjsp down).
     assert (df['mjsp'] > 0).all()
     assert abs(ghg_base - 100.83) < 1.0, ghg_base
-    # CCS60 base must itself clear CORSIA (-10% of conventional), else it is not a valid anchor
-    corsia = 0.9 * get_WTWa_conventional(FILE_WTWA)['WTWa']['GHG-100']
-    assert anchor_ghg <= corsia, (anchor_ghg, corsia)
+    # CCS50 base must itself clear CORSIA, else it is not a valid anchor
+    assert anchor_ghg <= CORSIA_THRESHOLD, (anchor_ghg, CORSIA_THRESHOLD)
     g = df.pivot(index='amm_scale', columns='ccs', values='ghg')
     assert (g[1.0] < g[0.0]).all() and (g.loc[10] < g.loc[0]).all()
     assert len(front) >= 2 and front['mjsp'].is_monotonic_decreasing

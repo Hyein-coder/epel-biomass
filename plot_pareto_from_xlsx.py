@@ -5,8 +5,8 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from funs_lca import get_WTWa_conventional
-from tea_pareto_front import SA_RC, AMM_SCALES, CCS_RATES, MAIN_SCALE, FILE_WTWA
+from funs_lca import CORSIA_THRESHOLD
+from tea_pareto_front import SA_RC, AMM_SCALES, CCS_RATES, MAIN_SCALE
 
 
 def draw(ax: plt.Axes) -> pd.DataFrame:
@@ -28,8 +28,8 @@ def draw(ax: plt.Axes) -> pd.DataFrame:
         ax.scatter(r['ghg'], r['mjsp'], s=70, color=amm_colors[r['amm_scale']],
                    marker=ccs_markers[r['ccs']], edgecolor='black', linewidth=0.6, zorder=3)
 
-    # SAF regulation standard: CORSIA -10% line (0.9x conventional jet WTWa GHG-100).
-    corsia = 0.9 * get_WTWa_conventional(FILE_WTWA)['WTWa']['GHG-100']
+    # SAF regulation standard: CORSIA -10% line (0.9x ICAO 89 g/MJ baseline).
+    corsia = CORSIA_THRESHOLD
     ax.axvline(corsia, color='#333333', ls='--', lw=1.0, zorder=1, label='CORSIA Standard')
 
     ax.set_xlabel('WTWa GHG-100 [g CO$_2$e/MJ SAF]')

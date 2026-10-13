@@ -35,6 +35,196 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-13 (update 11)
+
+**Discussion**
+- The user asked to cite ICAO Doc 05 for the 10% rule in Methods.
+
+**Code**
+- `2 Methods.tex` l.103: added `\citep{ICAO2025SustCriteria}` after "10\% reduction in WTWa GHG-100 intensity".
+
+**Open**
+- LaTeX not compiled.
+
+### 2026-10-13 (update 10)
+
+**Discussion**
+- The user asked for the MSP and GHG ranges and the dollar basis of two NREL catalytic fast pyrolysis (CFP) studies. Values below were read directly from the PDFs.
+- Dutta et al. 2023 (CEJ 451, 138485). 2016 USD, 2000 dry MT/d, gasoline and diesel blendstocks (no SAF cut). MFSP `$2.83`/`$3.13`/`$3.21` per GGE for Cases A/B/C (Table 5: `$0.75`/`$0.83`/`$0.85` per LGE). GHG 21.5/3.9/35.0 g CO₂e/MJ (77/96/62% below 93 g/MJ petroleum gasoline).
+- Case definitions in Dutta 2023: A = refinery co-hydrotreating with natural-gas SMR H₂ plus acetone and MEK coproducts. B = standalone hydrotreating with H₂ from CFP off-gas plus coproducts. C = co-hydrotreating with natural-gas H₂ and no coproducts.
+- Griffin et al. 2024 (Green Chem 26, 9768). 2016 USD, MFSP on the whole fuel pool (gasoline, SAF and heavies). Base `$6.69`/GGE (17-O) and `$6.15`/GGE (20-O); ±10% band `$6.0–7.4` and `$5.5–6.8`/GGE. TCI `$711M`/`$726M`. GHG 7 and 13.3 g/MJ (92% and 85% below 88.7 g/MJ petroleum jet), with H₂ from reformed off-gas.
+- Our worst fossil-H₂ case (100.8 g/MJ) is about 3× Dutta Case C (35.0 g/MJ), which also uses fossil H₂. The gap needs a contribution-level explanation in the manuscript.
+
+**Code**
+- None.
+
+**Open**
+- Griffin 2024 plant scale not stated in the main text (ESI not read).
+- The `$/GJ` comparison assumes a jet LHV of about 34.5 MJ/L for our MJSP. Confirm against the density and LHV used in the TEA.
+
+### 2026-10-13 (update 9)
+
+**Discussion**
+- The user deleted the section `.md` drafts (Introduction to Conclusion) as outdated. Only `SI. Supporting Information.md` and this handbook remain. Traps 1, 3 and 6 from update 8 are therefore moot.
+- Trap 7 (stale commented lines in Results.tex): the user said to leave them.
+- Trap 2: CCS 50% is stated as the minimum "on the grid".
+- Traps 4 and 8: the user chose the labels "the CCS-only and the ammonia-assisted compliance routes", which replace "two compliant configurations with the lowest MJSP" and "cheapest compliant point of each route".
+
+**Code**
+- `3 Results.tex` l.29: "minimum capture rate of 50\%" → "… 50\% on the grid".
+- `3 Results.tex` l.65: "two compliant configurations with the lowest MJSP: …" → "the CCS-only and the ammonia-assisted compliance routes: CCS 50\% and Green-ammonia 10\% + CCS 39\%, respectively".
+- `SI.tex` and `SI. Supporting Information.md`, Tables S9-6 and S9-7 captions: "at the cheapest compliant point of each route" → "for the CCS-only and the ammonia-assisted compliance routes".
+
+**Open**
+- LaTeX not compiled.
+
+### 2026-10-13 (update 8)
+
+**Discussion**
+- The user asked for minimal edits in Results and Conclusion. The agent rewrites from updates 3 and 6 were discarded; only numbers that changed are now edited. Correction to updates 3 and 6: Results and Conclusion no longer carry the agents' extra prose, such as the interpolation sentence, the NH₃-route definition and the T&S explanations.
+- The NH₃ SHAP value is 0.03147, so it rounds to 0.031, not 0.032 as written in update 6.
+
+**Code**
+- `3 Results.tex`, `3. Results.md`, `4 Conclusion.tex`, `4. Conclusion.md`: reset to HEAD (e292c9f), then values only:
+  - threshold 75.93 → 80.1
+  - CCS 60% → CCS 50%, at 78.99 g/MJ and `$0.913/L`
+  - CCS-only crossing ~58% → ~47.5%
+  - NH₃ counterpart 10% + CCS 50% → 10% + CCS 39% (`$1.072/L`)
+  - abatement: NH₃-only `$3,990` → `$5,647`; CCS 75% `$733` → `$649`; CCS 100% `$742` → `$698`; NH₃ tail `$900–1360` → `$840–1290`; full NH₃ + CCS 100% `$1250` → `$1201`
+  - SHAP and T&S values; crossovers 1.59/2.91/4.40/7.21 → 2.51/3.82/5.32/8.13 `$/kg`
+  - break-even NH₃ price ~`$450` → ~`$335/t`; T&S crossover shift ~0.45 → ~0.6 `$/kg`
+  - compliant-fuel lower bound ~`$1.00` → ~`$0.91/L`
+- `SI.tex` and `SI. Supporting Information.md`, Table S9-6: Green NH₃ SHAP changed from 0.032 to 0.031.
+
+**Open**
+- Logical traps were reported to the user and not fixed. See the session answer: the Results.md interpolation clause, the "minimum capture rate 50%" wording, the undeclared CCS 39% interpolation, the Methods.md CCS 60% reference, and the commented-out Results.tex lines.
+
+### 2026-10-13 (update 7)
+
+**Discussion**
+- The user reverted every Methods edit from updates 3, 5 and 6. The only change kept in Methods is the CORSIA threshold value. Correction to updates 3, 5 and 6: Methods no longer carries the CCS 50% / CCS 39% anchor wording, the counterpart definition, the interpolation note, or the `ICAO2025SustCriteria` citation.
+
+**Code**
+- `2 Methods.tex` and `2. Methods.md` reset to HEAD. This also undid two unintended changes: a `\cite`→`\citep` switch and a `han2011well`→`an2011well` key corruption (an earlier edit had dropped the "h").
+- `2 Methods.tex` l.103: appended "(89 g CO₂e/MJ \citep{ICAO2025Methodology}), i.e., a threshold of 80.1 g CO₂e/MJ".
+- `2. Methods.md` §2.3.3: "0.9 × (conventional-jet WTWa GHG-100) … GREET inventory" → "0.9 × 89 g CO₂e/MJ (ICAO conventional-jet baseline; ICAO Doc 07, 2025) = 80.1 g CO₂e/MJ".
+
+**Open**
+- `2. Methods.md` still describes CCS 60% as the reference point (Pareto, abatement and SHAP bullets), which contradicts Results. The user asked for these to stay unchanged.
+- `ICAO2025SustCriteria` is in `main-sc.bib` but no longer cited.
+
+### 2026-10-13 (update 6)
+
+**Discussion**
+- Ammonia counterpart for SHAP, OAT and crossover (paired against CCS 50%):
+  - Was Green NH₃ 10% + CCS 50% (75.18 g/MJ, `$1.098/L`). It was 3.8 g cleaner than CCS 50%, so the comparison was not GHG-matched.
+  - The user asked for a counterpart as tight to CORSIA as possible.
+  - Proposed NH₃ 10% + CCS 40% (79.55, `$1.074/L`). The user chose **NH₃ 10% + CCS 39%** instead (79.99 g/MJ, 0.11 under the threshold, `$1.072/L`). This is the lowest whole-percent CCS that clears 80.1 with 10% NH₃; the exact minimum is 38.75%.
+- Other options not taken: a GHG-matched NH₃ ~29% + CCS 25%, and NH₃-only at the threshold (~54%). Both are off-grid and costlier.
+- CCS 39% GHG is interpolated, linear in capture fraction between the CCS025 and CCS050 LCA cases, minus the NH₃ credit (0.1 × 38.1). Its MJSP comes straight from the TEA engine at `ccs_portion = 0.39`.
+- New comparison: both routes sit at about 79–80 g/MJ, so the `$0.159/L` gap is the cost of complying via NH₃ instead of more CCS.
+- SHAP (NH₃ route): Gray H₂ 0.273, CAPEX 0.101, Co-product 0.086, Electricity 0.057, NH₃ 0.032, Capacity 0.025, T&S 0.017, Biomass 0.001; R² 0.9994.
+- OAT CO₂ T&S span is 0.140 (vs 0.165 for CCS 50%).
+- Gray-H₂ crossovers: `$2.51`, `$3.82`, `$5.32` and `$8.13/kg` at NH₃ `$270`, `$441`, `$635` and `$1000/t`. Two now fall inside the 1–4 `$/kg` range, and NH₃ below about `$335/t` brings the crossover under `$3/kg`.
+- T&S from `$4` to `$45/t` shifts the crossover by about 0.6 `$/kg`, favouring NH₃.
+- Co-product crossover: NH₃ wins only below about `$140/t`.
+
+**Code**
+- `tea_pareto_shap.py`: NH₃ point changed to `(0.10, 0.39)`. Outputs renamed `*_ccs50_vs_nh10ccs39.*`, and the cache resampled.
+- `tea_tornado_shap.py` and `plot_composite.py`: names and outputs follow the same change.
+- `plot_ammonia_crossover.py` and `plot_coproduct_crossover.py`: `NH3_BASE_MJSP` changed from 1.098 to 1.072.
+- `plot_ammonia_crossover_ts.py`: `TS_SLOPE_NH3` changed to 0.140/41.
+- Reran tornado, SHAP, the three crossovers and the composite; all self-checks passed. The composite figure (d, e) now shows CCS 39% and two crossover dots.
+- Text:
+  - `2 Methods` (.tex/.md): added a sentence defining the counterpart and noting the interpolation.
+  - `3 Results` (.tex/.md): SHAP, OAT and crossover narrative updated.
+  - `4 Conclusion.tex`: crossover changed to `$2.51–3.82/kg`.
+  - `SI` (.tex/.md): Tables S9-5, S9-6 and S9-7 and their captions updated. The S9-4 grid row NH₃ 10% + CCS 50% is kept as a grid fact.
+
+**Open**
+- NH₃ SHAP 0.0315 is shown as 0.032 (the boundary case).
+- SI caption says "cheapest compliant point of each route", which overstates it for CCS 39%. Consider "ammonia-route counterpart".
+- `3 Results.tex` commented lines 56 and 84 still use the CCS 50% NH₃ basis.
+- The 0.11 g margin rests on the interpolated GHG; no GREET run exists at CCS 39%.
+
+### 2026-10-13 (update 5)
+
+**Discussion**
+- The user pointed to the BibTeX source, `D:\EPEL_biomass\Analysis\Biomass_Ammonia_Elsevier.zip`, and asked to add ICAO Docs 05 and 07.
+- Citation split:
+  - Doc 05 for the 10% rule (`ICAO2025SustCriteria`).
+  - Doc 07 for the 89 g/MJ baseline (`ICAO2025Methodology`).
+  - `ICAO2023CORSIA` (LCA Methodology V5) kept only for the ILUC sentence in Methods l.93.
+
+**Code**
+- `Manuscript/main-sc.bib`: copied from the zip (81 entries; `cas-refs.bib` is the Elsevier template sample and was not copied). Added `ICAO2025SustCriteria` and `ICAO2025Methodology` after `ICAO2023CORSIA`.
+- Baseline citation switched from `ICAO2023CORSIA` to `ICAO2025Methodology` in `2 Methods.tex` l.103, `4 Conclusion.tex` l.5 and `SI.tex` (Table S9-4 caption).
+- `2. Methods.md` §2.3.3 now reads "ICAO Doc 07, 2025" and "ICAO Doc 05, 2025".
+
+**Open**
+- LaTeX + BibTeX not compiled; `@techreport` `type`/`number` rendering in the Elsevier style is unchecked.
+
+### 2026-10-13 (update 4)
+
+**Discussion**
+- A co-author asked for a comparison with the MJSP and GHG ranges of earlier pyrolysis jet/SAF TEA and LCA studies, plus a clearer research-gap sentence. A literature survey was run, then checked by a separate fact-checker agent (DOIs and citation counts from OpenAlex, 2026-10-13).
+- Prior pyrolysis jet MJSP: Bann 2017 `$1.52/L` (`$1.02–2.10`, 2015 USD); Michailos & Bridgwater 2019 `$1.98/L` (2017 USD, 100 dry t/h); Wang 2022 `$3.21/L` (rice husk, 600 t/d); Wright 2010 `$0.56–0.82/L` gasoline-equivalent (purchased vs onsite H₂, 2000 t/d, cost year unconfirmed). Our `$0.79/L` falls below the jet-specific TEAs, so any comparison needs the values put on a common dollar year.
+- Prior pyrolysis jet GHG: de Jong 2017 reports 54–75% savings vs 87.5 g/MJ (in-situ vs natural-gas SMR H₂); Han 2013 reports 68–76%; Griffin 2024 (catalytic fast pyrolysis) reports 85–92%. All use H₂ from reforming process off-gas, so our grey-H₂ 100.8 g/MJ sits outside this range. The difference comes from purchased SMR H₂.
+- Fact-check correction: CCS on pyrolysis-route fuels is prior art (Jafri 2022 10.3389/fenrg.2022.797529; Meerman & Larson 2017 10.1039/c7se00013h; Ahlström 2023 10.1016/j.ijggc.2023.103886). Electrolytic H₂ already appears as a sensitivity case in de Jong 2017. Dropped claims: "first CCS + pyrolysis jet" and "first green H₂". Defensible claims: ammonia-derived H₂ (no study found) and the NH₃ × CCS map with a crossover H₂ price; also a scale-dependent supply curve coupled with train limits for pyrolysis SAF (Wright & Brown 2007 is generic and has no jet or LCA).
+- ICAO Doc 06 (8th ed., Nov 2025) lists no pyrolysis or HDCJ default value. This can be stated as part of the gap.
+
+**Code**
+- None.
+
+**Open**
+- No manuscript text written yet. Waiting for the user to choose the claim direction.
+- Unconfirmed: Wright 2010 cost year; de Jong 2015 € year and scale; de Jong 2017 exact 22/41/37 g/MJ (figure only); Rojas Michaga 2022 −121.8 (snippet only). Google Scholar not checked for the ammonia gap.
+- Bib entries for the new references not yet added.
+
+### 2026-10-13 (update 3)
+
+**Discussion**
+- Reviewer comment: the CORSIA threshold of 75.93 g CO₂e/MJ had no stated basis. It was 0.9 × the GREET conventional-jet WTWa (84.37 g/MJ), not the CORSIA baseline.
+- The user chose the ICAO CORSIA baseline of 89 g CO₂e/MJ, which gives a threshold of 0.9 × 89 = 80.1 g CO₂e/MJ. Dropped option: keep 84.37 and rename it "10% below GREET conventional jet". Rejected because the paper claims CORSIA compliance.
+- Effect: CCS 50% (78.99 g/MJ, `$0.913/L`) is now compliant and is the cheapest compliant point. It replaces the interpolated CCS 60% anchor (75.14 g/MJ, `$0.977/L`). The CCS-only crossing moves from about 58% to about 47.5% CCS. Green NH₃ 10% + CCS 50% (75.18, `$1.098/L`) stays as the NH₃ comparison route.
+- The qualitative conclusion is unchanged: CCS alone is the cheapest compliance route.
+- Abatement costs are rebased to CCS 50%: CCS 75% `$649/t`, CCS 100% `$698/t`, and the NH₃ + CCS tail `$840–1290/t`.
+- Gray-H₂ crossovers: `$3.13`, `$4.45`, `$5.94` and `$8.75/kg` at NH₃ `$270`, `$441`, `$635` and `$1000/t`. Only `$270/t` falls inside the plotted 1–4 `$/kg` range.
+- Both routes now store the same CO₂, so the CO₂ T&S price no longer moves the crossover.
+- Sources were checked by two separate agents against the ICAO PDFs:
+  - 10% criterion: ICAO Doc 05, *CORSIA Sustainability Criteria for CORSIA Eligible Fuels* (4th ed., June 2025), Criterion 1.1.
+  - 89 g/MJ baseline: ICAO Doc 07, 7th ed. (Nov 2025), and the CORSIA LCA Methodology supporting document V8 (Nov 2025, p25).
+
+**Code**
+- `funs_lca.py`: new `CORSIA_THRESHOLD = 0.9 * 89.0`.
+- `plot_pareto_from_xlsx.py` and `tea_pareto_front.py` now use `CORSIA_THRESHOLD` instead of `0.9 × get_WTWa_conventional`. `lca_SAFcompare.py` line moved from 75.9 to 80.1.
+- `tea_pareto_front.py`: abatement anchor is now the CCS 50% grid point (was CCS 60% interpolated), and its self-check asserts the anchor is below `CORSIA_THRESHOLD`.
+- `tea_pareto_shap.py` and `tea_tornado_shap.py`: SHAP and OAT point changed from CCS 60% to CCS 50%. Outputs renamed `*_ccs50_vs_nh10ccs50.*`.
+- `plot_ammonia_crossover.py`, `plot_ammonia_crossover_ts.py`, `plot_coproduct_crossover.py`: CCS-only base changed to `0.913`. In `plot_ammonia_crossover_ts.py` the T&S slope is now 0.165 (was 0.187) and the strict check was loosened to allow equal slopes.
+- Reran: pareto front, pareto xlsx plot, crossovers, SHAP (R² 0.9996 / 0.9993), tornado-SHAP, composite figure.
+- Text updated: `2 Methods` (.tex/.md) states the 89 g/MJ basis with citations (`ICAO2025SustCriteria` for the 10% rule, `ICAO2023CORSIA` for the baseline). Also updated: `3 Results`, `4 Conclusion`, `1. Introduction.md`, `SI` (.tex/.md), and SI Tables S9-4 to S9-7.
+
+**Open**
+- `main-sc.bib` is not in the repo, so the `ICAO2025SustCriteria` entry has not been added yet. Should `ICAO2023CORSIA` be moved to V8 (Nov 2025)?
+- `_Pareto_Front.md` and `_Tornado_Sensitivity.md` still describe CCS 60% and 75.93. They need a dated correction entry.
+- `2. Methods.md` line 191: the U.S.-grid example "60% CCS (60.3 g/MJ)" is still there. It is still true, but it is no longer the anchor.
+- The LaTeX has not been compiled after these edits.
+
+### 2026-10-13 (update 2)
+
+**Discussion**
+- The user asked for the G&A element in the Fig. 2 legend to read "general and admin." instead of "governance and admin.".
+- The label is renamed only at plot time. The xlsx is unchanged, so the figure did not need a TEA re-run.
+- The user asked to commit only their manual typo and citation edits to the manuscript. The CORSIA-threshold change (80.1, CCS 50%) and the new `main-sc.bib` stay uncommitted, to be handled in another session.
+
+**Code**
+- `plot_scale_up_from_xlsx.py`: renames the `governance and admin.` column of `df_base` to `general and admin.` before plotting, then regenerates `Figure/composite_scale_up_mjsp.png`. Cause: legend labels come straight from the column names in `Result/scale_up_base_summary.xlsx`.
+- `2 Methods.tex`: the allocation citation `\citep{an2011well}` is corrected to `han2011well`. Cause: the "h" was dropped during a manual edit.
+- Commits: `cb435c5` (Fig. 2 legend) and `e292c9f`, which holds only the typo and citation edits: `indsutry`/`feedsotck` in `1 Introduction.tex`, `\cite`→`\citep` in Intro and Methods, a wording fix in the Results T\&S sentence, and `\$` escapes in `4. Conclusion.md`. These were staged from HEAD plus the selected edits, so the working tree still holds the threshold edits.
+
+**Open**
+- `tea_scale_up.py` still writes the `governance and admin.` column. Any other figure or table that reads it will still show the old label.
+
 ### 2026-10-13
 
 **Discussion**

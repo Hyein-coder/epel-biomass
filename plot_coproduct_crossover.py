@@ -3,12 +3,12 @@
 Asked for as a "try" alongside the gray-H2 version. CAVEAT baked into the figure:
 the §5 OAT co-product span is the SAME for both routes (0.494 $/L — they share the
 co-product streams and SAF output), so both lines have the SAME slope in co-product
-price. The CCS 60% line and every NH3 line are therefore PARALLEL and never cross;
-whether an NH3 line sits below CCS 60% depends only on its ammonia price (the fixed
-0.121 $/L base gap -> ammonia < ~258 $/t), not on co-product price. Still linear.
+price. The CCS 50% line and every NH3 line are therefore PARALLEL and never cross;
+whether an NH3 line sits below CCS 50% depends only on its ammonia price (the fixed
+0.159 $/L base gap -> ammonia < ~140 $/t), not on co-product price. Still linear.
 
-Anchors from _Tornado_Sensitivity.md §5 (base MJSPs + recorded co-product/ammonia
-OAT spans); co-product enters as a revenue credit so MJSP falls as its price rises.
+Anchors from Result/tornado_shap_ccs50_vs_nh10ccs39.xlsx (base MJSPs + co-product
+OAT span) and _Tornado_Sensitivity.md §5 (ammonia offset); co-product enters as a revenue credit so MJSP falls as its price rises.
 """
 import os
 import numpy as np
@@ -31,10 +31,10 @@ SA_RC = {
 }
 plt.rcParams.update(SA_RC)
 
-# Anchors (_Tornado_Sensitivity §5: base MJSPs + recorded OAT spans)
-NH3_BASE_MJSP: float = 1.098    # Green NH3 10% + CCS 50% MJSP at base drivers, $/L
-CCS_BASE_MJSP: float = 0.977    # CCS 60% (CCS-only) MJSP at base drivers, $/L
-COPROD_SPAN: float = 0.494      # §5 co-product OAT span, $/L (same for both routes)
+# Anchors (CCS 50% OAT xlsx: base MJSPs + co-product span)
+NH3_BASE_MJSP: float = 1.072    # Green NH3 10% + CCS 39% MJSP at base drivers, $/L
+CCS_BASE_MJSP: float = 0.913    # CCS 50% (CCS-only) MJSP at base drivers, $/L
+COPROD_SPAN: float = 0.494      # co-product OAT span, $/L (same for both routes)
 COPROD_F: tuple[float, float] = (0.80, 1.20)   # §4.7 co-product price band (× base)
 AMM_P_BASE: float = 0.288       # base ammonia price, $/lb
 AMM_RANGE_LBS: tuple[float, float] = (0.1225, 0.4535)  # reviewer §4.5 range, $/lb
@@ -58,13 +58,13 @@ AMM_LINES: tuple[float, ...] = (AMM_RANGE_LBS[0], 0.20, AMM_P_BASE, AMM_RANGE_LB
 m = np.linspace(0.6, 1.4, 200)
 
 fig, ax = plt.subplots(figsize=(7.5, 5))
-ax.plot(m, mjsp_ccs(m), color='#ed7d31', lw=1.4, label='CCS 60% (CCS-only)')
+ax.plot(m, mjsp_ccs(m), color='#ed7d31', lw=1.4, label='CCS 50% (CCS-only)')
 
 greens = plt.cm.Greens(np.linspace(0.45, 0.9, len(AMM_LINES)))
 for pa, col in zip(AMM_LINES, greens):
     tag = ' (base)' if abs(pa - AMM_P_BASE) < 1e-9 else ''
     ax.plot(m, mjsp_nh3(m, pa), color=col,
-            label=f'NH$_3$ 10% + CCS 50%, {pa * LB_TO_T:.0f} \\$/t{tag}')
+            label=f'NH$_3$ 10% + CCS 39%, {pa * LB_TO_T:.0f} \\$/t{tag}')
 
 # reviewer ±20% band + base marker
 ax.axvspan(COPROD_F[0], COPROD_F[1], color='#bbbbbb', alpha=0.12)
@@ -87,4 +87,4 @@ for pa in AMM_LINES:
     lo = mjsp_nh3(m[0], pa) - mjsp_ccs(m[0])
     hi = mjsp_nh3(m[-1], pa) - mjsp_ccs(m[-1])
     assert np.sign(lo) == np.sign(hi), pa
-    print(f'  ammonia {pa * LB_TO_T:5.0f} $/t -> NH3 {"below" if lo < 0 else "above"} CCS 60% everywhere')
+    print(f'  ammonia {pa * LB_TO_T:5.0f} $/t -> NH3 {"below" if lo < 0 else "above"} CCS 50% everywhere')

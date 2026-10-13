@@ -1,9 +1,9 @@
 """Crossover plot: gray-H2 price vs MJSP for the two CORSIA-compliant routes.
 
-x = gray-H2 price (1-4 $/kg, the dominant driver); y = MJSP. CCS 60% (CCS-only,
-100% grey H2) is one steeper reference line; the Green NH3 10% + CCS 50% route
+x = gray-H2 price (1-4 $/kg, the dominant driver); y = MJSP. CCS 50% (CCS-only,
+100% grey H2) is one steeper reference line; the Green NH3 10% + CCS 39% route
 (90% grey H2) is drawn as one line per green-ammonia price. Where an NH3 line
-dips below CCS 60% the ammonia route wins -> shows that as ammonia price falls
+dips below CCS 50% the ammonia route wins -> shows that as ammonia price falls
 its crossover moves into the plotted H2 range. All MJSP terms are linear in
 their driver, so anchors come straight from _Tornado_Sensitivity.md §5 (no re-run):
 base MJSPs + the recorded Gray-H2 / Ammonia OAT spans give the slopes.
@@ -30,8 +30,8 @@ SA_RC = {
 plt.rcParams.update(SA_RC)
 
 # Anchors (_Tornado_Sensitivity §5: base MJSPs + recorded OAT spans over the §1 ranges)
-NH3_BASE_MJSP: float = 1.098    # Green NH3 10% + CCS 50% MJSP at base drivers, $/L
-CCS_BASE_MJSP: float = 0.977    # CCS 60% (CCS-only) MJSP at base drivers, $/L
+NH3_BASE_MJSP: float = 1.072    # Green NH3 10% + CCS 39% MJSP at base drivers, $/L
+CCS_BASE_MJSP: float = 0.913    # CCS 50% (CCS-only) MJSP at base drivers, $/L
 H2_BASE: float = 1.4997         # base gray-H2 price (APEA raw-material cost), $/kg
 H2_RANGE: tuple[float, float] = (1.0, 4.0)   # §1 gray-H2 range, $/kg
 AMM_P_BASE: float = 0.288       # base ammonia price, $/lb
@@ -41,7 +41,7 @@ SHARE: float = 0.10             # NH3 share of the compliant point (10%)
 LB_TO_T: float = 2204.62        # $/lb -> $/t NH3 for readable labels
 
 # slope of each route's MJSP in gray-H2 price: recorded OAT span / the 1-4 $/kg width.
-# CCS 60% is steeper (100% grey) than the NH3 route (90% grey).
+# CCS 50% is steeper (100% grey) than the NH3 route (90% grey).
 SLOPE_CCS: float = 1.258 / (H2_RANGE[1] - H2_RANGE[0])  # $/L per $/kg
 SLOPE_NH3: float = 1.133 / (H2_RANGE[1] - H2_RANGE[0])  # $/L per $/kg
 AMM_COEFF: float = AMM_FEED_USD_L * SHARE               # $/L per (p_amm/base - 1)
@@ -72,7 +72,7 @@ def draw(ax: plt.Axes) -> None:
     for pa, col, mk in zip(AMM_LINES, blues, nh3_markers):
         ax.plot(h, mjsp_nh3(h, pa), color=col, lw=1.6, marker=mk, ms=6, markevery=25,
                 label=f'Green NH$_3$ \\${pa * LB_TO_T:,.0f}/t' + (' (Base)' if pa == AMM_P_BASE else ''))
-        # mark the crossover with CCS 60% when it falls inside the plotted H2 range
+        # mark the crossover with CCS 50% when it falls inside the plotted H2 range
         hc = h_cross(pa)
         if H2_RANGE[0] <= hc <= H2_RANGE[1]:
             ax.plot(hc, mjsp_ccs(hc), 'o', color='#444444', markersize=4, zorder=4)

@@ -1,5 +1,5 @@
 """OAT MJSP tornado over the SHAP-range column (report §1) for the two SHAP-analysis
-points — CCS 60% and Green NH3 10% + CCS 50% — side by side. Option A: the biomass bar
+points — CCS 50% and Green NH3 10% + CCS 39% — side by side. Option A: the biomass bar
 uses the SHAP supply-curve band (RANGES['Biomass']), not the tornado's ±50% stress.
 
 Reuses the SHAP model verbatim: mjsp_point / RANGES / POINTS from tea_pareto_shap, so
@@ -64,16 +64,16 @@ def main() -> None:
                loc='upper center', ncol=2, framealpha=0.)
     fig.tight_layout(rect=(0, 0, 1, 0.96))
     os.makedirs('Figure', exist_ok=True)
-    fig.savefig(os.path.join('Figure', 'tornado_shap_ccs60_vs_nh10ccs50.png'), dpi=150)
+    fig.savefig(os.path.join('Figure', 'tornado_shap_ccs50_vs_nh10ccs39.png'), dpi=150)
     os.makedirs('Result', exist_ok=True)
-    pd.DataFrame(records).to_excel(os.path.join('Result', 'tornado_shap_ccs60_vs_nh10ccs50.xlsx'), index=False)
+    pd.DataFrame(records).to_excel(os.path.join('Result', 'tornado_shap_ccs50_vs_nh10ccs39.xlsx'), index=False)
 
     # self-check: base positive; CAPEX (monotone) must widen MJSP both sides on every point
     df = pd.DataFrame(records)
     assert (df['base'] > 0).all()
     cap = df[df['variable'] == 'CAPEX']
     assert (cap['mjsp_high_input'] > cap['base']).all() and (cap['mjsp_low_input'] < cap['base']).all()
-    print('\nOK: self-checks passed; wrote Figure/tornado_shap_ccs60_vs_nh10ccs50.png + Result xlsx')
+    print('\nOK: self-checks passed; wrote Figure/tornado_shap_ccs50_vs_nh10ccs39.png + Result xlsx')
 
 
 if __name__ == '__main__':

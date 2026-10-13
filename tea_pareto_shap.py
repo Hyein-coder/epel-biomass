@@ -1,5 +1,5 @@
 """SHAP attribution of MJSP across the §4.7 drivers, for the cheapest CORSIA-compliant
-point on the updated (KR-mix) pareto front: Green NH3 10% + CCS 50% (a=0.10, c=0.50).
+point on the updated (KR-mix) pareto front (CCS 50%) vs its NH3 counterpart: Green NH3 10% + CCS 39%.
 Distribution-based complement to tea_tornado (beeswarm over sampled inputs).
 
 MJSP model is the SAME one the whole pareto analysis uses (mix_row engine re-run
@@ -40,13 +40,14 @@ RANGES = {
 # per point: (ammonia_portion a, ccs_portion c, driver order). Gray H2 present when a<1,
 # ammonia when a>0, CO2 T&S when c>0 -> exactly the bars tea_tornado draws for each point.
 # Single case = the cheapest CORSIA-compliant point on the updated (KR-mix) pareto front:
-# Green NH3 10% (a=0.10) + CCS 50% (c=0.50). Has all three feedstock/CCS drivers active -> 8 drivers.
+# NH3 counterpart = Green NH3 10% + the least CCS that still clears CORSIA (80.1 g/MJ): CCS 39%
+# (79.99 g/MJ, GHG linear in capture between the CCS025/CCS050 LCA cases). 8 drivers.
 POINTS = {
-    # CCS-only compliance route: CCS 60% (a=0) is the cheapest CORSIA-compliant point and clears the
-    # mandate with no ammonia -> no Ammonia driver (a=0), 7 drivers. Compared against the NH3 route below.
-    'CCS 60%': (0.0, 0.60,
+    # CCS-only compliance route: CCS 50% (a=0) is the cheapest CORSIA-compliant point (80.1 g/MJ
+    # threshold) with no ammonia -> no Ammonia driver (a=0), 7 drivers. Compared against the NH3 route below.
+    'CCS 50%': (0.0, 0.50,
         ['Biomass', 'Gray H₂', 'CAPEX', 'CO₂ T&S', 'Electricity', 'Co-product', 'Capacity']),
-    'Green NH₃ 10% + CCS 50%': (0.10, 0.50,
+    'Green NH₃ 10% + CCS 39%': (0.10, 0.39,
         ['Biomass', 'Gray H₂', 'Ammonia', 'CAPEX', 'CO₂ T&S', 'Electricity', 'Co-product', 'Capacity']),
 }
 
@@ -158,10 +159,10 @@ def main() -> None:
     cb = fig.colorbar(sc, ax=list(axes), fraction=0.03, pad=0.02)
     cb.set_ticks([0, 1]); cb.set_ticklabels(['low', 'high']); cb.set_label('driver value')
     os.makedirs('Figure', exist_ok=True)
-    fig.savefig(os.path.join('Figure', 'shap_beeswarm_ccs60_vs_nh10ccs50.png'), dpi=150)
+    fig.savefig(os.path.join('Figure', 'shap_beeswarm_ccs50_vs_nh10ccs39.png'), dpi=150)
     os.makedirs('Result', exist_ok=True)
-    pd.DataFrame(records).round(4).to_excel(os.path.join('Result', 'shap_ccs60_vs_nh10ccs50.xlsx'), index=False)
-    print('\nOK: surrogate R²>0.99; wrote Figure/shap_beeswarm_ccs60_vs_nh10ccs50.png + Result xlsx')
+    pd.DataFrame(records).round(4).to_excel(os.path.join('Result', 'shap_ccs50_vs_nh10ccs39.xlsx'), index=False)
+    print('\nOK: surrogate R²>0.99; wrote Figure/shap_beeswarm_ccs50_vs_nh10ccs39.png + Result xlsx')
 
 
 if __name__ == '__main__':

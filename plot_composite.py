@@ -1,5 +1,5 @@
 """5-panel composite: (a) GHG-MJSP mesh and (b) CO2 abatement-cost contour [both from
-Result/pareto_front.xlsx], (c, d) SHAP beeswarms for CCS 60% and Green NH3 10% + CCS 50%
+Result/pareto_front.xlsx], (c, d) SHAP beeswarms for CCS 50% and Green NH3 10% + CCS 39%
 [Result/shap_samples.npz cache], (e) gray-H2 crossover [analytic anchors in
 plot_ammonia_crossover]. No TEA re-run."""
 import os

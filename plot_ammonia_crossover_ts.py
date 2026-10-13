@@ -2,8 +2,9 @@
 
 Base anchors (_Tornado_Sensitivity §5) sit at the $10/tCO2 T&S basis. T&S enters MJSP
 linearly (funs.py: co2_seq * co2_ts_usd_per_ton), so each route shifts by its recorded
-§5 CO2 T&S OAT span / the 4-45 $/t width. CCS 60% stores more CO2 -> larger shift than
-NH3 10% + CCS 50%, so dearer T&S pulls every crossover to a lower H2 price.
+CO2 T&S OAT span / the 4-45 $/t width (Result/tornado_shap_ccs50_vs_nh10ccs39.xlsx).
+CCS 50% stores more CO2 than NH3 10% + CCS 39% (span 0.165 vs 0.140 $/L), so higher T&S
+lifts the CCS line more and pulls each crossover to a lower H2 price.
 """
 import os
 import numpy as np
@@ -14,9 +15,9 @@ from plot_ammonia_crossover import (h, H2_RANGE, H2_BASE, AMM_LINES, LB_TO_T,
 TS_BASE: float = 10.0                      # T&S basis behind the §5 anchors, $/tCO2
 TS_RANGE: tuple[float, float] = (4.0, 45.0)
 TS_CASES: tuple[float, ...] = (TS_RANGE[0], TS_BASE, TS_RANGE[1])
-# $/L per $/tCO2 = §5 CO2 T&S span / range width
-TS_SLOPE_CCS: float = 0.187 / (TS_RANGE[1] - TS_RANGE[0])
-TS_SLOPE_NH3: float = 0.165 / (TS_RANGE[1] - TS_RANGE[0])
+# $/L per $/tCO2 = CO2 T&S OAT span (CCS 50% xlsx) / range width
+TS_SLOPE_CCS: float = 0.165 / (TS_RANGE[1] - TS_RANGE[0])
+TS_SLOPE_NH3: float = 0.140 / (TS_RANGE[1] - TS_RANGE[0])
 
 ccs_ts = lambda hh, ts: mjsp_ccs(hh) + TS_SLOPE_CCS * (ts - TS_BASE)
 nh3_ts = lambda hh, pa, ts: mjsp_nh3(hh, pa) + TS_SLOPE_NH3 * (ts - TS_BASE)
@@ -56,9 +57,10 @@ def main() -> None:
         print(f'  T&S {ts:4.0f} $/t: ' + ', '.join(
             f'{pa * LB_TO_T:.0f}->{h_cross_ts(pa, ts):.2f}' for pa in AMM_LINES) + ' $/kg')
 
-    # check: base panel reproduces the original figure; dearer T&S lowers every crossover
+    # check: base panel reproduces the original figure; dearer T&S never raises a crossover
+    # (equal T&S slopes at CCS 50% -> crossovers identical across panels)
     assert np.allclose(ccs_ts(h, TS_BASE), mjsp_ccs(h))
-    assert all(h_cross_ts(pa, TS_RANGE[1]) < h_cross_ts(pa, TS_RANGE[0]) for pa in AMM_LINES)
+    assert all(h_cross_ts(pa, TS_RANGE[1]) <= h_cross_ts(pa, TS_RANGE[0]) + 1e-9 for pa in AMM_LINES)
 
 
 if __name__ == '__main__':
