@@ -35,6 +35,20 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-13 (update 21)
+
+**Discussion**
+- Unit audit. Main text (`2 Methods`, `3 Results`, `4 Conclusion`) is already SI-acceptable (L, h/yr, MWh, wt%, °C, t, \$/GJ, \$/L). All British units are in `SI.tex`: °F, psi/psia, lb/hr, \$/lb, \$/MMBtu, MMBtu/hr, cuft/hr, HP, and ft³/Btu per lbmol (the property table, line 307).
+- Dropped option: converting the `SI.tex` values to SI. The user chose to keep them as-is, because the process model and TEA were built in British units, and to state this at the start of the SI.
+- Figure-unit audit. Mass axes already use metric tonne (2204.62 lb/t, or short ton ×0.907185) in `tea_scale_up.py`, `tea_scale_up_price_models.py`, `tea_biomass_price_only.py`, `plot_scale_up_from_xlsx.py` and the NH₃ crossover plots. Lb-based axes remain: `tea_biomass_price_only.py:89`, `tea_scale_up_price_models.py:148,167` (\$/lb biomass), `tea_scale_up.py:338` (LCOH \$/lb), `tea_ammonia_mix.py:47-48`, `tea_scale_up_ammonia.py:84` (lbmol/hr). `MMt` labels are non-SI (should be `Mt`).
+
+**Code**
+- `SI.tex`: added one sentence before §S1 stating that the model was developed in British (US customary) units and SI values are reported as-is.
+
+**Open**
+- Lb-axis figures and `MMt` labels: not decided whether to convert to \$/kg, \$/t, kmol/h and `Mt`.
+- `Dynamic_LCA` "tonne CO₂e" labels: conversion behind them not verified.
+
 ### 2026-10-13 (update 20)
 
 **Discussion**
