@@ -55,11 +55,12 @@ line_colors = ['#E5534B', '#F2B701', '#3FA34D']   # red / yellow / green: Base (
 case_styles = ['-', '--', ':']
 case_markers = ['o', 's', '^']
 
+df_price *= 2204.62   # $/lb -> $/t (metric tonne, 2204.62 lb/t)
 df_price.plot(kind='bar', color='white', edgecolor='black', ax=ax, width=0.7)
 for container, hatch in zip(ax.containers, bar_hatches):
     for bar in container:
         bar.set_hatch(hatch)
-ax.set_ylabel("Biomass price [$/lb]")
+ax.set_ylabel("Biomass price [$/t]")
 ax.set_xlabel(XLABEL)
 ax.set_xticklabels(xlabels, rotation=0)
 ax.set_ylim(0, ax.get_ylim()[1] * 1.2)

@@ -43,6 +43,12 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 **Code**
 - `Manuscript/SI.tex` S7 ceilings line and `SI. Supporting Information.md` S8: "FR 3,127,378; log (2,843,071 + 3,274,200) t/yr" changed to "FR 2.84; log 3.27 (combined 6.12) MMt/yr". Cause: in `tea_scale_up_price_models.py` the FR value had been put in the log sum.
+- `plot_scale_up_from_xlsx.py`: Fig. 2 (`composite_scale_up_mjsp.png`) panel (b) biomass price changed from \$/lb to \$/t (×2204.62, metric tonne). The FR floor is now 107.3 \$/t; at 1.24 MMt/yr FR–Log Linear is 281.8 and Fixed Elasticity 520.3 \$/t. The xlsx is unchanged and still stores \$/lb.
+- Biomass price in the manuscript text moved to \$/t to match Fig. 2. The user considered \$/kg and dropped it: \$0.11 → \$0.12/kg hides the 8.3% step, and SI S7 is already in \$/t.
+  - `2 Methods.tex` ¶ feedstock: logs \$0.19/kg → \$192.4/t; residues \$0.11/kg → \$107.3/t.
+  - `3 Results.tex` ¶2: floor \$0.11/kg → \$107.3/t; at 0.41 MMt/yr \$0.12/kg → \$116.1/t.
+  - `3 Results.tex` SHAP ¶: \$0.11–0.12/kg → \$107.3–116.1/t.
+  - `SI.tex` / `SI. Supporting Information.md` Table S8-2: biomass columns \$/lb → \$/t (0.0486 → 107.3, …, 0.2360 → 520.3), computed from the xlsx × 2204.62.
 - `tea_scale_up_price_models.py`: deleted the unused `supply_rate_in_tpd`/`supply_rate_in_coverage` (the source of the mislabel, referenced nowhere else).
 
 **Open**

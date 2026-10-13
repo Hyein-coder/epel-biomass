@@ -164,15 +164,15 @@ Numeric values behind the main-text Results figures, read from the `Result/` wor
 
 **Table S9-2. Biomass price and grey-H₂ base MJSP under three biomass price models** (§3.1, price-model figure; source: `Result/scale_up_price_model_mjsp.xlsx`). MJSP in \$/L SAF.
 
-| SAF production [MMt/yr] | Biomass, FR Price [\$/lb] | Biomass, FR-Log Linear [\$/lb] | Biomass, Fixed Elasticity [\$/lb] | MJSP grey H₂, FR Price | MJSP grey H₂, FR-Log Linear | MJSP grey H₂, Fixed Elasticity |
+| SAF production [MMt/yr] | Biomass, FR Price [\$/t] | Biomass, FR-Log Linear [\$/t] | Biomass, Fixed Elasticity [\$/t] | MJSP grey H₂, FR Price | MJSP grey H₂, FR-Log Linear | MJSP grey H₂, Fixed Elasticity |
 |---|---:|---:|---:|---:|---:|---:|
-| 0.041 | 0.0486 | 0.0486 | 0.0486 | 1.651 | 1.651 | 1.651 |
-| 0.104 | 0.0486 | 0.0486 | 0.0486 | 1.271 | 1.271 | 1.271 |
-| 0.207 | 0.0486 | 0.0486 | 0.0486 | 1.028 | 1.028 | 1.028 |
-| 0.311 | 0.0486 | 0.0486 | 0.0486 | 0.897 | 0.897 | 0.897 |
-| 0.414 | 0.0486 | 0.0527 | 0.0527 | 0.793 | 0.849 | 0.849 |
-| 0.828 | 0.0486 | 0.0903 | 0.1064 | 0.714 | 1.290 | 1.515 |
-| 1.243 | 0.0486 | 0.1278 | 0.2360 | 0.676 | 1.773 | 3.272 |
+| 0.041 | 107.3 | 107.3 | 107.3 | 1.651 | 1.651 | 1.651 |
+| 0.104 | 107.3 | 107.3 | 107.3 | 1.271 | 1.271 | 1.271 |
+| 0.207 | 107.3 | 107.3 | 107.3 | 1.028 | 1.028 | 1.028 |
+| 0.311 | 107.3 | 107.3 | 107.3 | 0.897 | 0.897 | 0.897 |
+| 0.414 | 107.3 | 116.1 | 116.1 | 0.793 | 0.849 | 0.849 |
+| 0.828 | 107.3 | 199.0 | 234.6 | 0.714 | 1.290 | 1.515 |
+| 1.243 | 107.3 | 281.8 | 520.3 | 0.676 | 1.773 | 3.272 |
 
 **Table S9-3. MJSP of the full green-NH₃ and full-CCS configurations under three biomass price models** (§3.1, price-model figure; source: `Result/scale_up_price_model_mjsp.xlsx`, sheets `MJSP Ammonia` = 100% green-NH₃ hydrogen, `MJSP CCS` = CCS portion 1.0). MJSP in \$/L SAF.
 

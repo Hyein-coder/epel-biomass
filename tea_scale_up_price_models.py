@@ -95,13 +95,6 @@ for name, df in {"Base": cost_base_all, "Ammonia": cost_ammonia_all, "CCS": cost
     data_chosen.index = case_scale
     mjsp[name] = data_chosen
 
-supply_rate_in_tpd = {
-    "Forest Residue": 3127378 / operation_hr * 24,
-    "Log": (2843071 + 3274200) / operation_hr * 24
-}   # ton/day
-supply_rate_in_coverage = {
-    k: v/(case_data['Biomass Feed'][0] * 24 / 2e3) for k, v in supply_rate_in_tpd.items()
-}
 
 # _PLOTTING_STYLE.md SA_RC (no grid/title, transparent legend, png only)
 SA_RC = {
