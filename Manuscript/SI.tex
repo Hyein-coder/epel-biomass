@@ -413,7 +413,7 @@ Its GHG emission is calculated from the simulated CCS cases and a constant ammon
     \begin{equation}
     \mathrm{GHG}(a,c) =
     \mathrm{GHG}_{\mathrm{CCS}}(c)
-    -a\left(\mathrm{GHG}_{\mathrm{grey}}-\mathrm{GHG}_{\mathrm{NH}_3}\right),
+    -a\left(\mathrm{GHG}_{\mathrm{gray}}-\mathrm{GHG}_{\mathrm{NH}_3}\right),
     \end{equation}
     where \(a\) denotes the green-ammonia substitution fraction and \(c\) denotes the CCS capture fraction. 
 
@@ -497,7 +497,7 @@ Ammonia cracker is simplified in Fig.~\ref{fig:pfd-ammonia}.
   \item Utilities = electricity; raw material = ammonia; fertilizer credited from the Product
     Summary sheet. Conversion / \Htwo-recovery ratios live inside the Aspen model (APEA export
     gives \NHthree-in vs \Htwo-out); GHSV/kinetics from \cite{cho2024ammonia}.
-  \item Grey-\Htwo{} benchmark 0.68 \$/lb \Htwo. SMR uses natural-gas price 0.092306 \$/lb (US), escalated.
+  \item Gray-\Htwo{} benchmark 0.68 \$/lb \Htwo. SMR uses natural-gas price 0.092306 \$/lb (US), escalated.
   \item 
 \end{itemize}
 
@@ -537,7 +537,7 @@ Domestic feedstock ceilings used to convert plant scale to a share of aviation-f
 
 \textbf{Fixed Elasticity} (Galik supply curve, supply elasticity 0.3). Follows the FR--Log Linear curve until the combined forest-residue-plus-log supply (6.12~MMt/yr) is exhausted, then extrapolates linearly under a fixed supply elasticity of 0.3 (log reference price 192.4~\$/t), giving the steepest scale penalty.
 
-\textbf{Scale-up evaluation.} MJSP is evaluated at seven plant scales: 0.041, 0.104, 0.207, 0.311, 0.414, 0.828 and 1.243~MMt/yr SAF. At the forest-residue floor price, the base-case (grey-\ce{H2}) MJSP at each scale is broken down into capital investment, raw materials, utilities, fixed operating costs (operating labor, maintenance, operating charges, plant overhead, and general and administrative costs) and co-product sales, which enter as a negative term (Table~\ref{tab:S9-1}). Each of the three supply-curve models then sets the delivered biomass price at each scale, and MJSP is recomputed for three configurations: the grey-\ce{H2} base, full green ammonia, and full CCS (Tables~\ref{tab:S9-2} and \ref{tab:S9-3}). Biomass is costed identically in all three configurations, so a given price model shifts each of them by the same biomass-cost increment. The minimum-MJSP scale is read where the falling conversion cost and the rising feedstock cost cross.
+\textbf{Scale-up evaluation.} MJSP is evaluated at seven plant scales: 0.041, 0.104, 0.207, 0.311, 0.414, 0.828 and 1.243~MMt/yr SAF. At the forest-residue floor price, the base-case (gray-\ce{H2}) MJSP at each scale is broken down into capital investment, raw materials, utilities, fixed operating costs (operating labor, maintenance, operating charges, plant overhead, and general and administrative costs) and co-product sales, which enter as a negative term (Table~\ref{tab:S9-1}). Each of the three supply-curve models then sets the delivered biomass price at each scale, and MJSP is recomputed for three configurations: the gray-\ce{H2} base, full green ammonia, and full CCS (Tables~\ref{tab:S9-2} and \ref{tab:S9-3}). Biomass is costed identically in all three configurations, so a given price model shifts each of them by the same biomass-cost increment. The minimum-MJSP scale is read where the falling conversion cost and the rising feedstock cost cross.
 %% ------------------------------------------------------------------
 %% ------------------------------------------------------------------
 \section{Data tables for the Results figures}\label{sec:S9}
@@ -547,7 +547,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 
 \begin{table}[htbp]
   \centering
-  \caption{Base-case (grey \Htwo, flat forest-residue price) MJSP breakdown vs SAF production
+  \caption{Base-case (gray \Htwo, flat forest-residue price) MJSP breakdown vs SAF production
     (base-case breakdown figure).
     Components in \$/L SAF; MJSP = sum of components.}
   \label{tab:S9-1}
@@ -571,13 +571,13 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 
 \begin{table}[htbp]
   \centering
-  \caption{Biomass price and grey-\Htwo{} base MJSP under three biomass price models
+  \caption{Biomass price and gray-\Htwo{} base MJSP under three biomass price models
     (price-model figure). MJSP in \$/L SAF.}
   \label{tab:S9-2}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{@{}rrrrrrr@{}}
     \toprule
-    & \multicolumn{3}{c}{Biomass price [\$/t]} & \multicolumn{3}{c}{MJSP grey \Htwo{} [\$/L]} \\
+    & \multicolumn{3}{c}{Biomass price [\$/t]} & \multicolumn{3}{c}{MJSP gray \Htwo{} [\$/L]} \\
     \cmidrule(lr){2-4}\cmidrule(l){5-7}
     SAF production [MMt/yr] & FR Price & FR-Log Linear & Fixed Elasticity & FR Price & FR-Log Linear & Fixed Elasticity \\
     \midrule
@@ -667,12 +667,12 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
 
 \begin{table}[htbp]
   \centering
-  \caption{Grey-\Htwo{} price at which Green \NHthree{} 10\% + CCS 39\% matches CCS 50\% (CCS only). Green \NHthree{} 10\% + CCS 39\% is the least whole-percent CCS portion that, with 10\% green \NHthree{}, clears the CORSIA threshold; its GHG intensity (79.99 g \COtwoe/MJ) is linearly interpolated in capture fraction between the CCS 25\% and CCS 50\% LCA cases less the 10\% \NHthree{} credit, while its MJSP (\$1.072/L) is computed directly by the TEA engine.}
+  \caption{Gray-\Htwo{} price at which Green \NHthree{} 10\% + CCS 39\% matches CCS 50\% (CCS only). Green \NHthree{} 10\% + CCS 39\% is the least whole-percent CCS portion that, with 10\% green \NHthree{}, clears the CORSIA threshold; its GHG intensity (79.99 g \COtwoe/MJ) is linearly interpolated in capture fraction between the CCS 25\% and CCS 50\% LCA cases less the 10\% \NHthree{} credit, while its MJSP (\$1.072/L) is computed directly by the TEA engine.}
   \label{tab:S9-5}
   \small
   \begin{tabular}{@{}rrrc@{}}
     \toprule
-    Green \NHthree{} price [\$/t] & Crossover grey-\Htwo{} price [\$/kg] & MJSP at crossover [\$/L] & Inside 1--4 \$/kg range \\
+    Green \NHthree{} price [\$/t] & Crossover gray-\Htwo{} price [\$/kg] & MJSP at crossover [\$/L] & Inside 1--4 \$/kg range \\
     \midrule
     270 & 2.51 & 1.335 & yes \\
     441 & 3.82 & 1.886 & yes \\
@@ -692,7 +692,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
     \toprule
     Driver & CCS 50\% & Green \NHthree{} 10\% + CCS 39\% \\
     \midrule
-    Grey \Htwo & 0.309 & 0.273 \\
+    Gray \Htwo & 0.309 & 0.273 \\
     CAPEX & 0.106 & 0.101 \\
     Co-product & 0.096 & 0.086 \\
     Electricity & 0.052 & 0.057 \\
@@ -713,7 +713,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
     \toprule
     Point & Driver & Base MJSP & MJSP at low input & MJSP at high input & Span \\
     \midrule
-    CCS 50\% & Grey \Htwo & 0.913 & 0.704 & 1.962 & 1.258 \\
+    CCS 50\% & Gray \Htwo & 0.913 & 0.704 & 1.962 & 1.258 \\
     CCS 50\% & Co-product & 0.913 & 1.160 & 0.666 & 0.494 \\
     CCS 50\% & CAPEX & 0.913 & 0.679 & 1.148 & 0.469 \\
     CCS 50\% & Electricity & 0.913 & 1.074 & 0.753 & 0.321 \\
@@ -721,7 +721,7 @@ MJSP in \$/L SAF (1Q-2022 USD); GHG in g \COtwoe/MJ (WTWa GHG-100, Allocation, K
     CCS 50\% & \COtwo{} T\&S & 0.913 & 0.889 & 1.054 & 0.165 \\
     CCS 50\% & Biomass & 0.913 & 0.913 & 0.965 & 0.052 \\
     \midrule
-    Green \NHthree{} 10\% + CCS 39\% & Grey \Htwo & 1.072 & 0.883 & 2.016 & 1.133 \\
+    Green \NHthree{} 10\% + CCS 39\% & Gray \Htwo & 1.072 & 0.883 & 2.016 & 1.133 \\
     Green \NHthree{} 10\% + CCS 39\% & Co-product & 1.072 & 1.319 & 0.825 & 0.494 \\
     Green \NHthree{} 10\% + CCS 39\% & CAPEX & 1.072 & 0.834 & 1.310 & 0.476 \\
     Green \NHthree{} 10\% + CCS 39\% & Electricity & 1.072 & 1.237 & 0.908 & 0.329 \\

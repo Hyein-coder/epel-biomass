@@ -16,7 +16,7 @@ The process is based on the biomass fast-pyrolysis-to-fuels flowsheet developed 
 In this study, the process design is adjusted from the early study of \citep{jones2013process} in four distinctive points. 
 First, product slate of the process is shifted to maximize SAF production for the South Korean market, rather than the gasoline and diesel blendstock production targeted in the original design. Gasoline- and diesel-range streams are retained as value-generating co-products.
 Second, surplus electricity is generated as a co-product via a gas-turbine power island, which is newly introduced in this study. 
-Next, the original grey-hydrogen supply can be partially or fully replaced with hydrogen produced by green-ammonia cracking, as described in Section~\ref{sec:methods-cracker}.
+Next, the original gray-hydrogen supply can be partially or fully replaced with hydrogen produced by green-ammonia cracking, as described in Section~\ref{sec:methods-cracker}.
 Lastly, an amine-based CCS unit is added to capture recoverable CO$_2$ streams leaving combustion chambers or separators (Section~\ref{sec:methods-ccs}).
 
 At the base scale, the plant processes 0.343~MMt/yr of woody biomass and produces 0.041~MMt/yr of SAF. The bio-oil sent to hydrotreating amounts to 0.244~MMt/yr, equivalent to approximately 71~wt\% of the biomass feed. Total fresh make-up hydrogen consumption is 0.024~MMt/yr, comprising 0.021~MMt/yr for hydrotreating and 0.003~MMt/yr for hydrocracking. Hydrotreating employs ruthenium catalysts in a series of two reactors at a liquid hourly space velocity (LHSV) of 0.5, followed by the last reactor with molybdenum catalyst at an LHSV of 0.22. Catalyst costs are estimated separately from reactor-vessel costs.
@@ -67,7 +67,7 @@ From then on, it maintains the elasticity of 0.3, making the slope steeper (SI~S
 
 \subsubsection{Green ammonia and hydrogen supply}\label{sec:methods-nh3}
 
-Green ammonia is assigned a base price of \$635/t NH$_3$, with sensitivity analysis spanning \$270/t, representing a projected future price, to \$1,000/t, representing a current price. Hydrogen produced through ammonia cracking replaces grey hydrogen at a specified substitution fraction. The grey-hydrogen reference is priced at \$1,499/t H$_2$ \citep{katebah2022analysis}.
+Green ammonia is assigned a base price of \$635/t NH$_3$, with sensitivity analysis spanning \$270/t, representing a projected future price, to \$1,000/t, representing a current price. Hydrogen produced through ammonia cracking replaces gray hydrogen at a specified substitution fraction. The gray-hydrogen reference is priced at \$1,499/t H$_2$ \citep{katebah2022analysis}.
 
 \subsubsection{CCS cost}\label{sec:methods-ccscost}
 
@@ -122,15 +122,15 @@ Co-product emissions are allocated among the products for the central LCA estima
 %     \begin{equation}
 %     \mathrm{GHG}(a,c) =
 %     \mathrm{GHG}_{\mathrm{CCS}}(c)
-%     -a\left(\mathrm{GHG}_{\mathrm{grey}}-\mathrm{GHG}_{\mathrm{NH}_3}\right),
+%     -a\left(\mathrm{GHG}_{\mathrm{gray}}-\mathrm{GHG}_{\mathrm{NH}_3}\right),
 %     \end{equation}
-%     where \(a\) denotes the green-ammonia substitution fraction and \(c\) denotes the CCS capture fraction. This formulation assumes that the upstream emissions avoided by replacing grey H$_2$ are independent of, and additive to, the process CO$_2$ captured by CCS.
+%     where \(a\) denotes the green-ammonia substitution fraction and \(c\) denotes the CCS capture fraction. This formulation assumes that the upstream emissions avoided by replacing gray H$_2$ are independent of, and additive to, the process CO$_2$ captured by CCS.
 
 % Uncertainty bands for MJSP are constructed by varying the biomass price across the supply-curve range at this plant scale (107.3--116.1~\$/t), from the fixed forest-residue reference price to the supply-curve price (Section~\ref{sec:methods-feed}).
 
 Sensitivity of process economics was compared by computing SHAP attribution of different parameters. Sensitivity analysis was applied only when the compliance threshold was satisfied based on LCA. For each configuration, 128 Latin hypercube samples are generated over the specified parameter ranges and evaluated using the TEA model. A gradient-boosting regression surrogate is fitted to the resulting samples, with an in-sample \(R^2>0.99\) required. TreeSHAP values are then calculated from the surrogate to attribute each sample's MJSP to individual drivers.
 
-The varied parameters are grey-hydrogen price (\$1,000--4,000/t), green-ammonia price (\$270--1,000/t), CAPEX inflation (\(\pm30\%\)), CO$_2$ T\&S cost (\$4--45/t for CCS configurations), electricity price (\(\pm30\%\)), co-product prices (\(\pm20\%\)), and capacity factor (85\% or 91\%). Biomass price is additionally varied across the supply-curve range according to their production scale.
+The varied parameters are gray-hydrogen price (\$1,000--4,000/t), green-ammonia price (\$270--1,000/t), CAPEX inflation (\(\pm30\%\)), CO$_2$ T\&S cost (\$4--45/t for CCS configurations), electricity price (\(\pm30\%\)), co-product prices (\(\pm20\%\)), and capacity factor (85\% or 91\%). Biomass price is additionally varied across the supply-curve range according to their production scale.
 
 \begin{table}[htbp]
 \centering
@@ -140,7 +140,7 @@ The varied parameters are grey-hydrogen price (\$1,000--4,000/t), green-ammonia 
 \hline
 \textbf{Parameter} & \textbf{Range / Value} \\
 \hline
-Grey-H$_2$ price & \$1,000--4,000/t \\
+Gray-H$_2$ price & \$1,000--4,000/t \\
 Ammonia price & \$270--1,000/t \\
 CAPEX & $\pm 30\%$ \\
 CO$_2$ T\&S cost (CCS configurations) & \$4--45/t \\
