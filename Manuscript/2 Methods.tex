@@ -35,7 +35,7 @@ The recovery process was modified to employ a sulfuric acid scrubbing system to 
 
 \subsubsection{Carbon capture and storage}\label{sec:methods-ccs}
 
-Post-combustion CCS is modeled using a monoethanolamine (MEA)-based retrofit. Its cost is interpolated from the power-plant amine-capture reference case reported by \citet{rao2002technical}, which processes 3.13~MMt/yr of CO$_2$, has a total CAPEX of \$297.9~M, requires 7,772~GWh/yr of regeneration heat, and consumes auxiliary electricity equivalent to 14\% of the heat duty. All costs are converted to refer to first-quarter 2022 USD.
+Post-combustion CCS is modeled using a monoethanolamine (MEA)-based retrofit. Its cost is interpolated from the power-plant amine-capture reference case reported by \cite{rao2002technical}, which processes 3.13~MMt/yr of CO$_2$, has a total CAPEX of \$297.9~M, requires 7,772~GWh/yr of regeneration heat, and consumes auxiliary electricity equivalent to 14\% of the heat duty. All costs are converted to refer to first-quarter 2022 USD.
 
 The total captured mass comprises the exhaust-gas-recirculation (EGR) CO$_2$ stream and a specified fraction of the recoverable process CO$_2$ stream. The EGR CO$_2$ stream is completely captured. Capture-unit CAPEX scales with captured mass according to the six-tenths rule, whereas OPEX scales with an exponent of 0.7. Utility requirements scale linearly with captured mass. Capture OPEX includes make-up fuel for regeneration heat not supplied by on-site heat, auxiliary electricity, and optional CO$_2$ transport and storage (T\&S), the details for which is described in section~\ref{sec:methods-ccscost}). The capture fraction is varied from 0 to 1.0. The complete CCS cost derivation is provided in SI~S6.
 
@@ -50,7 +50,7 @@ Because the domestic forest-residue supply is finite, the delivered biomass pric
 % The regional supply context is described in SI~S8. 
 
 % The scarcity of FR biomass feedstock was reflected in the scale-up analysis as a feedstock price via two main approaches. 
-This study considers the full spectrum of woody biomass as viable feedstock, capitalizing on the proven versatility of pyrolysis to process both softwood and hardwood species. Literature consistently demonstrates successful bio-oil conversion across a diverse range of softwoods, such as pine and conifers \cite{tran2021fast, jarvis2014characterization}, as well as hardwoods, including black locust and birch \cite{straker2015black, li2014autothermal}. While comparative research indicates that compositional factors—specifically differences in lignin and ash content—may influence the precise yield profile \citep{garcia2007vacuum, azeez2010fast}, the fundamental feasibility of thermochemical conversion remains robust across species. Consequently, this process is designed to be feedstock-flexible, accommodating any woody biomass regardless of its classification.
+This study considers the full spectrum of woody biomass as viable feedstock, capitalizing on the proven versatility of pyrolysis to process both softwood and hardwood species. Literature consistently demonstrates successful bio-oil conversion across a diverse range of softwoods, such as pine and conifers \citep{tran2021fast, jarvis2014characterization}, as well as hardwoods, including black locust and birch \citep{straker2015black, li2014autothermal}. While comparative research indicates that compositional factors—specifically differences in lignin and ash content—may influence the precise yield profile \citep{garcia2007vacuum, azeez2010fast}, the fundamental feasibility of thermochemical conversion remains robust across species. Consequently, this process is designed to be feedstock-flexible, accommodating any woody biomass regardless of its classification.
 
 The economic viability of this feedstock-flexible approach is further supported by the immense volume of available biomass. The total potential supply is substantial, comprising approximately 706~MMt of logs and 412~MMt of underutilized residues. However, these resources are subject to distinct market dynamics; currently, logs are valued at \$192.4/t, while residues trade at a significantly lower price of \$107.3/t. Given this vast scale and the sharp cost disparity between high-quality timber and lower-cost residues, static pricing data is insufficient for long-term strategic planning. Consequently, a robust price prediction model is required to accurately forecast market fluctuations and optimize feedstock procurement strategies.
 
@@ -59,7 +59,7 @@ This approach defines the supply curve using two key data points: the total avai
 The supply equation parameters are set to make the curve passes through both data points. 
 However, this method often results in a supply curve that is more price-sensitive (\textit{elastic}) than what is typically observed in real markets, where pulpwood supply is usually less responsive to price changes. 
 
-To address this discrepancy, the second approach uses a price elasticity adopted from previous research \cite{galik2009forest}.
+To address this discrepancy, the second approach uses a price elasticity adopted from previous research \citep{galik2009forest}.
 This method assumes a constant, inelastic price response for pulpwood in the states of North Carolina, South Carolina, and Virginia with a fixed elasticity of 0.3 in a supply curve. 
 It also assumes that all available forest-residue biomass is used up before any log is purchased for feedstock. 
 The supply curve is constructed by following the same linear curve of the first model until the current log price and quantity. 
@@ -87,19 +87,19 @@ where \(E=31.66\)~MJ/L is the volumetric energy content of SAF. Because producer
 
 \subsubsection{System boundary and biogenic carbon}\label{sec:methods-boundary}
 
-The functional unit is 1~MJ of SAF, and the system boundary covers the well-to-wake (WTWa) life cycle, comprising the well-to-pump (WTP) and pump-to-wake (PTWa) stages. The PTWa stage, representing fuel combustion, is adopted from the Fischer--Tropsch jet-fuel reference. Environmental impacts are expressed as GHG-100, based on 100-year global warming potential, in g~CO$_2$e/MJ SAF. Life-cycle inventories are derived from Greenhouse gases, Regulated Emissions, and Energy use in Technologies (GREET) model \cite{wang2023greet}, since it coincides with the standard of CORSIA. 
+The functional unit is 1~MJ of SAF, and the system boundary covers the well-to-wake (WTWa) life cycle, comprising the well-to-pump (WTP) and pump-to-wake (PTWa) stages. The PTWa stage, representing fuel combustion, is adopted from the Fischer--Tropsch jet-fuel reference. Environmental impacts are expressed as GHG-100, based on 100-year global warming potential, in g~CO$_2$e/MJ SAF. Life-cycle inventories are derived from Greenhouse gases, Regulated Emissions, and Energy use in Technologies (GREET) model \citep{wang2023greet}, since it coincides with the standard of CORSIA. 
 
-The total forest residue production emission includes forest maintenance activities, harvesting, collecting, bailing, and extracting, such as milling and chipping \cite{han2011well}.
+The total forest residue production emission includes forest maintenance activities, harvesting, collecting, bailing, and extracting, such as milling and chipping \citep{han2011well}.
 In the meantime, ILUC emission of the feedstock is not considered since it has low risk in generating ILUC emissions, which applies similarly to biomass from wastes and microalgae \cite{ICAO2023CORSIA}.
-This total emission of the production process is allocated to forest residue feedstock based on mass fractions, except for the emissions induced by fertilizer or agrochemical inputs \cite{han2011well}. 
+This total emission of the production process is allocated to forest residue feedstock based on mass fractions, except for the emissions induced by fertilizer or agrochemical inputs \citep{han2011well}. 
 
-Ammonia was assumed to be produced by renewable energy in Australia \cite{lee2022techno} and transported via conventional ship fueled by liquefied natural gas. Applying the technology of ammonia-fueled ships \cite{schwarzkopf2023future}, its benefit was negligible ($<$ 1.2 g CO$_2$e/MJ), so it was not included in the results of this paper.
+Ammonia was assumed to be produced by renewable energy in Australia \citep{lee2022techno} and transported via conventional ship fueled by liquefied natural gas. Applying the technology of ammonia-fueled ships \citep{schwarzkopf2023future}, its benefit was negligible ($<$ 1.2 g CO$_2$e/MJ), so it was not included in the results of this paper.
 Heat utilities such as mid-pressure and low-pressure steam were counted by heat consumption of fuel, which is natural gas from North America, without considering transportation. 
 Heat exchange network in the process requires some make-up boiler feed water, and it is counted as process water resources. 
 
 The counting of emissions from the downstream product chain imitates that of conventional synthetic paraffinic kerosene fuel. 
-SAF produced from the plant is distributed via multiple routes following the assumption of the domestic jet distribution over the U.S. \cite{xie2011assessment}.
-After reaching at pump stations, the PTWa emission profile is assumed to be the same as Fischer--Tropsch jet fuel from biomass \cite{elgowainy2012life}.
+SAF produced from the plant is distributed via multiple routes following the assumption of the domestic jet distribution over the U.S. \citep{xie2011assessment}.
+After reaching at pump stations, the PTWa emission profile is assumed to be the same as Fischer--Tropsch jet fuel from biomass \citep{elgowainy2012life}.
 SAF compliance is assessed against the CORSIA requirement that eligible SAF achieve at least a 10\% reduction in WTWa GHG-100 intensity relative to conventional jet fuel.
 
 Biogenic carbon is treated under the carbon-neutrality assumption. Biogenic combustion emissions are tracked separately as \(\text{CO$_{2, biogenic}$}\), distinct from fossil CO$_2$, such that biomass uptake and subsequent combustion emissions cancel. Biogenic CO$_2$ diverted to CCS is instead counted as a negative emission.
