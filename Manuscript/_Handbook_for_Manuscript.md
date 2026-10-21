@@ -35,6 +35,27 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-21 (update 2)
+
+**Discussion**
+- User dropped the middle panel (Fig 3a) and asked for the top and bottom panels as separate PNGs. User deleted `Figure/graphical_abstract.png`.
+
+**Code**
+- `plot_abstract_panels.py`: `main()` now writes `Figure/abstract_fig2b.png` and `Figure/abstract_fig3b.png`, one square panel each. Old strip `Figure/abstract_fig2b_fig3ab.png` removed. `draw_mesh` kept but no longer called.
+
+### 2026-10-21
+
+**Discussion**
+- User asked for a schematic strip of Fig 2b, Fig 3a and Fig 3b, stacked vertically, square panels, axis labels only (no tick numbers), styled after an uploaded mock-up.
+- Fig 3b's gray "does not meet CORSIA" region is the abatement n/a mask (GHG ≥ CCS 50% anchor, 78.99 g/MJ), not the 80.1 threshold. The 1.1 g/MJ gap is not shown. The label follows the mock-up.
+
+**Code**
+- `plot_abstract_panels.py` (new): reads `Result/scale_up_price_model_mjsp.xlsx` and `Result/pareto_front.xlsx` (no TEA rerun) and writes `Figure/abstract_fig2b_fig3ab.png`. (top) gray price-model bars + MJSP mean lines and range bands, with the Base min marked. (middle) GHG–MJSP mesh; color = NH₃ share, dot size = CCS share; fails-CORSIA band. (bottom) abatement cost on a bilinear-interpolated 301² (NH₃, CCS) grid, log color clipped at \$3000/t.
+- Bold text in the SA_RC font renders hollow, so annotations use `axes.labelweight` instead.
+
+**Open**
+- Not decided where the strip goes (graphical abstract or TOC). `Figure/graphical_abstract.png` (untracked) left untouched.
+
 ### 2026-10-13 (update 21)
 
 **Discussion**
