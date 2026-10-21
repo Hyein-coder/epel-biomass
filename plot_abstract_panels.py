@@ -10,9 +10,9 @@ from scipy.interpolate import RegularGridInterpolator
 from funs_lca import CORSIA_THRESHOLD
 from tea_pareto_front import SA_RC
 
-LINE = {'Base': ('#E5534B', '-', 'Base (gray H$_2$)'),     # colors as in plot_scale_up_from_xlsx
-        'Ammonia': ('#F2B701', '--', 'Green NH$_3$'),
-        'CCS': ('#3FA34D', ':', 'CCS')}
+LINE = {'Base': ('#E8101A', '-', 'Base (gray H$_2$)'),     # saturated red / amber / green for the abstract
+        'Ammonia': ('#FF9500', '--', 'Green NH$_3$'),
+        'CCS': ('#00A03C', ':', 'CCS')}
 BAR_GRAYS = ['#d9d9d9', '#a6a6a6', '#707070']   # FR / FR-Log Linear / Fixed Elasticity
 E_MJ_PER_L = 31.66   # MJ/L SAF, same as tea_pareto_front abatement
 
@@ -41,28 +41,21 @@ def draw_scale(ax: plt.Axes) -> None:
         key = name.removeprefix('MJSP ')
         col, ls, lab = LINE[key]
         df = df.drop(columns='saf production [MMt/yr]')
-        ax2.fill_between(x, df.min(axis=1), df.max(axis=1), color=col, alpha=0.25, lw=0)
+        ax2.fill_between(x, df.min(axis=1), df.max(axis=1), color=col, alpha=0.35, lw=0)
         ax2.plot(x, df.mean(axis=1), color=col, ls=ls, lw=2.2, label=lab)
         if key == 'Base':
             i_min = int(df.mean(axis=1).values.argmin())
             y_min = df.mean(axis=1).iloc[i_min]
             ax2.plot(x[i_min], y_min, 'o', ms=8, mfc='white', mec=col, mew=1.8, zorder=5)
-            ax2.annotate('min', (x[i_min], y_min), xytext=(0, -14), textcoords='offset points',
-                         ha='center', va='top', fontweight=plt.rcParams['axes.labelweight'],
-                         bbox=dict(fc='white', ec='none', pad=1))
-    hi = ax2.get_ylim()[1] * 1.25   # headroom for legend
+    hi = ax2.get_ylim()[1] * 1.1
     ax2.set_ylim(-0.25 * hi, hi)   # lift lines above the floor-price bars (no numbers shown)
     ax2.spines['top'].set_visible(False)
     ax2.set_ylabel('MJSP (lines)')
     ax.set_ylabel('Biomass price (bars)')
-    ax.set_xlabel('SAF production')
+    ax.set_xlabel('Production Scale')
     ax.text(0.04, 0.72, 'economies of scale', transform=ax.transAxes, style='italic')
     ax.text(0.97, 0.72, r'feedstock cost $\uparrow$', transform=ax.transAxes, style='italic', ha='right')
-    h1, l1 = ax2.get_legend_handles_labels()
-    h2, l2 = ax.get_legend_handles_labels()
-    ax2.legend(h1 + h2, l1 + l2, ncol=2, loc='upper left', handlelength=2.2)
     no_numbers(ax, ax2)
-    ax2.set_box_aspect(1)
 
 
 def draw_mesh(ax: plt.Axes) -> None:
@@ -132,12 +125,13 @@ def draw_abatement(ax: plt.Axes) -> None:
     ax.text(0.97, 0.04, 'highest', transform=ax.transAxes, ha='right', fontweight=plt.rcParams['axes.labelweight'], color='white')
     ax.text(0.05, 0.12, 'does not\nmeet CORSIA', transform=ax.transAxes, color='#555555')
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
-    ax.set_xlabel(r'Green NH$_3$ H$_2$ substitution $\rightarrow$')
+    ax.set_xlabel(r'Green Ammonia Usage $\rightarrow$')
     ax.set_ylabel(r'CCS portion $\rightarrow$')
     cax = ax.inset_axes([1.04, 0, 0.05, 1])
     cb = ax.figure.colorbar(pm, cax=cax)
     cb.set_ticks([norm.vmin, norm.vmax]); cb.set_ticklabels(['low', 'high'])
-    cb.minorticks_off(); cb.set_label('\\$ / t CO$_2$')
+    # negative labelpad: tick labels sit only at the bar ends, so the label tucks into the gap beside it
+    cb.minorticks_off(); cb.set_label('CO$_2$ abatement cost', labelpad=-28)
     no_numbers(ax)
 
 
@@ -146,9 +140,12 @@ def main() -> None:
     plt.rcParams['figure.autolayout'] = False
     plt.rcParams.update({'axes.spines.top': False, 'axes.spines.right': False})   # as plot_composite
     # one PNG per panel; Fig 3a (draw_mesh) dropped from the output
-    for draw, name in [(draw_scale, 'abstract_fig2b.png'), (draw_abatement, 'abstract_fig3b.png')]:
-        fig, ax = plt.subplots(figsize=(4.6, 4.4))
-        ax.set_box_aspect(1)
+    # Fig 2b: height cut 30% then 10% more (4.4 -> 3.08 -> 2.77 in), no longer square; Fig 3b stays square
+    for draw, name, size, square in [(draw_scale, 'abstract_fig2b.png', (4.6, 2.77), False),
+                                     (draw_abatement, 'abstract_fig3b.png', (3.68, 3.52), True)]:
+        fig, ax = plt.subplots(figsize=size)
+        if square:
+            ax.set_box_aspect(1)
         draw(ax)
         out = os.path.join('Figure', name)
         fig.savefig(out, dpi=200)

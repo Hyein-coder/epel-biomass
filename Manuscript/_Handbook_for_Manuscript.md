@@ -35,6 +35,36 @@ The `.tex` file names contain a space and no period after the number (`2 Methods
 
 ## Log history
 
+### 2026-10-21 (update 7)
+
+**Code**
+- `plot_abstract_panels.py` (`main`, `draw_abatement`): Fig 3b figsize (4.6, 4.4) → (3.68, 3.52) (−20%, fonts read larger); x-axis label → "Green Ammonia Usage".
+- Same day correction: x-axis label restored the right arrow → "Green Ammonia Usage →", matching the y-axis label.
+- `draw_abatement`: colorbar label "\$ / t CO₂" → "CO₂ abatement cost", pulled next to the bar (`labelpad=-28`).
+
+### 2026-10-21 (update 6)
+
+**Code**
+- `plot_abstract_panels.py` (`draw_scale`): Fig 2b x-axis label "SAF production" → "Production Scale".
+
+### 2026-10-21 (update 5)
+
+**Code**
+- `plot_abstract_panels.py` (`main`): Fig 2b height cut another 10% of its current height (figsize (4.6, 3.08) → (4.6, 2.77)).
+
+### 2026-10-21 (update 4)
+
+**Code**
+- `plot_abstract_panels.py` (`draw_scale`): removed the "min" text from Fig 2b; the open circle at the Base minimum stays.
+
+### 2026-10-21 (update 3)
+
+**Discussion**
+- Fig 2b abstract panel: user asked for 30% less height with the same font size, no legend, and more vivid colors. Fig 3b unchanged.
+
+**Code**
+- `plot_abstract_panels.py`: Fig 2b figsize (4.6, 4.4) → (4.6, 3.08), so it is no longer square. Legend removed and legend headroom cut (1.25 → 1.1). Line colors saturated (#E8101A / #FF9500 / #00A03C) and band alpha 0.25 → 0.35.
+
 ### 2026-10-21 (update 2)
 
 **Discussion**
